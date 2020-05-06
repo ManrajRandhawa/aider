@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JavaScriptLibraryMappings">
+    <file url="PROJECT" libraries="{Chart.bundle, all, bootstrap, bootstrap-toggle, bootstrap.bundle, jquery-3.4.1.slim, jquery.scrollbar, js.cookie, popper}" />
+  </component>
+</project>
