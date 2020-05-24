@@ -190,7 +190,7 @@ class Dashboard {
 
     function checkSessionLogic() {
         if(!isset($_SESSION['User_Email'])) {
-            header('Location: ../index.php');
+            header('Location: ../food.php');
         }
     }
 

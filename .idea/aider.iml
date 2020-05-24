@@ -15,5 +15,9 @@
     <orderEntry type="library" name="js.cookie" level="application" />
     <orderEntry type="library" name="Chart.bundle" level="application" />
     <orderEntry type="library" name="bootstrap-toggle" level="application" />
+    <orderEntry type="library" name="jQuery 3.5.1" level="project" />
+    <orderEntry type="library" name="@types/jquery" level="application" />
+    <orderEntry type="library" name="jquery" level="application" />
+    <orderEntry type="library" name="google_maps_api_v3" level="project" />
   </component>
 </module>

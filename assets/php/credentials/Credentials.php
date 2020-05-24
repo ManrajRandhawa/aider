@@ -18,4 +18,8 @@ class Credentials {
         return new Sessions();
     }
 
+    function getEmail() {
+        return new Email();
+    }
+
 }
