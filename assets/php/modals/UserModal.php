@@ -19,4 +19,8 @@ class UserModal {
         return new RiderModal();
     }
 
+    function getParcelModal() {
+        return new ParcelModal();
+    }
+
 }

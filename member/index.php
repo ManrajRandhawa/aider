@@ -44,7 +44,7 @@
             <div class="col col-lg-4"></div>
             <div class="col-12 col-lg-4 mt-5">
                 <div class="card">
-                    <img src="../assets/images/aider-logo.png" class="card-img-top" />
+                    <img src="../assets/images/aider-logo.png" class="card-img-top ml-auto mr-auto" style="width: 150px; height: 150px;" />
                     <div class="card-body">
                         <form method="post">
                             <div class="input-group mt-3">

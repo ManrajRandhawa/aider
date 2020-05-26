@@ -81,6 +81,25 @@ class CustomerModal {
         return $response;
     }
 
+    function updateCustomerInformationByEmail($email, $key, $value) {
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        $sql = "UPDATE aider_user_customer SET $key = '$value' WHERE Email_Address='" . $email . "'";
+        $statement = $connection->query($sql);
+
+        if($statement) {
+            $response['error'] = false;
+        } else {
+            $response['error'] = true;
+            $response['message'] = "There was an error while trying to update the database.";
+        }
+
+        $connection->close();
+
+        return $response;
+    }
+
     private function checkDuplicateEmails($email) {
         $DatabaseHandler = new DatabaseHandler();
         $connection = $DatabaseHandler->getMySQLiConnection();
@@ -103,10 +122,13 @@ class CustomerModal {
     }
 
     function updatePassword($pswd, $cpswd, $email) {
-        $DatabaseHandler = new DatabaseHandler();
-        $connection = $DatabaseHandler->getMySQLiConnection();
 
-        if(!($this->crosscheckPassword($pswd, $cpswd)['error'])) {
+        $checkPassResponse = $this->crosscheckPassword($pswd, $cpswd);
+
+        if(!($checkPassResponse['error'])) {
+
+            $DatabaseHandler = new DatabaseHandler();
+            $connection = $DatabaseHandler->getMySQLiConnection();
             $pswdHash = password_hash($pswd, PASSWORD_DEFAULT);
 
             $sql = "UPDATE aider_user_customer SET Password_Hash = '$pswdHash', First_Login = 'NO' WHERE Email_Address = '$email'";
@@ -115,16 +137,18 @@ class CustomerModal {
 
             if($statement) {
                 $response['error'] = false;
+                $response['reason'] = 0;
                 $response['message'] = "Your password has been updated.";
             } else {
                 $response['error'] = true;
+                $response['reason'] = 1;
                 $response['message'] = "There was an error while trying to change your password.";
             }
 
-            $statement->close();
             $connection->close();
         } else {
             $response['error'] = true;
+            $response['reason'] = 2;
             $response['message'] = "The passwords do not match.";
         }
 
@@ -136,7 +160,6 @@ class CustomerModal {
             $response['error'] = false;
         } else {
             $response['error'] = true;
-            $response['message'] = "The passwords do not match";
         }
 
         return $response;

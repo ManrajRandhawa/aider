@@ -6,9 +6,5 @@
     if(isset($_POST['User_Email']) && isset($_POST['Password']) && isset($_POST['Confirm_Password'])) {
         $response = $Aider->getUserModal()->getCustomerModal()->updatePassword($_POST['Password'], $_POST['Confirm_Password'], $_POST['User_Email']);
 
-        if (!$response['error']) {
-            echo $response['message'];
-        } else {
-            echo $response['message'];
-        }
+        echo $response['reason'];
     }

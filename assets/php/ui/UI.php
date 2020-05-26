@@ -15,4 +15,8 @@ class UI {
                 <script src='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js'></script>";
     }
 
+    function getDashboard() {
+        return new Dashboard();
+    }
+
 }
