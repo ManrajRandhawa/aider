@@ -27,7 +27,8 @@ class Register {
 
             $name = $first_name . " " . $last_name;
 
-            $statement->bind_param("ssssis",$name, $email, $pswdHash, $phone_num, $credit, "YES");
+            $first_login = "YES";
+            $statement->bind_param("ssssis",$name, $email, $pswdHash, $phone_num, $credit, $first_login);
 
             if($statement->execute()) {
                 // Send Confirmation Email
@@ -38,7 +39,7 @@ class Register {
                 $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
                 $headers .= 'From: Aider<info@aider.my>' . "\r\n";
 
-                $content = $this->getCustomerConfirmationEmailContent($name, $email, $pswd, "aider.my", "", "");
+                $content = $this->getCustomerConfirmationEmailContent($name, $email, $pswd, "aider.my/members/", "", "");
 
                 if(mail($to, $subject, $content, $headers)) {
                     $response['error'] = false;
@@ -58,6 +59,7 @@ class Register {
 
         return $response;
     }
+
     private function checkDuplicateEmails($type, $email) {
         $DatabaseHandler = new DatabaseHandler();
         $connection = $DatabaseHandler->getMySQLiConnection();
@@ -318,65 +320,4 @@ a[x-apple-data-detectors] {
  </body>
 </html>";
     }
-    /*
-    function registerParent($childID, $name, $email, $pswd) {
-        // Check Duplicate Emails
-        $responseDuplicateEmail = $this->checkDuplicateEmails("PARENT", $email);
-
-        if($responseDuplicateEmail['error']) {
-            $response['error'] = true;
-            $response['message'] = $responseDuplicateEmail['message'];
-        } else {
-            $DatabaseHandler = new DatabaseHandler();
-            $connection = $DatabaseHandler->getMySQLiConnection();
-
-            $sql = "INSERT INTO qbank_users_parents(Child_ID, Full_Name, Email_Address, Password_Hash) VALUES (?, ?, ?, ?)";
-
-            $statement = $connection->prepare($sql);
-
-            $pswdHash = password_hash($pswd, PASSWORD_DEFAULT);
-
-            $statement->bind_param("isss", $childID, $name, $email, $pswdHash);
-
-            if($statement->execute()) {
-                $response['error'] = false;
-            } else {
-                $response['error'] = true;
-                $response['message'] = "There was an error while registering you with us.";
-            }
-
-            $statement->close();
-            $connection->close();
-        }
-
-        return $response;
-    }
-
-    function getStudentID($email) {
-
-        $DatabaseHandler = new DatabaseHandler();
-        $connection = $DatabaseHandler->getMySQLiConnection();
-
-        $sql = "SELECT * FROM qbank_users_students WHERE Email_Address = '$email'";
-        $statement = $connection->query($sql);
-
-        if($statement->num_rows > 0) {
-            while($row = $statement->fetch_assoc()) {
-                $response['studentID'] = $row["ID"];
-            }
-            $response['error'] = false;
-        } else {
-            $response['error'] = true;
-            $response['message'] = "The Student ID could not be found.";
-        }
-
-        $statement->close();
-        $connection->close();
-
-        return $response;
-    }
-    */
-
-
-
 }

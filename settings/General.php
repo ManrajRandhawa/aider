@@ -1,3 +1,3 @@
 <?php
 
-DEFINE("SITE_NAME", "Aider Delivery");
+DEFINE("SITE_NAME", "Aider");

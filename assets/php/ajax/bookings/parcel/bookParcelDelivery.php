@@ -14,6 +14,4 @@
         } else {
             echo "NO-ERROR";
         }
-    } else {
-        echo "HUH?";
     }

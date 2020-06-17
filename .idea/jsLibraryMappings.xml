@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="JavaScriptLibraryMappings">
-    <file url="PROJECT" libraries="{@types/jquery, Chart.bundle, all, bootstrap, bootstrap-toggle, bootstrap.bundle, google_maps_api_v3, jQuery 3.5.1, jquery, jquery-3.4.1.slim, jquery.scrollbar, js.cookie, popper}" />
+    <file url="PROJECT" libraries="{@types/jquery, Chart.bundle, all, bootstrap, bootstrap-toggle, bootstrap.bundle, google_maps_api_v3, jQuery 3.5.1, jquery, jquery-3.4.1.slim, jquery-ui, jquery.scrollbar, js.cookie, popper}" />
   </component>
 </project>

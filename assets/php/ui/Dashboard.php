@@ -16,7 +16,71 @@ class Dashboard {
         </div>";
     }
 
-    function getFooter() {
+    function getBottomNavigation($id) {
 
+        $active[] = array();
+        $active[1] = "text-black-50";
+        $active[2] = "text-black-50";
+        $active[3] = "text-black-50";
+        $active[$id] = "";
+
+        echo "<div class=\"container bg-white pt-1 fixed-bottom rounded border-top\" style=\"border-color: rgba(0, 0, 0, 0.5);\">
+            <div class=\"row\">
+                <div class=\"col-4 text-center\">
+                    <a class='text-decoration-none " . $active[1] . "' href=\"home.php\">
+                        <i class=\"fas fa-home\"></i>
+                        <h6 style=\"font-size: 9pt;\">Home</h6>
+                    </a>
+
+                </div>
+
+                <div class=\"col-4 text-center\">
+                    <a class='text-decoration-none " . $active[2] . "' href=\"payment.php\">
+                        <i class=\"fas fa-wallet\"></i>
+                        <h6 style=\"font-size: 9pt;\">Payment</h6>
+                    </a>
+
+                </div>
+
+                <div class=\"col-4 text-center\">
+                    <a class='text-decoration-none " . $active[3] . "' href=\"account.php\">
+                        <i class=\"far fa-user-circle\"></i>
+                        <h6 style=\"font-size: 9pt;\">Account</h6>
+                    </a>
+                </div>
+            </div>
+        </div>";
+    }
+
+    function getFirstTimePasswordChangeModal() {
+        echo "<div class=\"modal fade bd-example-modal-lg\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myLargeModalLabel\" aria-hidden=\"true\">
+            <div class=\"modal-dialog modal-lg\">
+                <div class=\"modal-content\">
+                    <div class=\"modal-header\">
+                        <h5 class=\"modal-title\" id=\"changePasswordModalLabel\">Set a new password.</h5>
+                    </div>
+                    <div class=\"modal-body\">
+                        <form method=\"post\">
+                            <div class=\"form-group\">
+                                <label for=\"pass\" class=\"col-form-label\">Password:</label>
+                                <input type=\"password\" class=\"form-control\" name=\"pswd\" id=\"pass\">
+                            </div>
+                            <div class=\"form-group\">
+                                <label for=\"confirm-pass\" class=\"col-form-label\">Confirm Password:</label>
+                                <input type=\"password\" class=\"form-control\" name=\"confirm-pswd\" id=\"confirm-pass\">
+                            </div>
+                        </form>
+                    </div>
+                    <div class=\"modal-footer\">
+                        <button type=\"button\" class=\"btn btn-primary\" id=\"change-pass-btn\">Change Password</button>
+                    </div>
+                </div>
+                <!-- START: Toast Messages Area -->
+                <div class=\"toast-container-modal\" style=\"z-index: 9999;\">
+
+                </div>
+                <!-- END: Toast Messages Area -->
+            </div>
+        </div>";
     }
 }

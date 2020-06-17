@@ -27,9 +27,23 @@
             div.map-row,
             div.map-col-12
             {
-                height: 40vh;
+                height: 100vh;
                 margin: 0;
                 padding: 0;
+            }
+
+            .pac-container {
+                height: 3.7rem;
+                overflow-y: scroll;
+                z-index: 9999;
+            }
+
+            .mb-6 {
+                margin-bottom: 5.5rem !important;
+            }
+
+            .mb-7 {
+                margin-bottom: 13.0rem !important;
             }
         </style>
     </head>
@@ -37,9 +51,14 @@
     <body class="bg-light">
 
         <!-- Get Header -->
-        <?php
-            $Aider->getUI()->getDashboard()->getHeader();
-        ?>
+        <div class="container-fluid fixed-top mt-4">
+            <div class="row">
+                <div class="col-2">
+                    <i class="fas fa-chevron-circle-left fa-2x text-light float-right" id="btn-back"></i>
+                </div>
+                <div class="col-10 bg-transparent"></div>
+            </div>
+        </div>
 
 
 
@@ -76,65 +95,101 @@
             </div>
         </div>
         <!-- Main Content -->
-        <div class="container mb-5">
+
+        <!-- START: Delivery & Parcel Details -->
+        <div class="container mb-7 fixed-bottom" id="container-details" style="display: none;">
             <div class="row">
                 <div class="col-1"></div>
                 <div class="col-10">
-                    <div class="row">
+                    <div class="row rounded bg-white p-0">
                         <div class="col-12">
-                            <input id="pickUpSearch" type="text" class="form-control mt-5" placeholder="Pick Up Location" required/>
-                        </div>
-
-                        <div class="col-6 mt-1 pr-1">
-                            <input id="pickup-details-name" type="text" class="form-control" placeholder="Name (optional)"/>
-                        </div>
-                        <div class="col-6 mt-1 pl-1">
-                            <input id="pickup-details-phonenum" type="text" class="form-control" placeholder="Phone Number (optional)"/>
-                        </div>
-
-                        <div class="col-12 mt-5">
-                            <input id="dropOffSearch" type="text" class="form-control" placeholder="Drop Off Location" required/>
-                        </div>
-
-                        <div class="col-6 mt-1 pr-1">
-                            <input id="dropoff-details-name" type="text" class="form-control" placeholder="Name (optional)"/>
-                        </div>
-                        <div class="col-6 mt-1 pl-1">
-                            <input id="dropoff-details-phonenum" type="text" class="form-control" placeholder="Phone Number (optional)"/>
-                        </div>
-                        <div class="col-12 rounded mt-4 mb-5" style="background: #cce4ff;">
-                            <h4 class="text-center" id="text-price">RM 0.00 <span id="text-distance"></span></h4>
-                            <button class="btn btn-primary w-100 mb-3" id="btn-deliver">Deliver Now</button>
+                            <h5 class="text-center mt-2 mb-4 text-dark">Contact Details</h5>
+                            <div class="row">
+                                <div class="col-12">
+                                    <h6>Pick Up</h6>
+                                    <input id="pickup-details-name" type="text" class="form-control" placeholder="Name (optional)"/>
+                                    <input id="pickup-details-phonenum" type="text" class="form-control mt-1" placeholder="Phone Number (optional)"/>
+                                </div>
+                            </div>
+                            <hr class="mt-2 mb-2"/>
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h6>Drop Off</h6>
+                                    <input id="dropoff-details-name" type="text" class="form-control" placeholder="Name (optional)"/>
+                                    <input id="dropoff-details-phonenum" type="text" class="form-control mt-1" placeholder="Phone Number (optional)"/>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-1"></div>
             </div>
         </div>
+        <!-- END: Delivery & Parcel Details -->
+
+        <!-- START: Location Search -->
+        <div class="container mb-5 fixed-bottom" style="z-index: 0;" id="container-location">
+            <div class="row">
+                <div class="col-1"></div>
+                <div class="col-10">
+                    <div class="row rounded bg-white p-0">
+                        <div class="col-12">
+                            <div class="row mb-n2">
+                                <div class="col-2 mt-3 text-center">
+                                    <i class="far fa-dot-circle fa-lg text-primary"></i>
+                                </div>
+                                <div class="col-10">
+                                    <input id="pickUpSearch" type="text" class="form-control mt-2 border-0 shadow-none" placeholder="Pick Up Location" required/>
+                                </div>
+                            </div>
+
+                            <div class="row h-25">
+                                <div class="col-2 text-center mt-1">
+                                    <i class="fas fa-ellipsis-v text-black-50 fa-sm"></i>
+                                </div>
+                                <div class="col-9"><hr/></div>
+                                <div class="col-1"></div>
+                            </div>
+
+                            <div class="row mt-n1">
+                                <div class="col-2 mt-2 text-center">
+                                    <i class="fas fa-map-marker-alt fa-lg text-danger"></i>
+                                </div>
+                                <div class="col-10">
+                                    <input id="dropOffSearch" type="text" class="form-control mb-2 border-0 shadow-none" placeholder="Drop Off Location" required/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-1"></div>
+            </div>
+        </div>
+        <!-- END: Location Search -->
+
+        <!-- START: Deliver Button -->
+        <div class="container mb-3 fixed-bottom" id="container-btn-deliver" style="display: none;">
+            <div class="row">
+                <div class="col-1"></div>
+                <div class="col-10 p-0">
+                    <button class="btn btn-light rounded w-100 bg-white" id="btn-continue">
+                        Continue
+                    </button>
+                    <button class="btn btn-light rounded w-100 bg-white" id="btn-deliver" style="display: none;">
+                        Deliver Now <h6 id="text-price">RM 0.00 <span id='text-distance'>(0 km)</span></h6>
+                    </button>
+                </div>
+                <div class="col-1"></div>
+            </div>
+        </div>
+        <!-- END: Deliver Button -->
+
 
         <!-- START: Toast Messages Area -->
-
         <div class="toast-container">
 
         </div>
         <!-- END: Toast Messages Area -->
-
-        <div class="container-fluid bg-dark fixed-bottom rounded-top" style="height: 10%;">
-            <div class="row text-center">
-                <a href="" class="col-4 text-decoration-none pt-2">
-                    <i class="fas fa-utensils fa-lg"></i>
-                    <span class="navbar-brand text-primary d-block m-0">Food</span>
-                </a>
-                <a href="" class="col-4 text-decoration-none pt-2">
-                    <i class="far fa-user fa-lg"></i>
-                    <span class="navbar-brand text-primary d-block m-0">My Account</span>
-                </a>
-                <a href="" class="col-4 text-decoration-none pt-2">
-                    <i class="fas fa-box fa-lg"></i>
-                    <span class="navbar-brand text-primary d-block m-0">Parcel</span>
-                </a>
-            </div>
-        </div>
 
 
         <?php
@@ -151,6 +206,7 @@
                     center: {lat: 3.139, lng: 101.547},
                     zoom: 10,
                     disableDefaultUI: true
+
                 });
 
                 pickUp = document.getElementById('pickUpSearch');
@@ -224,8 +280,25 @@
                                     var distanceNum = distance.replace(' km','');
 
                                     price = 5 + (1.5 * distanceNum);
-                                    $('#text-price').html("RM " + price.toFixed(2) + " <span id='text-distance'></span>");
-                                    $('#text-distance').text("(" + distance + ")");
+
+                                    let pickUpLocationVal = $('#pickUpSearch').val();
+                                    let dropOffLocationVal = $('#dropOffSearch').val();
+
+                                    if(pickUpLocationVal && dropOffLocationVal) {
+                                        $('#text-price').html("RM " + price.toFixed(2) + " <span id='text-distance'></span>");
+                                        $('#text-distance').text("(" + distance + ")");
+
+                                        $('#container-location').removeClass('mb-5').addClass('mb-6', 100);
+                                        $('#container-btn-deliver').slideDown('fast');
+
+                                        $('#container-btn-deliver').click(function() {
+                                            $('#btn-continue').hide();
+                                            $('#btn-deliver').show();
+                                            $('#container-details').slideDown();
+
+                                        });
+
+                                    }
                                 }
                             });
                         // END: Find Distance and Set Price (Origin Click)
@@ -287,8 +360,25 @@
                                     var distanceNum = distance.replace(' km','');
 
                                     price = 5 + (1.5 * distanceNum);
-                                    $('#text-price').html("RM " + price.toFixed(2) + " <span id='text-distance'></span>");
-                                    $('#text-distance').text("(" + distance + ")");
+
+                                    let pickUpLocationVal = $('#pickUpSearch').val();
+                                    let dropOffLocationVal = $('#dropOffSearch').val();
+
+                                    if(pickUpLocationVal && dropOffLocationVal) {
+                                        $('#text-price').html("RM " + price.toFixed(2) + " <span id='text-distance'></span>");
+                                        $('#text-distance').text("(" + distance + ")");
+
+                                        $('#container-location').removeClass('mb-5').addClass('mb-6', 100);
+                                        $('#container-btn-deliver').slideDown('fast');
+
+                                        $('#container-btn-deliver').click(function() {
+                                            $('#btn-continue').hide();
+                                            $('#btn-deliver').show();
+                                            $('#container-details').slideDown();
+
+                                        });
+
+                                    }
                                 }
                             });
                         // END: Find Distance and Set Price (Destination Click)
@@ -296,15 +386,10 @@
                 });
             }
 
-            $(document).ready(function(){
-                setTimeout(function() {
-                    $(".alert").alert('close');
-                }, 2000);
-
-                $('.toast').toast({
-                    delay: 3500
+            $(document).ready(function() {
+                $('#btn-back').click(function() {
+                    window.location.href = "home.php";
                 });
-                $('.toast').toast('show');
 
                 getDashboardJS();
                 getParcelDashboardJS();
