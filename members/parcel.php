@@ -229,8 +229,10 @@
 
                 autocompletePickUp.addListener('place_changed', function () {
                     var place = autocompletePickUp.getPlace();
+
                     latOri = place.geometry.location.lat();
                     lngOri = place.geometry.location.lng();
+
                     coordsOri = {lat: latOri, lng: lngOri};
 
                     if(latDest !== -999 && lngDest !== -999) {

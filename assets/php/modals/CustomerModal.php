@@ -139,11 +139,14 @@ class CustomerModal {
                         <tbody>";
             $response['error'] = false;
             while($row = $statement->fetch_assoc()) {
+                $pickUpLoc = explode(",", $row['Pickup_Location']);
+                $dropOffLoc = explode(",", $row['Dropoff_Location']);
+
                 $response['data'] .= "<tr>
                                 <th scope=\"row\">" . $row['ID'] . "</th>
                                 <th>Parcel</th>
-                                <th>" . $row['Pickup_Location'] . "</th>
-                                <th>" . $row['Dropoff_Location'] . "</th>
+                                <th>" . $pickUpLoc[0] . "</th>
+                                <th>" . $dropOffLoc[0] . "</th>
                                 <th>" . $row['Price'] . "</th>
                             </tr>";
             }

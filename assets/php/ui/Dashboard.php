@@ -24,7 +24,8 @@ class Dashboard {
         $active[3] = "text-black-50";
         $active[$id] = "";
 
-        echo "<div class=\"container bg-white pt-1 fixed-bottom rounded border-top\" style=\"border-color: rgba(0, 0, 0, 0.5);\">
+        echo "<div class='bg-white w-100 fixed-bottom rounded border-top' style='border-color: rgba(0, 0, 0, 0.5);'>
+        <div class=\"container bg-white pt-1\">
             <div class=\"row\">
                 <div class=\"col-4 text-center\">
                     <a class='text-decoration-none " . $active[1] . "' href=\"home.php\">
@@ -49,7 +50,8 @@ class Dashboard {
                     </a>
                 </div>
             </div>
-        </div>";
+        </div>
+    </div>";
     }
 
     function getFirstTimePasswordChangeModal() {

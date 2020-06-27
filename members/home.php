@@ -24,8 +24,8 @@
     <body class="bg-light">
 
         <!-- Header -->
-        <div class="bg-primary" style="top: 0 !important; height: 40px;">
-            <h5 class="pt-2 text-white text-uppercase text-center"><?php echo SITE_NAME; ?></h5>
+        <div class="bg-primary" style="top: 0 !important; height: 60px;">
+            <h4 class="pt-4 text-white text-uppercase text-center"><?php echo SITE_NAME; ?></h4>
         </div>
 
         <!-- Modal: First Time Login - Change Password -->

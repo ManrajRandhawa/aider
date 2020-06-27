@@ -29,55 +29,57 @@
             $Aider->getUI()->getDashboard()->getFirstTimePasswordChangeModal();
         ?>
 
-        <!-- Header: 1st View -->
-        <div class="container bg-light" id="payment-container-top-v1">
-            <div class="row">
-                <div class="col-12 mt-3">
-                    <h3 class="font-weight-bold">Payment</h3>
-                </div>
+        <div class="bg-light">
+            <!-- Header: 1st View -->
+            <div class="container bg-light" id="payment-container-top-v1">
+                <div class="row">
+                    <div class="col-12 mt-3">
+                        <h3 class="font-weight-bold">Payment</h3>
+                    </div>
 
-                <div class="col-12 mt-4 mb-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title text-primary font-weight-bold">Wallet Balance</h5>
-                            <h6>RM <span class="h3 font-weight-bold" id="wallet-balance">0.00</span></h6>
-                        </div>
-                        <div class="card-footer bg-white" id="top-up-wallet">
-                                <span class="card-text text-dark h6">Top-up wallet balance</span>
-                                <span class="float-right"><i class="fas fa-chevron-right"></i></span>
+                    <div class="col-12 mt-4 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary font-weight-bold">Wallet Balance</h5>
+                                <h6>RM <span class="h3 font-weight-bold" id="wallet-balance">0.00</span></h6>
+                            </div>
+                            <div class="card-footer bg-white" id="top-up-wallet">
+                                    <span class="card-text text-dark h6">Top-up wallet balance</span>
+                                    <span class="float-right"><i class="fas fa-chevron-right"></i></span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Header: 2nd View -->
-        <div class="container bg-light min-vh-100 d-none" id="payment-container-top-v2">
-            <div class="row">
-                <div class="col-12 mt-3">
-                    <i class="fas fa-chevron-left fa-lg mb-1" id="btn-back"></i>
-                    <span class="h3 font-weight-bold ml-4">Payment <span class="h5 font-weight-bold">> Top-Up</span></span>
-                </div>
-
-                <div class="col-12 mt-4 mb-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title text-primary font-weight-bold">Enter a top-up value (RM)</h5>
-                            <div class="input-group input-group-lg mb-3">
-                                <input type="number" class="form-control" placeholder="Enter an amount (RM)">
-                            </div>
-
-                            <select title="Select a bank" class="selectpicker w-100">
-                                <option data-thumbnail="images/icon-chrome.png">Chrome</option>
-                                <option data-thumbnail="images/icon-firefox.png">Firefox</option>
-                                <option data-thumbnail="images/icon-ie.png">IE</option>
-                                <option data-thumbnail="images/icon-opera.png">Opera</option>
-                                <option data-thumbnail="images/icon-safari.png">Safari</option>
-                            </select>
-                        </div>
+            <!-- Header: 2nd View -->
+            <div class="container bg-light min-vh-100 d-none" id="payment-container-top-v2">
+                <div class="row">
+                    <div class="col-12 mt-3">
+                        <i class="fas fa-chevron-left fa-lg mb-1" id="btn-back"></i>
+                        <span class="h3 font-weight-bold ml-4">Payment <span class="h5 font-weight-bold">> Top-Up</span></span>
                     </div>
 
-                    <button class="btn btn-primary btn-lg w-100 mt-4">Confirm</button>
+                    <div class="col-12 mt-4 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary font-weight-bold">Enter a top-up value (RM)</h5>
+                                <div class="input-group input-group-lg mb-3">
+                                    <input type="number" class="form-control" placeholder="Enter an amount (RM)">
+                                </div>
+
+                                <select title="Select a bank" class="selectpicker w-100">
+                                    <option data-thumbnail="images/icon-chrome.png">Chrome</option>
+                                    <option data-thumbnail="images/icon-firefox.png">Firefox</option>
+                                    <option data-thumbnail="images/icon-ie.png">IE</option>
+                                    <option data-thumbnail="images/icon-opera.png">Opera</option>
+                                    <option data-thumbnail="images/icon-safari.png">Safari</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary btn-lg w-100 mt-4">Confirm</button>
+                    </div>
                 </div>
             </div>
         </div>
