@@ -13,7 +13,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, shrink-to-fit=no, user-scalable=no">
 
-        <title><?php echo SITE_NAME; ?> | Sign In</title>
+        <title><?php echo SITE_NAME; ?> Rider | Sign In</title>
 
         <script src="../assets/js/Credentials.js"></script>
         <script>
@@ -59,7 +59,7 @@
                             <button name="btn-login" class="btn btn-outline-primary btn-block mt-5">Sign In</button>
                         </form>
 
-                        <h6 class="text-center mt-3">New to Aider? <a href="signup.php" class="text-primary">Create an account.</a></h6>
+                        <h6 class="text-center mt-3">Want to become an Aider Rider? <a href="apply.php" class="text-primary">Apply now.</a></h6>
                     </div>
                 </div>
             </div>
@@ -71,13 +71,14 @@
                     $email = $_POST['user-email'];
                     $pswd = $_POST['user-pswd'];
 
-                    $response = $Aider->getCredentials()->getLogin()->loginCustomer($email, $pswd);
+                    $response = $Aider->getUserModal()->getRiderModal()->loginRider($email, $pswd);
 
                     if(!$response['error']) {
                         echo "
                             <script>
+                                window.localStorage.clear();
                                 window.localStorage.setItem('User_Email', '" . $response['email'] . "');
-                                window.location.href = 'index.php';
+                                window.location.href = 'home.php';
                             </script>";
                     } else {
                         echo $Aider->getAlerts()->sendToastCredentials("Oops! Something went wrong.", $response['message']);

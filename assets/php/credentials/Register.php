@@ -89,7 +89,7 @@ class Register {
         return $response;
     }
 
-    private function generatePassword() {
+    function generatePassword() {
         $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890?@!&$%#';
         $pass = array(); //remember to declare $pass as an array
         $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache

@@ -102,7 +102,7 @@ class CustomerModal {
         return $response;
     }
 
-    private function crosscheckPassword($pswd, $cpswd) {
+    function crosscheckPassword($pswd, $cpswd) {
         if($pswd === $cpswd) {
             $response['error'] = false;
         } else {

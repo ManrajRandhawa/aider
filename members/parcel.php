@@ -64,30 +64,9 @@
 
 
         <!-- Modal: First Time Login - Change Password -->
-        <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="changePasswordModalLabel">Set a new password.</h5>
-                    </div>
-                    <div class="modal-body">
-                        <form method="post">
-                            <div class="form-group">
-                                <label for="pass" class="col-form-label">Password:</label>
-                                <input type="password" class="form-control" name="pswd" id="pass">
-                            </div>
-                            <div class="form-group">
-                                <label for="confirm-pass" class="col-form-label">Confirm Password:</label>
-                                <input type="password" class="form-control" name="confirm-pswd" id="confirm-pass">
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" id="change-pass-btn">Change Password</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <?php
+            $Aider->getUI()->getDashboard()->getFirstTimePasswordChangeModal();
+        ?>
 
         <div class="map-row">
             <div class="map-col-12">
@@ -195,10 +174,14 @@
         <?php
             echo $Aider->getUI()->getBootstrapScripts();
         ?>
+        <script src="../assets/js/AiderEvents.js"></script>
         <script src="../assets/js/Dashboard.js"></script>
         <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQHLdxkQcezk4kKWaX219nHla2xUHJ274&libraries=places&callback=initMap"></script>
 
         <script>
+            let basefare;
+            let priceperkm;
+
             function initMap() {
                 let map, pickUp, autocompletePickUp, dropOff, autocompleteDropOff;
 
@@ -281,7 +264,8 @@
 
                                     var distanceNum = distance.replace(' km','');
 
-                                    price = 5 + (1.5 * distanceNum);
+                                    price = basefare + (priceperkm * distanceNum);
+                                    price = parseFloat(price);
 
                                     let pickUpLocationVal = $('#pickUpSearch').val();
                                     let dropOffLocationVal = $('#dropOffSearch').val();
@@ -361,7 +345,8 @@
 
                                     var distanceNum = distance.replace(' km','');
 
-                                    price = 5 + (1.5 * distanceNum);
+                                    price = basefare + (priceperkm * distanceNum);
+                                    price = parseFloat(price);
 
                                     let pickUpLocationVal = $('#pickUpSearch').val();
                                     let dropOffLocationVal = $('#dropOffSearch').val();
@@ -389,6 +374,28 @@
             }
 
             $(document).ready(function() {
+                // Get Pricing Details
+                $.ajax({
+                    url: "../assets/php/ajax/admin/getSettingsInformation.php",
+                    method: "POST",
+                    cache: false,
+                    data: {Settings_Info: "Base_Fare"},
+                    success: function(data){
+                        basefare = parseFloat(data);
+                    }
+                });
+
+                $.ajax({
+                    url: "../assets/php/ajax/admin/getSettingsInformation.php",
+                    method: "POST",
+                    cache: false,
+                    data: {Settings_Info: "Price_Per_KM"},
+                    success: function(data){
+                        priceperkm = parseFloat(data);
+                    }
+                });
+
+
                 $('#btn-back').click(function() {
                     window.location.href = "home.php";
                 });

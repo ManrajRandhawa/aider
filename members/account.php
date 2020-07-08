@@ -23,14 +23,17 @@
 
     <body class="bg-white">
 
-        <!-- Header -->
-        <div class="container bg-light">
-            <div class="row">
-                <div class="col-12 mt-3 mb-4">
-                    <h3 class="font-weight-bold">Account</h3>
+        <div class="bg-light">
+            <!-- Header -->
+            <div class="container bg-light">
+                <div class="row">
+                    <div class="col-12 mt-3 mb-4">
+                        <h3 class="font-weight-bold">Account</h3>
+                    </div>
                 </div>
             </div>
         </div>
+
 
         <!-- Modal: First Time Login - Change Password -->
         <?php

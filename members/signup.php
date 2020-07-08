@@ -58,10 +58,10 @@
                             <div class="input-group mt-3">
                                 <input type="text" class="form-control" name="user-phone-num" placeholder="Phone Number (e.g. 0122233445)" required />
                             </div>
-                            <button name="btn-reg" id="btn-reg" class="btn btn-outline-primary btn-block mt-5">Register</button>
+                            <button name="btn-reg" id="btn-reg" class="btn btn-outline-primary btn-block mt-5">Sign Up</button>
                         </form>
 
-                        <h6 class="text-center mt-3">Already have an account? <a href="signin.php" class="text-primary">Log in.</a></h6>
+                        <h6 class="text-center mt-3">Already have an account? <a href="signin.php" class="text-primary">Sign in.</a></h6>
                     </div>
                 </div>
             </div>

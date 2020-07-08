@@ -3,6 +3,42 @@
 
 class AdminModal {
 
+    function loginCustomer($email, $pswd) {
+        $pswdHash = "";
+
+        $Aider = new Aider();
+
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        $sql = "SELECT * FROM aider_user_admin WHERE Email_Address = '$email'";
+
+        $statement = $connection->query($sql);
+
+        if($statement->num_rows > 0) {
+
+            while($row = $statement->fetch_assoc()) {
+                $pswdHash = $row["Password_Hash"];
+            }
+
+            if(password_verify($pswd, $pswdHash)) {
+                $response['error'] = false;
+                $response['email'] = $email;
+            } else {
+                $response['error'] = true;
+                $response['message'] = "The password entered is incorrect.";
+            }
+        } else {
+            $response['error'] = true;
+            $response['message'] = "There is no user registered with that email.";
+        }
+
+        $statement->close();
+        $connection->close();
+
+        return $response;
+    }
+
     function addNewAdmin($name, $email, $pswd) {
         $dupEmails = $this->checkDuplicateEmails($email);
 
@@ -52,6 +88,9 @@ class AdminModal {
             $response['message'] = "There was an error while trying to connect to the database.";
         }
 
+        $statement->close();
+        $connection->close();
+
         return $response;
     }
 
@@ -71,6 +110,9 @@ class AdminModal {
             $response['error'] = true;
             $response['message'] = "There was an error while trying to connect to the database.";
         }
+
+        $statement->close();
+        $connection->close();
 
         return $response;
     }
@@ -92,6 +134,50 @@ class AdminModal {
 
         $statement->close();
         $connection->close();
+
+        return $response;
+    }
+
+    function getSettingsInformation($info) {
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        $sql = "SELECT * FROM aider_settings WHERE ID=1";
+        $statement = $connection->query($sql);
+
+        if($statement->num_rows > 0) {
+            $response['error'] = false;
+            while($row = $statement->fetch_assoc()) {
+                $response['data'] = $row[$info];
+            }
+        } else {
+            $response['error'] = true;
+            $response['message'] = "There was an error while trying to connect to the database.";
+        }
+
+        $statement->close();
+        $connection->close();
+
+        return $response;
+    }
+
+    function updateSettingsInformation($info, $value, $isNumber) {
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        if($isNumber === true) {
+            $sql = "UPDATE aider_settings SET $info = $value WHERE ID=1";
+        } else {
+            $sql = "UPDATE aider_settings SET $info = '$value' WHERE ID=1";
+        }
+
+        $statement = $connection->query($sql);
+
+        if($statement) {
+            $response['error'] = false;
+        } else {
+            $response['error'] = true;
+        }
 
         return $response;
     }

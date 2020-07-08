@@ -27,9 +27,7 @@ include_once $_SERVER['DOCUMENT_ROOT'] . ROOT_DIR . '/assets/php/credentials/Cre
 class Aider {
 
     function __construct() {
-        if(session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
+
     }
 
     function getAlerts() {
