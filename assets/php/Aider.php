@@ -13,6 +13,7 @@ include_once $_SERVER['DOCUMENT_ROOT'] . ROOT_DIR . '/assets/php/modals/Customer
 include_once $_SERVER['DOCUMENT_ROOT'] . ROOT_DIR . '/assets/php/modals/MerchantModal.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . ROOT_DIR . '/assets/php/modals/RiderModal.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . ROOT_DIR . '/assets/php/modals/ParcelModal.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . ROOT_DIR . '/assets/php/modals/OrderModal.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . ROOT_DIR . '/assets/php/modals/UserModal.php';
 
 // UI

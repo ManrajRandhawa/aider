@@ -1,3 +1,4 @@
 <?php
 
 DEFINE("SITE_NAME", "Aider");
+DEFINE("MAP_API_KEY", "AIzaSyBQHLdxkQcezk4kKWaX219nHla2xUHJ274");

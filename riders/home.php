@@ -71,11 +71,20 @@
                     <div class="row rounded bg-white pt-3 pb-2">
                         <div class="col-12 text-break">
                             <!-- Type of Delivery -->
-                            <h6 class="font-weight-bold text-center" id="delivery-type">Food/Parcel Delivery</h6>
+                            <h6 class="font-weight-bold text-white text-center bg-primary rounded pt-2 pb-2 ml-5 mr-5" id="delivery-type">Food/Parcel Delivery</h6>
+                            <hr class="ml-5 mr-5"/>
 
                             <!-- Restaurant Address -->
-                            <h6 class="mt-4 font-weight-bold" id="pickUpLoc-primary"></h6>
-                            <h6 class="mb-3" id="pickUpLoc-secondary"></h6>
+                            <div class="text-center">
+                                <h6 class="mt-4 font-weight-bold text-success" id="pickUpLoc-primary"></h6>
+                                <h6 class="mb-3" id="pickUpLoc-secondary"></h6>
+
+                                <i class="fas fa-angle-double-down fa-lg text-success"></i>
+
+                                <h6 class="mt-4 font-weight-bold text-success" id="dropOffLoc-primary"></h6>
+                                <h6 class="mb-3" id="dropOffLoc-secondary"></h6>
+                            </div>
+
 
                             <hr/>
 
@@ -92,7 +101,7 @@
                             <!-- Pick-up Timer -->
                             <div class="row">
                                 <div class="col-6">
-                                    <h5 class="font-weight-bold float-left">Pick-up in</h5>
+                                    <h5 class="font-weight-bold float-left">ETA</h5>
                                 </div>
                                 <div class="col-6">
                                     <h5 class="float-right text-success">
@@ -105,20 +114,11 @@
                             <hr/>
 
                             <!-- Order Details -->
-                            <div class="row">
-                                <div class="col-6">
-                                    <h6 class="font-weight-bold float-left">Order</h6>
-                                </div>
-                                <div class="col-6">
-                                    <h6 class="float-right text-muted">
-                                        <span id="order-details">
+                            <div class="row" id="order-details">
 
-                                        </span>
-                                    </h6>
-                                </div>
                             </div>
 
-                            <hr/>
+                            <hr class="d-none" id="food-divider"/>
 
                             <!-- Pricing Details -->
                             <div class="row">
@@ -136,10 +136,10 @@
                             <!-- Buttons -->
                             <div class="row mt-4 mb-3">
                                 <div class="col-4 pr-1">
-                                    <button class="btn btn-outline-dark btn-lg w-100">Cancel</button>
+                                    <button class="btn btn-outline-dark btn-lg w-100" id="reject-order">Cancel</button>
                                 </div>
                                 <div class="col-8 pl-1">
-                                    <button class="btn btn-success btn-lg w-100">Accept Order in <span id="time-left">00:30</span></button>
+                                    <button class="btn btn-success btn-lg w-100" id="accept-order">Accept in <span id="time-left">00:30</span></button>
                                 </div>
                             </div>
 
@@ -222,11 +222,11 @@
             echo $Aider->getUI()->getBootstrapScripts();
         ?>
         <script src="../assets/js/Rider.js"></script>
-        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQHLdxkQcezk4kKWaX219nHla2xUHJ274&libraries=places&callback=initMap"></script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=<?php echo MAP_API_KEY; ?>&libraries=places&callback=initMap"></script>
 
         <script>
             function initMap() {
-                let map, pickUp, autocompletePickUp, dropOff, autocompleteDropOff;
+                let map;
 
                 map = new google.maps.Map(document.getElementById('map'), {
                     center: {lat: 3.139, lng: 101.547},

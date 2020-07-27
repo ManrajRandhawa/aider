@@ -23,4 +23,8 @@ class UserModal {
         return new ParcelModal();
     }
 
+    function getOrderModal() {
+        return new OrderModal();
+    }
+
 }

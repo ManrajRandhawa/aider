@@ -14,6 +14,7 @@ function getWaitingListDashboard() {
             }
         });
 
+        // Approve Rider from Waiting List
         $('#approve-btn').click(function() {
             let emailApprove = $('.btn-approve').attr('id');
 
@@ -110,7 +111,7 @@ function getSettingsDashboard() {
     } else {
         let user_email = window.localStorage.getItem("User_Email");
 
-        // Display Pricing Settings
+        // START: Display Pricing Settings
         $.ajax({
             url: "../assets/php/ajax/admin/getSettingsInformation.php",
             method: "POST",
@@ -130,7 +131,19 @@ function getSettingsDashboard() {
                 $('#per-km-price').val(data);
             }
         });
+        // END: Display Pricing Settings
 
+        // START: Display Rider Details
+        $.ajax({
+            url: "../assets/php/ajax/admin/getSettingsInformation.php",
+            method: "POST",
+            cache: false,
+            data: {Settings_Info: "Maximum_Radius_KM"},
+            success: function(data){
+                $('#max-rad-km').val(data);
+            }
+        });
+        // END: Display Rider Details
 
         // START: [Settings] Pricing - Save Button
         $('#save-pricing').click(function() {
@@ -189,6 +202,52 @@ function getSettingsDashboard() {
                 }
             });
         });
+        // END: [Settings] Pricing - Save Button
 
+        // START: [Settings] Rider - Save Button
+        $('#save-rider').click(function() {
+
+            let error = false;
+
+            // STEP 1: Update Base Fare
+            $.ajax({
+                url: "../assets/php/ajax/admin/updateSettingsInformation.php",
+                method: "POST",
+                cache: false,
+                data: {Settings_Info: "Maximum_Radius_KM", Settings_Value: $('#max-rad-km').val(), isNumber: true},
+                success: function(data){
+                    if(data === "YES") {
+                        error = true;
+                    }
+                }
+            });
+
+            // STEP 2: Display Toast Message
+            let pricingToastTitle, pricingToastMessage;
+            if(error) {
+                pricingToastTitle = "An error occurred!";
+                pricingToastMessage = "There was an issue while trying to update the pricing settings.";
+            } else {
+                pricingToastTitle = "Settings Updated!";
+                pricingToastMessage = "The rider settings has been updated.";
+            }
+
+            // Display Toast Message
+            $.ajax({
+                url: "../assets/php/ajax/ui/sendToastMessage.php",
+                method: "POST",
+                cache: false,
+                data: {Title: pricingToastTitle, Message: pricingToastMessage},
+                success: function(dataToast){
+                    $('.toast-container').html(dataToast);
+                    $('.toast').toast('show');
+
+                    setTimeout(function() {
+                        $('.toast-container').html("");
+                    }, 5000);
+                }
+            });
+        });
+        // END: [Settings] Rider - Save Button
     }
 }

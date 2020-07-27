@@ -56,6 +56,19 @@
                         <button class="btn btn-dark float-right" id="save-pricing">Save</button>
                     </div>
                 </div>
+
+                <div class="col-12 mt-3">
+                    <div class="border border-dark rounded pt-3 pr-3 pl-3 pb-5">
+                        <h5 class="font-weight-bold mb-3">Rider</h5>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="max-rad">Maximum Radius (KM)</span>
+                            </div>
+                            <input type="number" id="max-rad-km" class="form-control" aria-describedby="max-rad" />
+                        </div>
+                        <button class="btn btn-dark float-right" id="save-rider">Save</button>
+                    </div>
+                </div>
             </div>
         </div>
 

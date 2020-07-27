@@ -176,7 +176,7 @@
         ?>
         <script src="../assets/js/AiderEvents.js"></script>
         <script src="../assets/js/Dashboard.js"></script>
-        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQHLdxkQcezk4kKWaX219nHla2xUHJ274&libraries=places&callback=initMap"></script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=<?php echo MAP_API_KEY; ?>&libraries=places&callback=initMap"></script>
 
         <script>
             let basefare;
