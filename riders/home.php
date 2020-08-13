@@ -134,12 +134,12 @@
                             </div>
 
                             <!-- Buttons -->
-                            <div class="row mt-4 mb-3">
+                            <div class="row mt-4 mb-3" id="btn-row">
                                 <div class="col-4 pr-1">
                                     <button class="btn btn-outline-dark btn-lg w-100" id="reject-order">Cancel</button>
                                 </div>
-                                <div class="col-8 pl-1">
-                                    <button class="btn btn-success btn-lg w-100" id="accept-order">Accept in <span id="time-left">00:30</span></button>
+                                <div class="col-8 pl-1" id="accept-order-container">
+                                    <button class="btn btn-success btn-lg w-100" id="accept-order" value="">Accept in <span id="time-left">00:30</span></button>
                                 </div>
                             </div>
 
@@ -150,20 +150,75 @@
         </div>
         <!-- END: Order Layout -->
 
-        <!-- START: Bottom Navigation -->
-        <div class="container mb-4 fixed-bottom" style="z-index: 0;" id="container-location">
-            <!--
-            <div class="row mb-2">
-                <div class="col-9"></div>
-                <div class="col-1">
-                    <i class="far fa-compass fa-3x bg-white rounded-circle p-2"></i>
-                </div>
-                <div class="col-1"></div>
-            </div>
-            -->
+        <!-- START: Mode: Heading to Pickup Location Layout -->
+        <div class="container mb-6 fixed-bottom d-none" style="z-index: 0;" id="rider-navigation-riding-1-content">
             <div class="row">
                 <div class="col-12 ml-2" style="max-width: 96vw;">
                     <div class="row rounded bg-white pt-3 pb-2">
+                        <div class="col-12 text-break">
+                            <div class="row">
+                                <div class="col-10">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <h6 class="font-weight-bold float-left text-success" id="riding-1-content-loc-1"></h6>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <h6 class="text-muted" id="riding-1-content-loc-2"></h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-2" id="riding-1-content-loc-btn">
+                                    <a href="">
+                                        <i class="mt-2 mr-3 fas fa-location-arrow fa-lg text-success"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END: Mode: Heading to Pickup Location Layout -->
+
+        <!-- START: Mode: Heading to Destination Location Layout -->
+        <div class="container mb-6 fixed-bottom d-none" style="z-index: 0;" id="rider-navigation-riding-2-content">
+            <div class="row">
+                <div class="col-12 ml-2" style="max-width: 96vw;">
+                    <div class="row rounded bg-white pt-3 pb-2">
+                        <div class="col-12 text-break">
+                            <div class="row">
+                                <div class="col-10">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <h6 class="font-weight-bold float-left text-success" id="riding-2-content-loc-1"></h6>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <h6 class="text-muted" id="riding-2-content-loc-2"></h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-2" id="riding-2-content-loc-btn">
+                                    <a href="">
+                                        <i class="mt-2 mr-3 fas fa-location-arrow fa-lg text-success"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END: Mode: Heading to Destination Location Layout -->
+
+        <!-- START: Bottom Navigation -->
+        <div class="container mb-4 fixed-bottom" style="z-index: 0;" id="container-location">
+            <div class="row">
+                <div class="col-12 ml-2" style="max-width: 96vw;">
+                    <div class="row rounded bg-white pt-3 pb-2" id="rider-navigation-main">
                         <div class="col-3 text-center">
                             <span>
                                 <i class="fas fa-coins fa-lg text-primary"></i>
@@ -188,27 +243,42 @@
                             </span>
                         </div>
                     </div>
+                    <div class="row rounded bg-white pt-2 pb-2 d-none" id="rider-navigation-riding-1">
+                        <div class="col-12 text-center">
+                            <!-- Arrived at Pickup Location Button -->
+                            <button class="btn btn-success w-100" id="btn-arrived-pickup">
+                                <span>I have arrived at the Pickup Location</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row rounded bg-white pt-2 pb-2 d-none" id="rider-navigation-riding-2">
+                        <div class="col-12 text-center">
+                            <!-- Arrived at Pickup Location Button -->
+                            <button class="btn btn-success w-100" id="btn-arrived-destination">
+                                <span>I have arrived at the Destination Location</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row rounded bg-white pt-2 pb-2 d-none" id="rider-navigation-riding-3">
+                        <div class="col-12 text-center">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h5 class="font-weight-bold text-center">
+                                        <i class="fas fa-map-marked-alt fa-lg text-primary mr-3 mt-2"></i>
+                                        Order Completed
+                                    </h5>
+
+                                    <hr class="mr-3 ml-3"/>
+
+                                    <button class="btn btn-primary btn-lg w-100 mt-2" id="rider-navigation-riding-3-btn">Continue</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         <!-- END: Bottom Navigation -->
-
-        <!-- START: Deliver Button -->
-        <div class="container mb-3 fixed-bottom" id="container-btn-deliver" style="display: none;">
-            <div class="row">
-                <div class="col-1"></div>
-                <div class="col-10 p-0">
-                    <button class="btn btn-light rounded w-100 bg-white" id="btn-continue">
-                        Continue
-                    </button>
-                    <button class="btn btn-light rounded w-100 bg-white" id="btn-deliver" style="display: none;">
-                        Deliver Now <h6 id="text-price">RM 0.00 <span id='text-distance'>(0 km)</span></h6>
-                    </button>
-                </div>
-                <div class="col-1"></div>
-            </div>
-        </div>
-        <!-- END: Deliver Button -->
 
 
         <!-- START: Toast Messages Area -->
@@ -222,6 +292,8 @@
             echo $Aider->getUI()->getBootstrapScripts();
         ?>
         <script src="../assets/js/Rider.js"></script>
+        <script src="../assets/js/Rider/RiderLogic.js"></script>
+
         <script async defer src="https://maps.googleapis.com/maps/api/js?key=<?php echo MAP_API_KEY; ?>&libraries=places&callback=initMap"></script>
 
         <script>

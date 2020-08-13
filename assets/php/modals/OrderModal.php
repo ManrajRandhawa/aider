@@ -171,7 +171,7 @@ class OrderModal {
             $tableName = "aider_transaction_food";
         }
 
-        $sql = "UPDATE $tableName SET Rider_ID = " . intval($Rider_ID). ", `Status` = 'RIDER-FOUND' WHERE ID = $OrderID";
+        $sql = "UPDATE $tableName SET Rider_ID = " . intval($Rider_ID). ", `Status` = 'RIDER-FOUND' WHERE ID = " . intval($OrderID);
 
         $statement = $connection->query($sql);
 
