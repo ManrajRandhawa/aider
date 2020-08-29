@@ -4,10 +4,10 @@
     $Aider = new Aider();
 
     if(isset($_POST['Rider_ID'])) {
-        $response = $Aider->getUserModal()->getOrderModal()->getParcelOrdersThatRequireARider($_POST['Rider_ID']);
+        $response = $Aider->getUserModal()->getOrderModal()->getOrdersThatRequireARider($_POST['Rider_ID']);
 
         if (!$response['error']) {
-            echo $response['data'];
+            echo json_encode($response['data'], JSON_PRETTY_PRINT);
         } else {
             echo "ERROR";
         }

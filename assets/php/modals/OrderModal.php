@@ -34,6 +34,31 @@ class OrderModal {
         return $response;
     }
 
+    function getSortingOrderDetailsByID($orderType, $id, $info) {
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        $tableName = "";
+
+        $sql = "SELECT * FROM `aider_transaction_sorting` WHERE ID=$id";
+        $statement = $connection->query($sql);
+
+        if($statement->num_rows > 0) {
+            $response['error'] = false;
+            while($row = $statement->fetch_assoc()) {
+                $response['data'] = $row[$info];
+            }
+        } else {
+            $response['error'] = true;
+            $response['message'] = "There was an error while trying to connect to the database.";
+        }
+
+        $statement->close();
+        $connection->close();
+
+        return $response;
+    }
+
     function getOrderDetails($orderType, $id) {
         $DatabaseHandler = new DatabaseHandler();
         $connection = $DatabaseHandler->getMySQLiConnection();
@@ -63,26 +88,73 @@ class OrderModal {
                     $pickUpLocCoords['lng'],
                     $dropOffLocCoords['lng']);
 
-                $dataArray = array(
-                    $row['Customer_ID'],
-                    $row['Pickup_Location'],
-                    $row['Dropoff_Location'],
-                    $row['Pickup_Details_Name'],
-                    $row['Pickup_Details_PhoneNum'],
-                    $row['Dropoff_Details_Name'],
-                    $row['Dropoff_Details_PhoneNum'],
-                    $row['Pickup_Datetime'],
-                    $row['Price'],
-                    $row['Transaction_Datetime'],
-                    $drivingDistance['distance'],
-                    $drivingDistance['time']
-                );
+                if($orderType === "PARCEL") {
+                    $dataArray = array(
+                        $row['Customer_ID'],
+                        $row['Pickup_Location'],
+                        $row['Dropoff_Location'],
+                        $row['Pickup_Details_Name'],
+                        $row['Pickup_Details_PhoneNum'],
+                        $row['Dropoff_Details_Name'],
+                        $row['Dropoff_Details_PhoneNum'],
+                        $row['Pickup_Datetime'],
+                        $row['Price'],
+                        $row['Transaction_Datetime'],
+                        $drivingDistance['distance'],
+                        $drivingDistance['time']
+                    );
+                } elseif($orderType === "FOOD") {
+                    $dataArray = array(
+                        $row['Customer_ID'],
+                        $row['Merchant_ID'],
+                        $row['Pickup_Location'],
+                        $row['Dropoff_Location'],
+                        $row['Pickup_Details_Name'],
+                        $row['Pickup_Details_PhoneNum'],
+                        $row['Dropoff_Details_Name'],
+                        $row['Dropoff_Details_PhoneNum'],
+                        $row['Pickup_Datetime'],
+                        $row['Price'],
+                        $row['Transaction_Datetime'],
+                        $drivingDistance['distance'],
+                        $drivingDistance['time']
+                    );
+                }
+
+
             }
 
             $response['data'] = $dataArray;
         } else {
             $response['error'] = true;
             $response['message'] = "There was an error while trying to connect to the database.";
+        }
+
+        $statement->close();
+        $connection->close();
+
+        return $response;
+    }
+
+    function getOrdersThatRequireARider($riderID) {
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        $sql = "SELECT * FROM aider_transaction_sorting WHERE (`Transaction_Status`='FINDING-RIDER') AND (Rider_Denied_List NOT LIKE '%" . $riderID . "%') LIMIT 1";
+        $statement = $connection->query($sql);
+
+        if($statement->num_rows > 0) {
+            $response['error'] = false;
+            while($row = $statement->fetch_assoc()) {
+                $response['data'] = array(
+                    $row['Transaction_ID'],
+                    $row["Transaction_Type"],
+                    $row['Transaction_Datetime']
+                );
+            }
+        } else {
+            $response['error'] = true;
+            $response['message'] = "No results found.";
         }
 
         $statement->close();
@@ -121,6 +193,7 @@ class OrderModal {
         $previousDeniedList = $this->getOrderDetailsByID($OrderType, $OrderID, "Rider_Denied_List");
 
         $deniedList = "";
+        $tableName = null;
         $riderExists = false;
 
         if(!$previousDeniedList['error']) {
@@ -143,7 +216,61 @@ class OrderModal {
                 $deniedList .= "," . $RiderID;
             }
 
-            $sql = "UPDATE aider_transaction_parcel SET Rider_Denied_List = '$deniedList' WHERE ID = $OrderID";
+            if($OrderType === "PARCEL") {
+                $tableName = "aider_transaction_parcel";
+            } elseif($OrderType === "FOOD") {
+                $tableName = "aider_transaction_food";
+            }
+
+            $sql = "UPDATE $tableName SET Rider_Denied_List = '$deniedList' WHERE ID = $OrderID";
+
+            $statement = $connection->query($sql);
+
+            if($statement) {
+                $response['error'] = false;
+            } else {
+                $response['error'] = true;
+            }
+        } else {
+            $response['error'] = false;
+        }
+
+        $connection->close();
+
+        return $response;
+    }
+
+    function addRiderToSortingDeniedList($OrderType, $OrderID, $RiderID) {
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        $previousDeniedList = $this->getSortingOrderDetailsByID($OrderType, $OrderID, "Rider_Denied_List");
+
+        $deniedList = "";
+        $tableName = null;
+        $riderExists = false;
+
+        if(!$previousDeniedList['error']) {
+            $deniedList = $previousDeniedList['data'];
+        }
+
+        $riderDeniedList = explode(',', $deniedList);
+        foreach($riderDeniedList as $riderDenied) {
+            $riderDenied = trim($riderDenied);
+
+            if($riderDenied === $RiderID) {
+                $riderExists = true;
+            }
+        }
+
+        if(!$riderExists) {
+            if(empty($deniedList) || $deniedList === null) {
+                $deniedList = $RiderID;
+            } else {
+                $deniedList .= "," . $RiderID;
+            }
+
+            $sql = "UPDATE aider_transaction_sorting SET Rider_Denied_List = '$deniedList' WHERE Transaction_ID = $OrderID AND Transaction_Type = '$OrderType'";
 
             $statement = $connection->query($sql);
 
@@ -176,7 +303,14 @@ class OrderModal {
         $statement = $connection->query($sql);
 
         if($statement) {
-            $response['error'] = false;
+            $sqlSort = "UPDATE aider_transaction_sorting SET `Transaction_Status` = 'RIDER-FOUND' WHERE Transaction_ID = " . intval($OrderID) . " AND Transaction_Type = '$OrderType'";
+            $statementSort = $connection->query($sqlSort);
+
+            if($statementSort) {
+                $response['error'] = false;
+            } else {
+                $response['error'] = true;
+            }
         } else {
             $response['error'] = true;
         }

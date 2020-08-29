@@ -5,6 +5,11 @@
 
     if(isset($_POST['Order_Type']) && isset($_POST['Order_ID']) && isset($_POST['Rider_ID'])) {
         $response = $Aider->getUserModal()->getOrderModal()->addRiderToDeniedList($_POST['Order_Type'], $_POST['Order_ID'], $_POST['Rider_ID']);
+        $responseSort = $Aider->getUserModal()->getOrderModal()->addRiderToSortingDeniedList($_POST['Order_Type'], $_POST['Order_ID'], $_POST['Rider_ID']);
 
-        echo $response['error'];
+        if(!$response['error'] && !$responseSort['error']) {
+            echo "FALSE";
+        } else {
+            echo "TRUE";
+        }
     }

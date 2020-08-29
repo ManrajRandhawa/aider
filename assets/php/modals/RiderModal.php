@@ -304,4 +304,46 @@ class RiderModal {
 
         return $response;
     }
+
+    function updateRiderStatus($status, $t_type, $t_id, $email) {
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        $sql = "UPDATE aider_user_rider SET Status = '$status', Transaction_Type = '$t_type', Transaction_ID = $t_id WHERE Email_Address = '$email'";
+
+        $statement = $connection->query($sql);
+
+        if($statement) {
+            $response['error'] = false;
+            $response['message'] = "The rider's status has been updated.";
+        } else {
+            $response['error'] = true;
+            $response['message'] = "There was an error while trying to update the rider's status.";
+        }
+
+        $connection->close();
+
+        return $response;
+    }
+
+    function updateRiderLocation($lng, $lat, $email) {
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        $sql = "UPDATE aider_user_rider SET Loc_LNG = '$lng', Loc_LAT = '$lat' WHERE Email_Address = '$email'";
+
+        $statement = $connection->query($sql);
+
+        if($statement) {
+            $response['error'] = false;
+            $response['message'] = "The rider's location has been updated.";
+        } else {
+            $response['error'] = true;
+            $response['message'] = "There was an error while trying to update the rider's location.";
+        }
+
+        $connection->close();
+
+        return $response;
+    }
 }

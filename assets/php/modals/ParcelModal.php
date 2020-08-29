@@ -24,6 +24,10 @@ class ParcelModal {
                 $response['error'] = true;
                 $response['message'] = $responseFunds['message'];
             } else {
+                $insert_id = null;
+                $t_type = "PARCEL";
+
+                // [START] Add to Delivery Listing
                 $sql = "INSERT INTO aider_transaction_parcel(Customer_ID, Pickup_Location, Dropoff_Location, Pickup_Details_Name, Pickup_Details_PhoneNum, Dropoff_Details_Name, Dropoff_Details_PhoneNum, Pickup_Datetime, Price, Transaction_Datetime, Status)" .
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -35,11 +39,32 @@ class ParcelModal {
 
                 if($statement->execute()) {
                     $response['error'] = false;
+
+                    $insert_id = $connection->insert_id;
                 } else {
                     $response['error'] = true;
                     $response['message'] = "There was an error while setting up the delivery.";
                 }
                 $statement->close();
+                // [END] Add to Delivery Listing
+
+                if(!$response['error']) {
+                    // [START] Add to Delivery Sorting
+                    $sqlSort = "INSERT INTO aider_transaction_sorting(Transaction_ID, Transaction_Type, Transaction_Datetime, Transaction_Status) VALUES (?, ?, ?, ?)";
+
+                    $statementSort = $connection->prepare($sqlSort);
+                    $statementSort->bind_param("isss", $insert_id, $t_type, $transactionDate, $status);
+
+                    if($statementSort->execute()) {
+                        $response['error'] = false;
+                    } else {
+                        $response['error'] = true;
+                        $response['message'] = "There was an error while pushing the data to the sorting service.";
+                    }
+                    $statementSort->close();
+                    // [END] Add to Delivery Sorting
+                }
+
                 $connection->close();
             }
         }

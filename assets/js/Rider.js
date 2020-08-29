@@ -3,6 +3,7 @@
 // let riderMode = Mode.INACTIVE;
 
 let rID;
+let watchID;
 
 function getRiderDashboardJS() {
     if(window.localStorage.getItem("User_Email") === null) {
@@ -81,6 +82,7 @@ function getHomeJS() {
     if(window.localStorage.getItem("User_Email") === null) {
         window.location.href = "../riders/index.php";
     } else {
+        RiderLogic.getOngoingOrders();
 
         // START: Rider - Active and Inactive Mode
         $('#btn-inactive').click(function() {
@@ -89,9 +91,26 @@ function getHomeJS() {
             riderMode = Mode.ACTIVE;
 
             RiderDataSet.setRiderMode(1);
-            Rider.getNewOrders("PARCEL");
+
+            // Set Rider Status -> ACTIVE
+            $.ajax({
+                url: "../assets/php/ajax/rider/setRiderStatus.php",
+                method: "POST",
+                cache: false,
+                data: {Status: "ACTIVE", T_Type: "", T_ID: 0, Email: window.localStorage.getItem("User_Email")},
+                success: function (data) {
+                    if(data !== "NO-ERROR") {
+                        console.log(data);
+                    } else {
+                        console.log('Rider Status Data has been updated.');
+                    }
+                }
+            });
+
+            watchID = Rider.saveRiderLocation();
+
+            Rider.getNewOrders();
             RiderDataSet.setNewOrderCalled(true);
-            //getNewOrders("PARCEL");
         });
 
         $('#btn-active').click(function () {
@@ -99,6 +118,23 @@ function getHomeJS() {
             $('#btn-inactive').removeClass('d-none');
             riderMode = Mode.INACTIVE;
             RiderDataSet.setRiderMode(0);
+
+            // Set Rider Status -> INACTIVE
+            $.ajax({
+                url: "../assets/php/ajax/rider/setRiderStatus.php",
+                method: "POST",
+                cache: false,
+                data: {Status: "INACTIVE", T_Type: "", T_ID: 0, Email: window.localStorage.getItem("User_Email")},
+                success: function (data) {
+                    if(data !== "NO-ERROR") {
+                        console.log(data);
+                    } else {
+                        console.log('Rider Status Data has been updated.');
+                    }
+                }
+            });
+
+            Rider.removeRiderLocation(watchID);
 
             $('#order-container').addClass('d-none');
         });

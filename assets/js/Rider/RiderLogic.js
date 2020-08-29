@@ -21,6 +21,7 @@ class RiderAJAX {
             success: function (data) {
                 if(data === "TRUE") {
                     // Error Message
+                    console.log('WHOOPS!');
                 } else {
                     console.log('Denied:');
                     console.log('Order Type:' + orderType);
@@ -144,7 +145,14 @@ class RiderLayout {
         $('#riding-1-content-loc-1').text(pickUpLocPrimary);
         $('#riding-1-content-loc-2').text(pickUpLocSecondary);
 
-        $('#riding-1-content-loc-btn').html("<a href='geo:0,0?q=" + pickUpLoc + "'>\n" +
+        let url = "geo:0,0";
+        /*
+        if (device.platform.toLowerCase() === "ios") {
+            url = "maps://"
+        }
+         */
+
+        $('#riding-1-content-loc-btn').html("<a href='" + url + "?q=" + pickUpLoc + "'>\n" +
             "                                        <i class=\"mt-2 mr-3 fas fa-location-arrow fa-lg text-success\"></i>\n" +
             "                                    </a>");
     }
@@ -159,7 +167,14 @@ class RiderLayout {
         $('#riding-2-content-loc-1').text(dropOffLocPrimary);
         $('#riding-2-content-loc-2').text(dropOffLocSecondary);
 
-        $('#riding-2-content-loc-btn').html("<a href='geo:0,0?q=" + dropOffLoc + "'>\n" +
+        let url = "geo:0,0";
+        /*
+        if (device.platform.toLowerCase() === "ios") {
+            url = "maps://"
+        }
+         */
+
+        $('#riding-2-content-loc-btn').html("<a href='" + url + "?q=" + dropOffLoc + "'>\n" +
             "                                        <i class=\"mt-2 mr-3 fas fa-location-arrow fa-lg text-success\"></i>\n" +
             "                                    </a>");
     }
@@ -167,7 +182,6 @@ class RiderLayout {
 
 class RiderLogic {
     static getOrderLogic(orderType, orderID) {
-
         let riID = RiderDataSet.getRiderID();
 
         if(RiderDataSet.getOrderContainerDisplayed()) {
@@ -199,7 +213,7 @@ class RiderLogic {
                                                     Rider.resetValues();
 
                                                     if(RiderDataSet.getNewOrderCalled() === false) {
-                                                        Rider.getNewOrders("PARCEL");
+                                                        Rider.getNewOrders();
                                                     }
                                                     RiderDataSet.setNewOrderCalled(true);
                                                 }
@@ -228,7 +242,7 @@ class RiderLogic {
                         Rider.resetValues();
 
                         if(RiderDataSet.getNewOrderCalled() === false) {
-                            Rider.getNewOrders("PARCEL");
+                            Rider.getNewOrders();
                         }
                         RiderDataSet.setNewOrderCalled(true);
                     } else {
@@ -252,7 +266,7 @@ class RiderLogic {
                 Rider.resetValues();
 
                 if(RiderDataSet.getNewOrderCalled() === false) {
-                    Rider.getNewOrders("PARCEL");
+                    Rider.getNewOrders();
                 }
                 RiderDataSet.setNewOrderCalled(true);
             });
@@ -273,6 +287,19 @@ class RiderLogic {
             // Mode.INACTIVE implementations have been set in getNewOrders() function
 
             if(RiderDataSet.getRiderMode() === Mode.HEADING_TO_PICKUP) {
+                // Set Rider Status -> HEADING_TO_PICKUP
+                $.ajax({
+                    url: "../assets/php/ajax/rider/setRiderStatus.php",
+                    method: "POST",
+                    cache: false,
+                    data: {Status: "HEADING_TO_PICKUP", T_Type: orderType, T_ID: orderID, Email: window.localStorage.getItem("User_Email")},
+                    success: function (data) {
+                        if(data !== "NO-ERROR") {
+                            console.log(data);
+                        }
+                    }
+                });
+
                 $('#rider-navigation-main').addClass('d-none');
                 $('#rider-navigation-riding-1').removeClass('d-none');
                 $('#rider-navigation-riding-1-content').removeClass('d-none');
@@ -284,6 +311,22 @@ class RiderLogic {
             }
 
             if(RiderDataSet.getRiderMode() === Mode.HEADING_TO_DESTINATION) {
+                // Set Rider Status -> HEADING_TO_DESTINATION
+                $.ajax({
+                    url: "../assets/php/ajax/rider/setRiderStatus.php",
+                    method: "POST",
+                    cache: false,
+                    data: {Status: "HEADING_TO_DESTINATION", T_Type: orderType, T_ID: orderID, Email: window.localStorage.getItem("User_Email")},
+                    success: function (data) {
+                        if(data !== "NO-ERROR") {
+                            console.log(data);
+                        }
+                    }
+                });
+
+                if(!($('#rider-navigation-main').hasClass('d-none'))) {
+                    $('#rider-navigation-main').addClass('d-none');
+                }
                 $('#rider-navigation-riding-1').addClass('d-none');
                 $('#rider-navigation-riding-1-content').addClass('d-none');
                 $('#rider-navigation-riding-2').removeClass('d-none');
@@ -296,23 +339,122 @@ class RiderLogic {
             }
 
             if(RiderDataSet.getRiderMode() === Mode.COMPLETED) {
+                // Set Rider Status -> COMPLETED
+                $.ajax({
+                    url: "../assets/php/ajax/rider/setRiderStatus.php",
+                    method: "POST",
+                    cache: false,
+                    data: {Status: "COMPLETED", T_Type: orderType, T_ID: orderID, Email: window.localStorage.getItem("User_Email")},
+                    success: function (data) {
+                        if(data !== "NO-ERROR") {
+                            console.log(data);
+                        }
+                    }
+                });
+
+                if(!($('#rider-navigation-main').hasClass('d-none'))) {
+                    $('#rider-navigation-main').addClass('d-none');
+                }
                 $('#rider-navigation-riding-2').addClass('d-none');
                 $('#rider-navigation-riding-2-content').addClass('d-none');
                 $('#rider-navigation-riding-3').removeClass('d-none');
 
                 $('#rider-navigation-riding-3-btn').click(function() {
                     RiderDataSet.setRiderMode(Mode.ACTIVE);
+
+                    // Set Rider Status -> ACTIVE
+                    $.ajax({
+                        url: "../assets/php/ajax/rider/setRiderStatus.php",
+                        method: "POST",
+                        cache: false,
+                        data: {Status: "ACTIVE", T_Type: "", T_ID: 0, Email: window.localStorage.getItem("User_Email")},
+                        success: function (data) {
+                            if(data !== "NO-ERROR") {
+                                console.log(data);
+                            }
+                        }
+                    });
+
                     $('#rider-navigation-riding-3').addClass('d-none');
                     $('#rider-navigation-main').removeClass('d-none');
-                    Rider.getNewOrders("PARCEL");
+                    $('#btn-inactive').addClass('d-none');
+                    $('#btn-active').removeClass('d-none');
+                    Rider.getNewOrders();
                 });
             }
         }
     }
+
+    static getOngoingOrders() {
+        // Get Rider's Status
+        $.ajax({
+            url: "../assets/php/ajax/rider/getRiderData.php",
+            method: "POST",
+            cache: false,
+            data: {User_Email: window.localStorage.getItem("User_Email"), User_Info: "Status"},
+            success: function (data) {
+                if(data === "ACTIVE" || data === "INACTIVE") {
+                    Rider.getNewOrders();
+                } else {
+                    if(data === "HEADING_TO_PICKUP") {
+                        RiderDataSet.setRiderMode(Mode.HEADING_TO_PICKUP);
+                    } else if(data === "HEADING_TO_DESTINATION") {
+                        RiderDataSet.setRiderMode(Mode.HEADING_TO_DESTINATION);
+                    } else if(data === "COMPLETED") {
+                        RiderDataSet.setRiderMode(Mode.COMPLETED);
+                    }
+
+                    console.log(RiderDataSet.getRiderMode());
+
+                    // Get Rider's Current Transaction Type
+                    $.ajax({
+                        url: "../assets/php/ajax/rider/getRiderData.php",
+                        method: "POST",
+                        cache: false,
+                        data: {User_Email: window.localStorage.getItem("User_Email"), User_Info: "Transaction_Type"},
+                        success: function (dataTType) {
+                            let orderType = dataTType;
+
+                            // Get Rider's Current Transaction Details from ID
+                            $.ajax({
+                                url: "../assets/php/ajax/rider/getRiderData.php",
+                                method: "POST",
+                                cache: false,
+                                data: {User_Email: window.localStorage.getItem("User_Email"), User_Info: "Transaction_ID"},
+                                success: function (dataDetails) {
+                                    console.log("Transaction ID: " + dataDetails);
+                                    console.log(orderType);
+                                    RiderLogic.getOrderLogic(orderType, dataDetails);
+
+                                    $.ajax({
+                                        url: "../assets/php/ajax/rider/getOrderDetails.php",
+                                        method: "POST",
+                                        cache: false,
+                                        data: {Order_Type: orderType, Order_ID: dataDetails},
+                                        success: function (dataOrderD) {
+                                            if(dataOrderD !== "ERROR") {
+                                                let dataDP = JSON.parse(dataOrderD);
+
+                                                RiderLayout.createPickUpLocationContent(dataDP[1]);
+                                                RiderLayout.createDropOffLocationContent(dataDP[2]);
+                                            } else {
+                                                // [ERROR] Not able to get Order Details
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+
+                }
+            }
+        });
+    }
 }
 
 class Rider {
-    static getNewOrders(orderType) {
+    static getNewOrders() {
         Rider.resetValues();
 
         $.ajax({
@@ -326,7 +468,9 @@ class Rider {
                 let riID = parseInt(RiderDataSet.getRiderID());
 
                 let orderID = null;
+                let orderType = null;
                 let dataDetails = null;
+                let dataArray = null;
 
                 // Check for new orders in 1000ms intervals
                 if(realTimeCheck === null) {
@@ -345,7 +489,9 @@ class Rider {
                                 data: {Rider_ID: riID},
                                 success: function (data) {
                                     if(data !== "ERROR") {
-                                        orderID = parseInt(data);
+                                        dataArray = JSON.parse(data);
+                                        orderID = parseInt(dataArray[0]);
+                                        orderType = dataArray[1];
 
                                         $.ajax({
                                             url: "../assets/php/ajax/rider/getOrderDetails.php",
@@ -395,8 +541,41 @@ class Rider {
                 }
             }
         });
+    }
 
+    static saveRiderLocation() {
+        return navigator.geolocation.watchPosition(function(position) {
+            // Update Rider's Coordinates
+            $.ajax({
+                url: "../assets/php/ajax/rider/setRiderLocation.php",
+                method: "POST",
+                cache: false,
+                data: {Loc_LNG: position.coords.longitude, Loc_LAT: position.coords.latitude, Email: window.localStorage.getItem("User_Email")},
+                success: function (data) {
+                    if(data !== "NO-ERROR") {
+                        console.log(data);
+                    }
+                }
+            });
+        });
+    }
 
+    static removeRiderLocation(watchID) {
+        // Clear Geolocation Watch
+        navigator.geolocation.clearWatch(watchID);
+
+        // Update Rider's Coordinates
+        $.ajax({
+            url: "../assets/php/ajax/rider/setRiderLocation.php",
+            method: "POST",
+            cache: false,
+            data: {Loc_LNG: "", Loc_LAT: "", Email: window.localStorage.getItem("User_Email")},
+            success: function (data) {
+                if(data !== "NO-ERROR") {
+                    console.log(data);
+                }
+            }
+        });
     }
 
     static resetValues() {
