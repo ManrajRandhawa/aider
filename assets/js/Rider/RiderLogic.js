@@ -505,27 +505,75 @@ class Rider {
                                                     clearInterval(realTimeCheck);
                                                     realTimeCheck = null;
 
-                                                    // Get Order Details
-                                                    RiderDataSet.setOrderContainerDisplayed(true);
-                                                    $('#order-container').removeClass('d-none');
+                                                    // Get max distance for Riders
+                                                    $.ajax({
+                                                        url: "../assets/php/ajax/rider/getRiderData.php",
+                                                        method: "POST",
+                                                        cache: false,
+                                                        data: {User_Email: window.localStorage.getItem("User_Email"), User_Info: "Loc_LNG"},
+                                                        success: function (dataLNG) {
+                                                            let lng = dataLNG;
 
-                                                    if(RiderDataSet.getOrderLogicCalled() === false) {
-                                                        RiderLogic.getOrderLogic(orderType, orderID, riID);
-                                                    }
-                                                    RiderDataSet.setOrderLogicCalled(true);
+                                                            $.ajax({
+                                                                url: "../assets/php/ajax/rider/getRiderData.php",
+                                                                method: "POST",
+                                                                cache: false,
+                                                                data: {User_Email: window.localStorage.getItem("User_Email"), User_Info: "Loc_LAT"},
+                                                                success: function (dataLAT) {
+                                                                    let lat = dataLAT;
 
-                                                    RiderLayout.createNewOrder(
-                                                        orderType,
-                                                        dataDetails[1],
-                                                        dataDetails[2],
-                                                        dataDetails[10],
-                                                        dataDetails[11],
-                                                        "1 x Nasi Goreng<br/>1 x Teh O' Ais",
-                                                        parseFloat(dataDetails[8]),
-                                                        "Paid");
+                                                                    console.log(lat + ", " + lng);
 
-                                                    RiderLayout.createPickUpLocationContent(dataDetails[1]);
-                                                    RiderLayout.createDropOffLocationContent(dataDetails[2]);
+                                                                    $.ajax({
+                                                                        url: "../assets/php/ajax/rider/getSettingsInfo.php",
+                                                                        method: "POST",
+                                                                        cache: false,
+                                                                        data: {Info: "Maximum_Radius_KM"},
+                                                                        success: function (dataSettings) {
+                                                                            $.ajax({
+                                                                                url: "../assets/php/ajax/rider/getDistance.php",
+                                                                                method: "POST",
+                                                                                cache: false,
+                                                                                data: {coordsAddOneLAT: lat, coordsAddOneLNG: lng, addressTwo: dataDetails[1]},
+                                                                                success: function (dataDistance) {
+                                                                                    if(parseFloat(dataSettings) > parseFloat(dataDistance)) {
+                                                                                        // Get Order Details
+                                                                                        RiderDataSet.setOrderContainerDisplayed(true);
+                                                                                        $('#order-container').removeClass('d-none');
+
+                                                                                        if(RiderDataSet.getOrderLogicCalled() === false) {
+                                                                                            RiderLogic.getOrderLogic(orderType, orderID, riID);
+                                                                                        }
+                                                                                        RiderDataSet.setOrderLogicCalled(true);
+
+                                                                                        RiderLayout.createNewOrder(
+                                                                                            orderType,
+                                                                                            dataDetails[1],
+                                                                                            dataDetails[2],
+                                                                                            dataDetails[10],
+                                                                                            dataDetails[11],
+                                                                                            "1 x Nasi Goreng<br/>1 x Teh O' Ais",
+                                                                                            parseFloat(dataDetails[8]),
+                                                                                            "Paid");
+
+                                                                                        RiderLayout.createPickUpLocationContent(dataDetails[1]);
+                                                                                        RiderLayout.createDropOffLocationContent(dataDetails[2]);
+                                                                                    } else {
+                                                                                        // Add Rider to Denied List as range is too far
+                                                                                        RiderAJAX.addRiderToDenialList(orderType, orderID, riID);
+
+                                                                                        // Give new order
+                                                                                        Rider.getNewOrders();
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                        }
+                                                                    });
+                                                                }
+                                                            });
+
+                                                        }
+                                                    });
                                                 } else {
                                                     // [ERROR] Not able to get Order Details
                                                 }
