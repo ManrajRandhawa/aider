@@ -14,31 +14,21 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, shrink-to-fit=no, user-scalable=no">
 
-        <title><?php echo SITE_NAME; ?> | Account</title>
+        <title><?php echo SITE_NAME; ?> Rider | Home</title>
 
         <?php
             echo $Aider->getUI()->getBootstrapHead();
         ?>
     </head>
 
-    <body class="bg-white">
-
-        <div class="bg-light">
-            <!-- Header -->
-            <div class="container bg-light">
-                <div class="row">
-                    <div class="col-12 mt-3 mb-4">
-                        <h3 class="font-weight-bold">Account</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+    <body class="bg-light">
 
         <!-- Modal: First Time Login - Change Password -->
         <?php
             $Aider->getUI()->getDashboard()->getFirstTimePasswordChangeModal();
         ?>
+
+        <!-- Main Content -->
 
         <!-- Change Email Modal -->
         <div class='modal fade' id="change-email-modal" tabindex='-1' role='dialog' aria-labelledby='changeEmailModalLabel' aria-hidden='true'>
@@ -128,87 +118,125 @@
             </div>
         </div>
 
+        <!-- Account -->
+        <div class="bg-light" id="rider-account">
+            <!-- Header -->
+            <div class="container bg-light">
+                <div class="row">
+                    <div class="col-12 mt-3 mb-4">
+                        <h3 class="font-weight-bold">Account</h3>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Main Content -->
-        <div class="container">
+            <!-- Header: 1st View -->
+            <div class="container">
+                <div class="row">
+                    <div class="col-6">
+                        <h4 class="font-weight-bold mt-4 text-dark" id="user-name"></h4>
+                    </div>
+                    <div class="col-6"></div>
+                </div>
+            </div>
+
+            <hr/>
+
+            <div class="container mt-5">
+                <a class="text-decoration-none" data-toggle="modal" data-target="#change-email-modal">
+                    <div class="row">
+                        <div class="col-12">
+                            <span class="h6 text-black-50">Change Email</span>
+                            <i class="fas fa-chevron-right text-black-50 float-right"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <hr/>
+
+                <a class="text-decoration-none" data-toggle="modal" data-target="#change-pass-modal">
+                    <div class="row">
+                        <div class="col-12">
+                            <span class="h6 text-black-50">Change Password</span>
+                            <i class="fas fa-chevron-right text-black-50 float-right"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <hr/>
+
+                <a class="text-decoration-none" data-toggle="modal" data-target="#change-num-modal">
+                    <div class="row">
+                        <div class="col-12">
+                            <span class="h6 text-black-50">Change Phone Number</span>
+                            <i class="fas fa-chevron-right text-black-50 float-right"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <hr/>
+
+                <a class="text-decoration-none" id="logout">
+                    <div class="row mt-5">
+                        <div class="col-12">
+                            <span class="h6 text-danger">Logout</span>
+                            <i class="fas fa-chevron-right text-black-50 float-right"></i>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+
+        <!-- START: Bottom Navigation -->
+        <div class="container mb-4 fixed-bottom" style="z-index: 0;" id="container-location">
             <div class="row">
-                <div class="col-6">
-                    <h4 class="font-weight-bold mt-4 text-dark" id="user-name"></h4>
-                </div>
-                <div class="col-6">
-                    <h6 class="mt-4 float-right text-black-50" id="user-balance">RM <span class="h4 font-weight-bold text-dark" id="wallet-balance">0.00</span></h6>
+                <div class="col-12 ml-2" style="max-width: 96vw;">
+                    <div class="row rounded bg-white pt-3 pb-2" id="rider-navigation-main">
+                        <div class="col-3 text-center">
+                            <a href="earnings.php" class="text-decoration-none">
+                                <span>
+                                    <i class="fas fa-coins fa-lg text-primary"></i>
+                                    <span style="font-size: 11pt;" class="text-dark">Earnings</span>
+                                </span>
+                            </a>
+                        </div>
+                        <div class="col-6 text-center">
+                            <!-- Home Button -->
+                            <a href="home.php" class="text-decoration-none">
+                                <div class="btn btn-outline-success w-100" id="btn-home">
+                                    <span>Home</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-3 text-center">
+                            <span>
+                                <i class="far fa-user-circle fa-lg text-primary"></i>
+                                <span style="font-size: 11pt;" class="text-dark">Account</span>
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+        <!-- END: Bottom Navigation -->
 
-        <hr/>
 
-        <div class="container mt-5">
-            <a class="text-decoration-none" data-toggle="modal" data-target="#change-email-modal">
-                <div class="row">
-                    <div class="col-12">
-                        <span class="h6 text-black-50">Change Email</span>
-                        <i class="fas fa-chevron-right text-black-50 float-right"></i>
-                    </div>
-                </div>
-            </a>
+        <!-- START: Toast Messages Area -->
+        <div class="toast-container">
 
-            <hr/>
-
-            <a class="text-decoration-none" data-toggle="modal" data-target="#change-pass-modal">
-                <div class="row">
-                    <div class="col-12">
-                        <span class="h6 text-black-50">Change Password</span>
-                        <i class="fas fa-chevron-right text-black-50 float-right"></i>
-                    </div>
-                </div>
-            </a>
-
-            <hr/>
-
-            <a class="text-decoration-none" data-toggle="modal" data-target="#change-num-modal">
-                <div class="row">
-                    <div class="col-12">
-                        <span class="h6 text-black-50">Change Phone Number</span>
-                        <i class="fas fa-chevron-right text-black-50 float-right"></i>
-                    </div>
-                </div>
-            </a>
-
-            <hr/>
-
-            <a class="text-decoration-none" id="logout">
-                <div class="row mt-5">
-                    <div class="col-12">
-                        <span class="h6 text-danger">Logout</span>
-                        <i class="fas fa-chevron-right text-black-50 float-right"></i>
-                    </div>
-                </div>
-            </a>
-
-            <hr/>
-
-            <!-- START: Toast Messages Area -->
-            <div class="toast-container" style="z-index: 9999;">
-
-            </div>
-            <!-- END: Toast Messages Area -->
         </div>
-
-        <?php
-            $Aider->getUI()->getDashboard()->getBottomNavigation(3);
-        ?>
-
-
+        <!-- END: Toast Messages Area -->
 
 
         <?php
             echo $Aider->getUI()->getBootstrapScripts();
         ?>
-        <script src="../assets/js/Dashboard.js"></script>
+        <script src="../assets/js/Rider.js"></script>
+        <script src="../assets/js/Rider/RiderLogic.js"></script>
+
         <script>
             $(document).ready(function() {
-                getDashboardJS();
+                getRiderDashboardJS();
                 getAccountDashboardJS();
             });
 

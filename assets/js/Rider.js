@@ -141,3 +141,151 @@ function getHomeJS() {
         // END: Rider - Active and Inactive Mode
     }
 }
+
+function getAccountDashboardJS() {
+    if(window.localStorage.getItem("User_Email") === null) {
+        window.location.href = "../members/index.php";
+    } else {
+        let user_email = window.localStorage.getItem("User_Email");
+
+        $.ajax({
+            url: '../assets/php/ajax/rider/getRiderData.php',
+            method: 'POST',
+            cache: false,
+            data: {User_Email: user_email, User_Info: "Name"},
+            success: function(data) {
+                $('#user-name').html(data);
+            }
+        });
+
+        // START: Change Email
+        $('#chg-email-btn').click(function() {
+            let email = $('#chg-email').val();
+
+            $.ajax({
+                url: "../assets/php/ajax/rider/updateRiderData.php",
+                method: "POST",
+                cache: false,
+                data: {User_Email: user_email, Key: "Email_Address", Value: email},
+                success: function (data) {
+                    let title, message;
+
+                    // data = error. If true, an error occurred, else, no error occurred.
+                    if(data === "FALSE") {
+                        title = "Success!";
+                        message = "The email has been updated.";
+                        window.localStorage.setItem("User_Email", email);
+                    } else {
+                        title = "Something went wrong!";
+                        message = "There was an issue while trying to change your email.";
+                    }
+                    // Display Toast Message
+                    $.ajax({
+                        url: "../assets/php/ajax/ui/sendToastMessage.php",
+                        method: "POST",
+                        cache: false,
+                        data: {Title: title, Message: message},
+                        success: function(dataToast){
+                            $('.toast-container-modal').html(dataToast);
+                            $('.toast').toast('show');
+
+                            setTimeout(function() {
+                                $('.toast-container-modal').html("");
+                            }, 5000);
+                        }
+                    });
+                }
+            });
+        });
+        // END: Change Email
+
+        // START: Change Password
+        $('#chg-pass-btn').click(function() {
+            let pswd = $('#chg-pass').val();
+            let cpswd = $('#chg-confirm-pass').val();
+
+            $.ajax({
+                url: "../assets/php/ajax/rider/updateFirstTimePassword.php",
+                method: "POST",
+                cache: false,
+                data: {Password: pswd, Confirm_Password: cpswd, User_Email: user_email},
+                success: function (data) {
+                    let title, message;
+                    if(parseInt(data, 10) === 0) {
+                        title = "Success!";
+                        message = "The password has been updated.";
+                    } else if(parseInt(data, 10) === 2) {
+                        title = "Something went wrong!";
+                        message = "The passwords entered were not the same."
+                    } else {
+                        title = "Something went wrong!";
+                        message = "There was an issue while trying to change your password.";
+                    }
+                    // Display Toast Message
+                    $.ajax({
+                        url: "../assets/php/ajax/ui/sendToastMessage.php",
+                        method: "POST",
+                        cache: false,
+                        data: {Title: title, Message: message},
+                        success: function(dataToast){
+                            $('.toast-container-modal').html(dataToast);
+                            $('.toast').toast('show');
+
+                            setTimeout(function() {
+                                $('.toast-container-modal').html("");
+                            }, 5000);
+                        }
+                    });
+                }
+            });
+        });
+        // END: Change Password
+
+        // START: Change Phone Number
+        $('#chg-num-btn').click(function() {
+            let num = $('#chg-num').val();
+
+            $.ajax({
+                url: "../assets/php/ajax/rider/updateRiderData.php",
+                method: "POST",
+                cache: false,
+                data: {User_Email: user_email, Key: "Phone_Number", Value: num},
+                success: function (data) {
+                    let title, message;
+
+                    // data = error. If true, an error occurred, else, no error occurred.
+                    if(data === "FALSE") {
+                        title = "Success!";
+                        message = "The phone number has been updated.";
+                    } else {
+                        title = "Something went wrong!";
+                        message = "There was an issue while trying to change your phone number.";
+                    }
+                    // Display Toast Message
+                    $.ajax({
+                        url: "../assets/php/ajax/ui/sendToastMessage.php",
+                        method: "POST",
+                        cache: false,
+                        data: {Title: title, Message: message},
+                        success: function(dataToast){
+                            $('.toast-container-modal').html(dataToast);
+                            $('.toast').toast('show');
+
+                            setTimeout(function() {
+                                $('.toast-container-modal').html("");
+                            }, 5000);
+                        }
+                    });
+                }
+            });
+        });
+        // END: Change Phone Number
+
+        // START: Logout
+        $('#logout').click(function() {
+            window.localStorage.clear();
+            window.location.href = "index.php";
+        });
+        // END: Logout
+    }
+}

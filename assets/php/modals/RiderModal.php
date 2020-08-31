@@ -118,6 +118,25 @@ class RiderModal {
         return $response;
     }
 
+    function updateRiderInformationByEmail($email, $key, $value) {
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        $sql = "UPDATE aider_user_rider SET $key = '$value' WHERE Email_Address='" . $email . "'";
+        $statement = $connection->query($sql);
+
+        if($statement) {
+            $response['error'] = false;
+        } else {
+            $response['error'] = true;
+            $response['message'] = "There was an error while trying to update the database.";
+        }
+
+        $connection->close();
+
+        return $response;
+    }
+
     function getWaitingList() {
         $DatabaseHandler = new DatabaseHandler();
         $connection = $DatabaseHandler->getMySQLiConnection();

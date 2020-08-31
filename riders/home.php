@@ -57,12 +57,11 @@
 
         <!-- Main Content -->
 
-        <div class="map-row">
+        <div class="map-row" id="rider-home">
             <div class="map-col-12">
                 <div id="map"></div>
             </div>
         </div>
-
 
         <!-- START: Order Layout -->
         <div class="container mb-7 fixed-bottom d-none" style="z-index: 0;" id="order-container">
@@ -220,10 +219,12 @@
                 <div class="col-12 ml-2" style="max-width: 96vw;">
                     <div class="row rounded bg-white pt-3 pb-2" id="rider-navigation-main">
                         <div class="col-3 text-center">
-                            <span>
-                                <i class="fas fa-coins fa-lg text-primary"></i>
-                                <span style="font-size: 11pt;" class="text-dark">Earnings</span>
-                            </span>
+                            <a href="earnings.php" class="text-decoration-none">
+                                <span>
+                                    <i class="fas fa-coins fa-lg text-primary"></i>
+                                    <span style="font-size: 11pt;" class="text-dark">Earnings</span>
+                                </span>
+                            </a>
                         </div>
                         <div class="col-6 text-center">
                             <!-- Inactive Button -->
@@ -237,10 +238,12 @@
                             </div>
                         </div>
                         <div class="col-3 text-center">
-                            <span>
-                                <i class="far fa-user-circle fa-lg text-primary"></i>
-                                <span style="font-size: 11pt;" class="text-dark">Account</span>
-                            </span>
+                            <a href="account.php" class="text-decoration-none">
+                                <span>
+                                    <i class="far fa-user-circle fa-lg text-primary"></i>
+                                    <span style="font-size: 11pt;" class="text-dark">Account</span>
+                                </span>
+                            </a>
                         </div>
                     </div>
                     <div class="row rounded bg-white pt-2 pb-2 d-none" id="rider-navigation-riding-1">
