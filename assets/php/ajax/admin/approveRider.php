@@ -3,7 +3,7 @@
 
     $Aider = new Aider();
 
-    if(isset($_POST['User_Email']) && isset($_POST['V_Model']) && isset($_POST['V_Plate_Num'])) {
-        $response = $Aider->getUserModal()->getRiderModal()->approveRider($_POST['User_Email'], $_POST['V_Model'], $_POST['V_Plate_Num']);
+    if(isset($_POST['User_Email']) && isset($_POST['V_Model']) && isset($_POST['V_Plate_Num']) && isset($_POST['Rider_Type'])) {
+        $response = $Aider->getUserModal()->getRiderModal()->approveRider($_POST['User_Email'], $_POST['V_Model'], $_POST['V_Plate_Num'], $_POST['Rider_Type']);
         echo $response['message'];
     }

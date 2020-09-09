@@ -23,7 +23,7 @@ function getWaitingListDashboard() {
                 url: "../assets/php/ajax/admin/approveRider.php",
                 method: "POST",
                 cache: false,
-                data: {User_Email: emailApprove, V_Model: $('#v_model').val(), V_Plate_Num: $('#v_plate_num').val()},
+                data: {User_Email: emailApprove, V_Model: $('#v_model').val(), V_Plate_Num: $('#v_plate_num').val(), Rider_Type: $('#rider_type').val()},
                 success: function(data) {
                     $('#riderApproval').modal('toggle');
 
@@ -55,8 +55,139 @@ function getWaitingListDashboard() {
                 }
             });
         });
+        // Approve Rider from Waiting List
+    }
+}
+
+function getTeamsDashboard() {
+    if(window.localStorage.getItem("User_Email") === null) {
+        window.location.href = "../admins/index.php";
+    } else {
+        let user_email = window.localStorage.getItem("User_Email");
+
+        refreshSelectList();
+
+        // Display Teams
+        $.ajax({
+            url: "../assets/php/ajax/admin/getTeamsList.php",
+            method: "POST",
+            cache: false,
+            success: function(dataWL){
+                $('#teams-container').html(dataWL);
+            }
+        });
+
+        // Add Team
+        $('#add-team-btn').click(function() {
+            // Add Team & Display Toast Message
+
+            let member_one_id = $('#t_member_one').val();
+            let member_two_id = $('#t_member_two').val();
+
+            let teamMembers = member_one_id + "," + member_two_id;
+
+            $.ajax({
+                url: "../assets/php/ajax/admin/createTeam.php",
+                method: "POST",
+                cache: false,
+                data: {Team_Name: $('#t_name').val(), Team_Members: teamMembers},
+                success: function(data) {
+                    if(data === "OK") {
+                        $('#addTeam').modal('toggle');
+
+                        // Display Toast Message
+                        $.ajax({
+                            url: "../assets/php/ajax/ui/sendToastMessage.php",
+                            method: "POST",
+                            cache: false,
+                            data: {Title: "Success!", Message: "The team has been created successfully."},
+                            success: function(dataToast){
+                                $('.toast-container').html(dataToast);
+                                $('.toast').toast('show');
+
+                                setTimeout(function() {
+                                    $('.toast-container').html("");
+                                }, 5000);
+                            }
+                        });
+
+                    } else {
+                        // Display Toast Message
+                        $.ajax({
+                            url: "../assets/php/ajax/ui/sendToastMessage.php",
+                            method: "POST",
+                            cache: false,
+                            data: {Title: "Oops!", Message: "There was an issue while creating the team."},
+                            success: function(dataToast){
+                                $('.toast-container').html(dataToast);
+                                $('.toast').toast('show');
+
+                                setTimeout(function() {
+                                    $('.toast-container').html("");
+                                }, 5000);
+                            }
+                        });
+                    }
+
+                    // Update Teams
+                    $.ajax({
+                        url: "../assets/php/ajax/admin/getTeamsList.php",
+                        method: "POST",
+                        cache: false,
+                        success: function(dataWL){
+                            $('#teams-container').html(dataWL);
+                        }
+                    });
+
+                    // Refresh Values
+                    $('#t_name').val("");
+
+                    refreshSelectList();
+
+                    $('#t_member_one').val('default').selectpicker('refresh');
+                    $('#t_member_two').val('default').selectpicker('refresh');
+                }
+            });
+        });
+        // Add Team
 
     }
+}
+
+function editTeam(team_id) {
+    $('')
+}
+
+function refreshSelectList() {
+    // Display Select Items
+    $.ajax({
+        url: "../assets/php/ajax/admin/getRidersSelectList.php",
+        method: "POST",
+        cache: false,
+        data: {Rider_Type: "RIDER"},
+        success: function(dataWL){
+            $('#select-riders-list-1').html(dataWL);
+            $('#select-riders-list-2').html(dataWL);
+
+            $('#t_member_one').selectpicker('refresh');
+            $('#t_member_two').selectpicker('refresh');
+        }
+    });
+
+    $.ajax({
+        url: "../assets/php/ajax/admin/getRidersSelectList.php",
+        method: "POST",
+        cache: false,
+        data: {Rider_Type: "DRIVER"},
+        success: function(dataWL){
+            $('#select-drivers-list-1').html(dataWL);
+            $('#select-drivers-list-2').html(dataWL);
+
+            $('#t_member_one').selectpicker('refresh');
+            $('#t_member_two').selectpicker('refresh');
+        }
+    });
+    // Display Select Items
 }
 
 function approveButtonClick() {
@@ -103,6 +234,10 @@ function denyButtonClick() {
             });
         }
     });
+}
+
+function addTeam() {
+    $('#addTeam').modal();
 }
 
 function getSettingsDashboard() {

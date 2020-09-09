@@ -44,6 +44,13 @@
                                 <label for='v_plate_num' class='col-form-label'>Vehicle Plate Number:</label>
                                 <input type='text' class='form-control' name='v_plate_num' id='v_plate_num'>
                             </div>
+                            <div class='form-group'>
+                                <label for="rider_type" class='col-form-label'>Type:</label>
+                                <select class="form-control" id="rider_type">
+                                    <option>Rider</option>
+                                    <option>Driver</option>
+                                </select>
+                            </div>
                         </form>
                     </div>
                     <div class='modal-footer'>

@@ -197,7 +197,160 @@ class RiderModal {
         return $response;
     }
 
-    function approveRider($email, $v_model, $v_pn) {
+    function getTeamsList() {
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        $sql = "SELECT * FROM aider_driver_team";
+        $statement = $connection->query($sql);
+
+        if($statement->num_rows > 0) {
+            $num = 0;
+
+            $response['error'] = false;
+
+            $response['data'] = "";
+
+            while($row = $statement->fetch_assoc()) {
+                $num++;
+
+                $members = explode(',', $row['Team_Members']);
+
+                $memberOne = $this->getRiderInformationByID($members[0], "Name");
+                $memberTwo = $this->getRiderInformationByID($members[1], "Name");
+
+                if(!$memberOne['error'] && !$memberTwo['error']) {
+                    $response['data'] .= "<div class=\"col-6 mt-2\">
+                            <div class=\"card\">
+                                <div class=\"card-body\">
+                                    <h5 class=\"card-title font-weight-bold text-success text-center\">" . $row['Team_Name'] . "</h5>
+                                    <hr class=\"my-2\"/>
+                                    <h6 class=\"card-text text-center p-0 m-0\">" . $memberOne['data'] . "</h6>
+                                    <h6 class=\"card-text text-center p-0 m-0\">&</h6>
+                                    <h6 class=\"card-text text-center p-0 mt-0 mb-3\">" . $memberTwo['data'] . "</h6>
+                                    <a href=\"#\" onclick='editTeam(this.id);' class=\"btn btn-outline-success float-left\" id='" . $row['ID'] . "'><i class=\"far fa-edit edit-team\"></i></a>
+                                    <a href=\"#\" class=\"btn btn-outline-danger float-right\" id='" . $row['ID'] . "'><i class=\"far fa-trash-alt\"></i></a>
+                                </div>
+                            </div>
+                        </div>";
+                }
+
+
+            }
+        } else {
+            $response['error'] = true;
+            $response['data'] = "<div class=\"col-12 text-center mt-5\">
+                        <i class=\"fas fa-scroll fa-4x\" style=\"color: #DCDCDC;\"></i>
+                        <h6 class=\"font-weight-bold mt-4\">Nothing here yet!</h6>
+                        <h6 class=\"text-black-50\">Any teams added will appear here.</h6>
+                    </div>";
+        }
+
+        return $response;
+    }
+
+    function getRidersSelectList($type) {
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        $sql = "SELECT * FROM aider_user_rider WHERE Rider_Type='" . $type . "' AND Team_ID=0";
+        $statement = $connection->query($sql);
+
+        if($statement->num_rows > 0) {
+            $num = 0;
+
+            $response['error'] = false;
+
+            $response['data'] = "";
+
+            while($row = $statement->fetch_assoc()) {
+                $num++;
+
+                $response['data'] .= "<option value='" . $row['ID'] . "'>" . $row['Name'] . " (" . $row['Email_Address'] . ")</option>";
+            }
+        } else {
+            $response['error'] = true;
+            $response['data'] = "";
+        }
+
+        $statement->close();
+        $connection->close();
+
+        return $response;
+    }
+
+    function getSpecificRidersSelectList($type, $id) {
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        $sql = "SELECT * FROM aider_user_rider WHERE Rider_Type='" . $type . "' AND Team_ID=0";
+        $statement = $connection->query($sql);
+
+        $sqlSpecific = "SELECT * FROM aider_user_rider WHERE Rider_Type='" . $type . "' AND ID=$id";
+        $statementSpecific = $connection->query($sqlSpecific);
+
+        if($statementSpecific->num_rows > 0) {
+            $response['error'] = false;
+            $response['data'] = "";
+
+            while($rowSpecific = $statementSpecific->fetch_assoc()) {
+                $response['data'] .= "<option selected value='" . $rowSpecific['ID'] . "'>" . $rowSpecific['Name'] . " (" . $rowSpecific['Email_Address'] . ")</option>";
+            }
+
+            if($statement->num_rows > 0) {
+                $response['error'] = false;
+
+                while($row = $statement->fetch_assoc()) {
+
+                    $response['data'] .= "<option value='" . $row['ID'] . "'>" . $row['Name'] . " (" . $row['Email_Address'] . ")</option>";
+                }
+            } else {
+                $response['error'] = true;
+                $response['data'] = "";
+            }
+
+        } else {
+            $response['error'] = true;
+            $response['data'] = "";
+        }
+
+        $statement->close();
+        $connection->close();
+
+        return $response;
+    }
+
+    function getTeamDetailsForEditing($team_id) {
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        $sql = "SELECT * FROM aider_user_rider WHERE Rider_Type='" . $type . "' AND Team_ID=0";
+        $statement = $connection->query($sql);
+
+        if($statement->num_rows > 0) {
+            $num = 0;
+
+            $response['error'] = false;
+
+            $response['data'] = "";
+
+            while($row = $statement->fetch_assoc()) {
+                $num++;
+
+                $response['data'] .= "<option value='" . $row['ID'] . "'>" . $row['Name'] . " (" . $row['Email_Address'] . ")</option>";
+            }
+        } else {
+            $response['error'] = true;
+            $response['data'] = "";
+        }
+
+        $statement->close();
+        $connection->close();
+
+        return $response;
+    }
+
+    function approveRider($email, $v_model, $v_pn, $type) {
         $DatabaseHandler = new DatabaseHandler();
         $connection = $DatabaseHandler->getMySQLiConnection();
 
@@ -208,7 +361,13 @@ class RiderModal {
         $pswdHash = password_hash($pswd, PASSWORD_DEFAULT);
         // END: Generate Temporary Password
 
-        $sql = "UPDATE aider_user_rider SET Password_Hash='" . $pswdHash . "', Approval_Status='APPROVED', Vehicle_Model='" . $v_model . "', Vehicle_Plate_Number='" . $v_pn . "', First_Login='YES' WHERE Email_Address='" . $email . "'";
+        if($type === "Rider") {
+            $type = "RIDER";
+        } elseif($type === "Driver") {
+            $type = "DRIVER";
+        }
+
+        $sql = "UPDATE aider_user_rider SET Password_Hash='" . $pswdHash . "', Approval_Status='APPROVED', Vehicle_Model='" . $v_model . "', Vehicle_Plate_Number='" . $v_pn . "', Rider_Type='" . $type . "', First_Login='YES' WHERE Email_Address='" . $email . "'";
         $statement = $connection->query($sql);
 
         $nameResponse = $this->getRiderInformationByEmail($email, "Name");
@@ -264,6 +423,51 @@ class RiderModal {
             $response['error'] = true;
             $response['message'] = "There was an error while trying to update the approval status.";
         }
+
+        return $response;
+    }
+
+    function createTeam($teamName, $teamMembers) {
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        $sql = "INSERT INTO aider_driver_team(Team_Name, Team_Members, Team_Status) VALUES (?,?,?)";
+
+        $statement = $connection->prepare($sql);
+
+        $teamStatus = "INACTIVE";
+
+        $statement->bind_param("sss",$teamName, $teamMembers, $teamStatus);
+
+        if($statement->execute()) {
+            $response['error'] = false;
+
+            $TeamID = $statement->insert_id;
+
+            $members = explode(',', $teamMembers);
+            $memberOne = $this->getRiderInformationByID($members[0], 'Email_Address');
+            $memberTwo = $this->getRiderInformationByID($members[1], 'Email_Address');
+
+            if(!$memberOne['error'] && !$memberTwo['error']) {
+                $responseOne = $this->updateRiderInformationByEmail($memberOne['data'], "Team_ID", $TeamID);
+                $responseTwo = $this->updateRiderInformationByEmail($memberTwo['data'], "Team_ID", $TeamID);
+
+                if(!$responseOne['error'] && !$responseTwo['error']) {
+                    $response['error'] = false;
+                } else {
+                    $response['error'] = true;
+                }
+            } else {
+                $response['error'] = true;
+            }
+
+        } else {
+            $response['error'] = true;
+            $response['message'] = "There was an error while creating the [" . $teamName . "] team.";
+        }
+
+        $statement->close();
+        $connection->close();
 
         return $response;
     }
