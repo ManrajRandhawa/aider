@@ -66,7 +66,8 @@
                         </form>
                     </div>
                     <div class='modal-footer'>
-                        <button type='button' class='btn btn-primary' id='add-team-btn'>Add</button>
+                        <button type='button' class='btn btn-primary' id='add-team-btn-confirm'>Add</button>
+                        <button type='button' class='btn btn-outline-primary' data-dismiss="modal" id='add-team-btn-cancel'>Cancel</button>
                     </div>
                 </div>
                 <!-- START: Toast Messages Area -->
@@ -82,7 +83,7 @@
             <div class='modal-dialog modal-lg'>
                 <div class='modal-content'>
                     <div class='modal-header'>
-                        <h5 class='modal-title' id='approveModalLabel'>Edit <span id="edit_team_name"></span></h5>
+                        <h5 class='modal-title' id='approveModalLabel'>Edit Team - <span id="edit_team_name"></span></h5>
                     </div>
                     <div class='modal-body'>
                         <form method='post'>
@@ -115,7 +116,32 @@
                         </form>
                     </div>
                     <div class='modal-footer'>
-                        <button type='button' class='btn btn-primary' id='add-team-btn'>Add</button>
+                        <button type='button' class='btn btn-primary' id='edit-team-btn-confirm'>Confirm Changes</button>
+                        <button type='button' class='btn btn-outline-primary' data-dismiss="modal" id='edit-team-btn-cancel'>Cancel</button>
+                    </div>
+                </div>
+                <!-- START: Toast Messages Area -->
+                <div class='toast-container-modal' style='z-index: 9999;'>
+
+                </div>
+                <!-- END: Toast Messages Area -->
+            </div>
+        </div>
+
+        <!-- Modal: Delete Team -->
+        <div class='modal fade' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' id="deleteTeam" aria-hidden='true'>
+            <div class='modal-dialog modal-lg'>
+                <div class='modal-content'>
+                    <div class='modal-header'>
+                        <h5 class='modal-title' id='approveModalLabel'>Delete Team - <span class="text-danger" id="delete_team_name"></span></h5>
+                    </div>
+                    <div class='modal-body'>
+                        <h6>You are about to delete the <span class="text-danger" id="delete_team_name_2"></span> team.</h6>
+                        <h6 class="font-weight-bold">Are you sure?</h6>
+                    </div>
+                    <div class='modal-footer'>
+                        <button type='button' class='btn btn-primary' id='delete-team-btn-confirm'>Delete Team</button>
+                        <button type='button' class='btn btn-outline-primary' data-dismiss="modal" id='delete-team-btn-cancel'>Cancel</button>
                     </div>
                 </div>
                 <!-- START: Toast Messages Area -->

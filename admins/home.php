@@ -36,12 +36,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-6 mt-5">
-                    <span class="h3 text-black-50">Hi, <span class="h3 text-dark font-weight-bold" id="home-hello-name"></span></span>
-                </div>
-                <div class="col-6">
-                    <div class="mt-5 text-right">
-                        <span class="h6 text-black-50">RM <span class="h3 text-dark font-weight-bold" id="home-wallet-balance"></span></span>
-                    </div>
+                    <span class="h3 text-black-50">Hi, <span class="h3 text-dark font-weight-bold" id="admin-home-hello-name"></span></span>
                 </div>
             </div>
         </div>
@@ -51,60 +46,16 @@
         <div class="container">
             <div class="row">
                 <div class="col-12 mt-3">
-                    <a class="text-decoration-none" href="parcel.php">
+                    <a class="text-decoration-none" href="teams.php">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title"><i class="fas fa-box mr-1"></i> Parcel</h5>
-                                <p class="card-text">Need to deliver something to a friend?</p>
+                                <h5 class="card-title"><i class="fas fa-users mr-1"></i> Teams</h5>
+                                <p class="card-text">Manage your drivers' and riders' teams.</p>
                             </div>
                         </div>
                     </a>
                 </div>
 
-                <div class="col-12 mt-2 mb-3">
-                    <a class="text-decoration-none" href="food.php">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title"><i class="fas fa-utensils mr-1"></i> Food</h5>
-                                <p class="card-text">Feeling hungry? Grab a bite!</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <hr/>
-
-        <div class="container mb-5">
-            <div class="row">
-                <div class="col-12">
-                    <h6 class="text-center mb-3">Promotions</h6>
-                </div>
-
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title text-center p-0 m-0">Promotion 1</h5>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 mt-2">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title text-center p-0 m-0">Promotion 2</h5>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 mt-2">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title text-center p-0 m-0">Promotion 3</h5>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
 

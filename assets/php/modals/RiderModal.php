@@ -229,7 +229,7 @@ class RiderModal {
                                     <h6 class=\"card-text text-center p-0 m-0\">&</h6>
                                     <h6 class=\"card-text text-center p-0 mt-0 mb-3\">" . $memberTwo['data'] . "</h6>
                                     <a href=\"#\" onclick='editTeam(this.id);' class=\"btn btn-outline-success float-left\" id='" . $row['ID'] . "'><i class=\"far fa-edit edit-team\"></i></a>
-                                    <a href=\"#\" class=\"btn btn-outline-danger float-right\" id='" . $row['ID'] . "'><i class=\"far fa-trash-alt\"></i></a>
+                                    <a href=\"#\" onclick='deleteTeam(this.id);' class=\"btn btn-outline-danger float-right\" id='" . $row['ID'] . "'><i class=\"far fa-trash-alt\"></i></a>
                                 </div>
                             </div>
                         </div>";
@@ -279,39 +279,38 @@ class RiderModal {
         return $response;
     }
 
-    function getSpecificRidersSelectList($type, $id) {
+    function getEditedRidersSelectList($id) {
         $DatabaseHandler = new DatabaseHandler();
         $connection = $DatabaseHandler->getMySQLiConnection();
 
-        $sql = "SELECT * FROM aider_user_rider WHERE Rider_Type='" . $type . "' AND Team_ID=0";
+        $response['dataRider'] = "";
+        $response['dataDriver'] = "";
+
+        $sql = "SELECT * FROM aider_user_rider";
         $statement = $connection->query($sql);
 
-        $sqlSpecific = "SELECT * FROM aider_user_rider WHERE Rider_Type='" . $type . "' AND ID=$id";
-        $statementSpecific = $connection->query($sqlSpecific);
-
-        if($statementSpecific->num_rows > 0) {
+        if($statement->num_rows > 0) {
             $response['error'] = false;
-            $response['data'] = "";
 
-            while($rowSpecific = $statementSpecific->fetch_assoc()) {
-                $response['data'] .= "<option selected value='" . $rowSpecific['ID'] . "'>" . $rowSpecific['Name'] . " (" . $rowSpecific['Email_Address'] . ")</option>";
-            }
-
-            if($statement->num_rows > 0) {
-                $response['error'] = false;
-
-                while($row = $statement->fetch_assoc()) {
-
-                    $response['data'] .= "<option value='" . $row['ID'] . "'>" . $row['Name'] . " (" . $row['Email_Address'] . ")</option>";
+            while($row = $statement->fetch_assoc()) {
+                if($row['ID'] == $id) {
+                    if($row['Rider_Type'] === "RIDER") {
+                        $response['dataRider'] .= "<option selected value='" . $row['ID'] . "'>" . $row['Name'] . " (" . $row['Email_Address'] . ")</option>";
+                    } else {
+                        $response['dataDriver'] .= "<option selected value='" . $row['ID'] . "'>" . $row['Name'] . " (" . $row['Email_Address'] . ")</option>";
+                    }
+                } else {
+                    if($row['Rider_Type'] === "RIDER") {
+                        $response['dataRider'] .= "<option value='" . $row['ID'] . "'>" . $row['Name'] . " (" . $row['Email_Address'] . ")</option>";
+                    } else {
+                        $response['dataDriver'] .= "<option value='" . $row['ID'] . "'>" . $row['Name'] . " (" . $row['Email_Address'] . ")</option>";
+                    }
                 }
-            } else {
-                $response['error'] = true;
-                $response['data'] = "";
             }
 
+            $response['data'] = array($response['dataRider'], $response['dataDriver']);
         } else {
             $response['error'] = true;
-            $response['data'] = "";
         }
 
         $statement->close();
@@ -324,20 +323,45 @@ class RiderModal {
         $DatabaseHandler = new DatabaseHandler();
         $connection = $DatabaseHandler->getMySQLiConnection();
 
-        $sql = "SELECT * FROM aider_user_rider WHERE Rider_Type='" . $type . "' AND Team_ID=0";
+        $sql = "SELECT * FROM aider_driver_team WHERE ID=$team_id";
         $statement = $connection->query($sql);
 
         if($statement->num_rows > 0) {
-            $num = 0;
-
             $response['error'] = false;
-
             $response['data'] = "";
 
             while($row = $statement->fetch_assoc()) {
-                $num++;
+                $team_members = explode(',', $row['Team_Members']);
 
-                $response['data'] .= "<option value='" . $row['ID'] . "'>" . $row['Name'] . " (" . $row['Email_Address'] . ")</option>";
+                $response['data'] = array(
+                    $row['Team_Name'],
+                    $team_members[0],
+                    $team_members[1]
+                );
+            }
+        } else {
+            $response['error'] = true;
+            $response['data'] = "";
+        }
+
+        $statement->close();
+        $connection->close();
+
+        return $response;
+    }
+
+    function getTeamDetailsForDeleting($team_id) {
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        $sql = "SELECT * FROM aider_driver_team WHERE ID=$team_id";
+        $statement = $connection->query($sql);
+
+        if($statement->num_rows > 0) {
+            $response['error'] = false;
+
+            while($row = $statement->fetch_assoc()) {
+                $response['data'] = $row['Team_Name'];
             }
         } else {
             $response['error'] = true;
@@ -467,6 +491,68 @@ class RiderModal {
         }
 
         $statement->close();
+        $connection->close();
+
+        return $response;
+    }
+
+    function editTeam($teamID, $teamName, $teamMemberOne, $teamMemberTwo) {
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        $teamMembers = $teamMemberOne . "," . $teamMemberTwo;
+
+        $updateTeamSQL = "UPDATE aider_driver_team SET Team_Name='$teamName', Team_Members='$teamMembers' WHERE ID=$teamID";
+        $statementUpdateTeam = $connection->query($updateTeamSQL);
+
+        $updateRiderTeamSQL = "UPDATE aider_user_rider SET Team_ID=0 WHERE Team_ID=$teamID";
+        $statementUpdateRiderTeam = $connection->query($updateRiderTeamSQL);
+
+        $updateRiderTeamNewMemOneSQL = "UPDATE aider_user_rider SET Team_ID=$teamID WHERE ID=$teamMemberOne";
+        $statementUpdateRiderTeamNewMemOne = $connection->query($updateRiderTeamNewMemOneSQL);
+
+        $updateRiderTeamNewMemTwoSQL = "UPDATE aider_user_rider SET Team_ID=$teamID WHERE ID=$teamMemberTwo";
+        $statementUpdateRiderTeamNewMemTwo = $connection->query($updateRiderTeamNewMemTwoSQL);
+
+        if($statementUpdateTeam && $statementUpdateRiderTeam && $statementUpdateRiderTeamNewMemOne && $statementUpdateRiderTeamNewMemTwo) {
+            $response['error'] = false;
+        } else {
+            $response['error'] = true;
+        }
+
+        $statementUpdateTeam->close();
+        $statementUpdateRiderTeam->close();
+        $statementUpdateRiderTeamNewMemOne->close();
+        $statementUpdateRiderTeamNewMemTwo->close();
+        $connection->close();
+
+        return $response;
+    }
+
+    function deleteTeam($teamID) {
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        $deleteTeamSQL = "DELETE FROM aider_driver_team WHERE ID=$teamID";
+        $statementDeleteTeam = $connection->query($deleteTeamSQL);
+
+        $updateRiderTeamSQL = "UPDATE aider_user_rider SET Team_ID=0 WHERE Team_ID=$teamID";
+        $statementUpdateRiderTeam = $connection->query($updateRiderTeamSQL);
+
+        if($statementDeleteTeam) {
+            $response['error'] = false;
+
+            if($statementUpdateRiderTeam) {
+                $response['error'] = false;
+            } else {
+                $response['error'] = true;
+            }
+        } else {
+            $response['error'] = true;
+        }
+
+        $statementDeleteTeam->close();
+        $statementUpdateRiderTeam->close();
         $connection->close();
 
         return $response;
