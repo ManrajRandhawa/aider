@@ -75,12 +75,11 @@
         <?php
             echo $Aider->getUI()->getBootstrapScripts();
         ?>
-        <script src="../assets/js/Dashboard.js"></script>
+        <script src="../assets/js/Admin.js"></script>
         <script>
 
             $(document).ready(function() {
-                getDashboardJS();
-                getHomeDashboardJS();
+                getAdminHomeDashboard();
             });
 
         </script>

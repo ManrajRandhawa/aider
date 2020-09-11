@@ -97,7 +97,7 @@ function getTeamsDashboard() {
         });
 
         // Create Team
-        $('#add-team-btn').click(function() {
+        $('#add-team-btn-confirm').click(function() {
             // Add Team & Display Toast Message
 
             let member_one_id = $('#t_member_one').val();
