@@ -32,6 +32,26 @@ class RiderAJAX {
         });
     }
 
+    static addTeamToDenialList(orderType, orderID, teamID) {
+        $.ajax({
+            url: "../assets/php/ajax/rider/addTeamToDeniedList.php",
+            method: "POST",
+            cache: false,
+            data: {Order_Type: orderType, Order_ID: orderID, Team_ID: teamID},
+            success: function (data) {
+                if(data === "TRUE") {
+                    // Error Message
+                    console.log('WHOOPS!');
+                } else {
+                    console.log('Denied:');
+                    console.log('Order Type:' + orderType);
+                    console.log('Order ID:' + orderID);
+                    console.log('Team ID:' + teamID);
+                }
+            }
+        });
+    }
+
     static acceptOrder(orderType, orderID, riderID) {
         $.ajax({
             url: "../assets/php/ajax/rider/acceptOrder.php",
@@ -44,6 +64,23 @@ class RiderAJAX {
                     console.log('Order Type:' + orderType);
                     console.log('Order ID:' + orderID);
                     console.log('Rider ID:' + riderID);
+                }
+            }
+        });
+    }
+
+    static acceptTeamOrder(orderType, orderID, teamID) {
+        $.ajax({
+            url: "../assets/php/ajax/rider/acceptTeamOrder.php",
+            method: "POST",
+            cache: false,
+            data: {Order_Type: orderType, Order_ID: orderID, Team_ID: teamID},
+            success: function (data) {
+                if(data !== "TRUE") {
+                    console.log('Accepted:');
+                    console.log('Order Type:' + orderType);
+                    console.log('Order ID:' + orderID);
+                    console.log('Rider ID:' + teamID);
                 }
             }
         });
@@ -91,13 +128,15 @@ class RiderLayout {
     /* [START]
         STEP 1: Show Order
      */
-    static createNewOrder(type, pickUpLoc, dropOffLoc, travelDistance, timeRemaining, orderDetails, totalPrice, paidStatus) {
+    static createNewOrder(type, teamName, pickUpLoc, dropOffLoc, travelDistance, timeRemaining, orderDetails, totalPrice, paidStatus) {
         let transactionType, pickUpLocPrimary, pickUpLocSecondary, dropOffLocPrimary, dropOffLocSecondary;
 
         if(type === "PARCEL") {
             transactionType = "Parcel";
-        } else {
+        } else if(type === "FOOD") {
             transactionType = "Food";
+        } else if(type === "DRIVER") {
+            transactionType = "Driver";
         }
 
         pickUpLocPrimary = pickUpLoc.split(",", 1);
@@ -108,7 +147,12 @@ class RiderLayout {
         dropOffLocSecondary = dropOffLoc.replace(dropOffLocPrimary, '');
         dropOffLocSecondary = dropOffLocSecondary.replace(", ", '');
 
-        $('#delivery-type').text(transactionType + " Delivery");
+        if(transactionType === "DRIVER") {
+            $('#delivery-type').text(transactionType + " [Team " + teamName + "]");
+        } else {
+            $('#delivery-type').text(transactionType + " Delivery");
+        }
+
         $('#pickUpLoc-primary').text(pickUpLocPrimary);
         $('#pickUpLoc-secondary').text(pickUpLocSecondary);
         $('#dropOffLoc-primary').text(dropOffLocPrimary);
@@ -197,6 +241,7 @@ class RiderLogic {
                             if (dataDetails !== "ERROR") {
                                 if (dataDetails === "RIDER-FOUND") {
                                     // Crosscheck Rider ID and check whether to give a new order or start a ride
+
                                     $.ajax({
                                         url: "../assets/php/ajax/rider/getOrderDetailsByID.php",
                                         method: "POST",
@@ -385,6 +430,299 @@ class RiderLogic {
         }
     }
 
+    static getTeamOrderLogic(orderType, orderID) {
+        let riID = RiderDataSet.getRiderID();
+        let teamID = 0;
+        let teamMemberOne = 0, teamMemberTwo = 0;
+
+        $.ajax({
+            url: "../assets/php/ajax/rider/getRiderData.php",
+            method: "POST",
+            cache: false,
+            data: {User_Email: window.localStorage.getItem("User_Email"), User_Info: "Team_ID"},
+            success: function (dataID) {
+                teamID = parseInt(dataID);
+
+                $.ajax({
+                    url: "../assets/php/ajax/rider/getTeamDetails.php",
+                    method: "POST",
+                    cache: false,
+                    data: {Team_ID: teamID, Team_Data: "Team_Members"},
+                    success: function (dataMembers) {
+                        let members = dataMembers.split(',');
+                        teamMemberOne = members[0];
+                        teamMemberTwo = members[1];
+
+                        if(RiderDataSet.getOrderContainerDisplayed()) {
+                            // Rule 1: Dismiss by another rider accepting the order - Every 500 milliseconds
+                            if(riderAcceptanceInterval === null) {
+                                riderAcceptanceInterval = setInterval(function () {
+                                    $.ajax({
+                                        url: "../assets/php/ajax/rider/getOrderDetailsByID.php",
+                                        method: "POST",
+                                        cache: false,
+                                        data: {Order_Type: orderType, Order_ID: orderID, Order_Data: "Status"},
+                                        success: function (dataDetails) {
+                                            if (dataDetails !== "ERROR") {
+                                                if (dataDetails === "RIDER-FOUND") {
+                                                    // Crosscheck Rider ID and check whether to give a new order or start a ride
+
+                                                    $.ajax({
+                                                        url: "../assets/php/ajax/rider/getOrderDetailsByID.php",
+                                                        method: "POST",
+                                                        cache: false,
+                                                        data: {Order_Type: orderType, Order_ID: orderID, Order_Data: "Team_ID"},
+                                                        success: function (data) {
+                                                            if(data !== "ERROR") {
+                                                                if(parseInt(data) === parseInt(teamID)) {
+                                                                    // If this rider accepted the order, display new container
+                                                                    $('#rider-navigation-main').addClass('d-none');
+                                                                    $('#rider-navigation-riding-1').removeClass('d-none');
+                                                                } else {
+                                                                    // If this rider didn't accept the order, show a new order
+                                                                    Rider.resetValues();
+
+                                                                    if(RiderDataSet.getNewOrderCalled() === false) {
+                                                                        Rider.getNewTeamOrders();
+                                                                    }
+                                                                    RiderDataSet.setNewOrderCalled(true);
+                                                                }
+                                                            }
+                                                        }
+                                                    });
+                                                } else {
+                                                    // Finding For Rider
+                                                }
+                                            } else {
+                                                // [ERROR] Can't retrieve Order Details By ID
+                                            }
+                                        }
+                                    });
+                                }, 500);
+                            } else {
+                                console.log('riderAcceptanceInterval variable has been defined!');
+                            }
+                            // Rule 2: Dismiss by Timer Countdown
+                            if(riderOrderCountdownInterval === null) {
+                                riderOrderCountdownInterval = setInterval(function() {
+                                    if(timeLeft === 0) {
+                                        RiderAJAX.addTeamToDenialList(orderType, orderID, teamID);
+
+                                        // Reset Values
+                                        Rider.resetValues();
+
+                                        if(RiderDataSet.getNewOrderCalled() === false) {
+                                            Rider.getNewTeamOrders();
+                                        }
+                                        RiderDataSet.setNewOrderCalled(true);
+                                    } else {
+                                        if(timeLeft < 10) {
+                                            $('#time-left').text("00:0" + timeLeft);
+                                        } else {
+                                            $('#time-left').text("00:" + timeLeft);
+                                        }
+
+                                        timeLeft--;
+                                    }
+                                }, 1000);
+                            } else {
+                                console.log('riderOrderCountdownInterval variable has been defined!');
+                            }
+                            // Rule 3: Dismiss by choosing to cancel order
+                            $('#reject-order').unbind().click(function() {
+                                RiderAJAX.addTeamToDenialList(orderType, orderID, teamID);
+
+                                // Reset Values
+                                Rider.resetValues();
+
+                                if(RiderDataSet.getNewOrderCalled() === false) {
+                                    Rider.getNewTeamOrders();
+                                }
+                                RiderDataSet.setNewOrderCalled(true);
+                            });
+                            // Rule 4: Dismiss by choosing to accept order
+                            $('#accept-order').unbind().click(function() {
+                                // Reset countdown and other values
+                                Rider.resetValues();
+                                clearInterval(realTimeCheck);
+
+                                RiderAJAX.acceptTeamOrder(orderType, orderID, teamID);
+                                RiderDataSet.setNewOrderCalled(false);
+
+                                RiderDataSet.setRiderMode(Mode.HEADING_TO_PICKUP);
+                                RiderDataSet.setOrderContainerDisplayed(false);
+                                RiderLogic.getTeamOrderLogic(orderType, orderID);
+                            });
+                        } else {
+                            // Mode.INACTIVE implementations have been set in getNewOrders() function
+
+                            if(RiderDataSet.getRiderMode() === Mode.HEADING_TO_PICKUP) {
+                                // Set Rider Status -> HEADING_TO_PICKUP
+                                $.ajax({
+                                    url: "../assets/php/ajax/rider/setRiderStatusByID.php",
+                                    method: "POST",
+                                    cache: false,
+                                    data: {Status: "HEADING_TO_PICKUP", T_Type: orderType, T_ID: orderID, ID: parseInt(teamMemberOne)},
+                                    success: function (data) {
+                                        if(data !== "NO-ERROR") {
+                                            console.log(data);
+                                        } else {
+                                            $.ajax({
+                                                url: "../assets/php/ajax/rider/setRiderStatusByID.php",
+                                                method: "POST",
+                                                cache: false,
+                                                data: {Status: "HEADING_TO_PICKUP", T_Type: orderType, T_ID: orderID, ID: parseInt(teamMemberTwo)},
+                                                success: function (data) {
+                                                    if(data !== "NO-ERROR") {
+                                                        console.log(data);
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+
+                                $('#rider-navigation-main').addClass('d-none');
+                                $('#rider-navigation-riding-1').removeClass('d-none');
+                                $('#rider-navigation-riding-1-content').removeClass('d-none');
+
+                                $('#btn-arrived-pickup').click(function() {
+                                    RiderDataSet.setRiderMode(Mode.HEADING_TO_DESTINATION);
+                                    RiderLogic.getTeamOrderLogic(orderType, orderID);
+                                });
+                            }
+
+                            if(RiderDataSet.getRiderMode() === Mode.HEADING_TO_DESTINATION) {
+                                // Set Rider Status -> HEADING_TO_DESTINATION
+                                $.ajax({
+                                    url: "../assets/php/ajax/rider/setRiderStatusByID.php",
+                                    method: "POST",
+                                    cache: false,
+                                    data: {Status: "HEADING_TO_DESTINATION", T_Type: orderType, T_ID: orderID, ID: parseInt(teamMemberOne)},
+                                    success: function (data) {
+                                        if(data !== "NO-ERROR") {
+                                            console.log(data);
+                                        } else {
+                                            $.ajax({
+                                                url: "../assets/php/ajax/rider/setRiderStatusByID.php",
+                                                method: "POST",
+                                                cache: false,
+                                                data: {Status: "HEADING_TO_DESTINATION", T_Type: orderType, T_ID: orderID, ID: parseInt(teamMemberTwo)},
+                                                success: function (data) {
+                                                    if(data !== "NO-ERROR") {
+                                                        console.log(data);
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+
+                                if(!($('#rider-navigation-main').hasClass('d-none'))) {
+                                    $('#rider-navigation-main').addClass('d-none');
+                                }
+                                $('#rider-navigation-riding-1').addClass('d-none');
+                                $('#rider-navigation-riding-1-content').addClass('d-none');
+                                $('#rider-navigation-riding-2').removeClass('d-none');
+                                $('#rider-navigation-riding-2-content').removeClass('d-none');
+
+                                $('#btn-arrived-destination').click(function() {
+                                    RiderDataSet.setRiderMode(Mode.COMPLETED);
+                                    RiderLogic.getTeamOrderLogic(orderType, orderID);
+                                });
+                            }
+
+                            if(RiderDataSet.getRiderMode() === Mode.COMPLETED) {
+                                // Set Rider Status -> COMPLETED
+                                $.ajax({
+                                    url: "../assets/php/ajax/rider/setRiderStatusByID.php",
+                                    method: "POST",
+                                    cache: false,
+                                    data: {Status: "COMPLETED", T_Type: orderType, T_ID: orderID, ID: parseInt(teamMemberOne)},
+                                    success: function (data) {
+                                        if(data !== "NO-ERROR") {
+                                            console.log(data);
+                                        } else {
+                                            $.ajax({
+                                                url: "../assets/php/ajax/rider/setRiderStatusByID.php",
+                                                method: "POST",
+                                                cache: false,
+                                                data: {Status: "COMPLETED", T_Type: orderType, T_ID: orderID, ID: parseInt(teamMemberTwo)},
+                                                success: function (data) {
+                                                    if(data !== "NO-ERROR") {
+                                                        console.log(data);
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+
+
+
+                                if(!($('#rider-navigation-main').hasClass('d-none'))) {
+                                    $('#rider-navigation-main').addClass('d-none');
+                                }
+                                $('#rider-navigation-riding-2').addClass('d-none');
+                                $('#rider-navigation-riding-2-content').addClass('d-none');
+                                $('#rider-navigation-riding-3').removeClass('d-none');
+
+                                $('#rider-navigation-riding-3-btn').click(function() {
+                                    RiderDataSet.setRiderMode(Mode.ACTIVE);
+
+                                    // Set Rider Status -> ACTIVE
+                                    $.ajax({
+                                        url: "../assets/php/ajax/rider/setRiderStatusByID.php",
+                                        method: "POST",
+                                        cache: false,
+                                        data: {Status: "ACTIVE", T_Type: "", T_ID: 0, ID: parseInt(teamMemberOne)},
+                                        success: function (data) {
+                                            if(data !== "NO-ERROR") {
+                                                console.log(data);
+                                            } else {
+                                                $.ajax({
+                                                    url: "../assets/php/ajax/rider/setRiderStatusByID.php",
+                                                    method: "POST",
+                                                    cache: false,
+                                                    data: {Status: "ACTIVE", T_Type: "", T_ID: 0, ID: parseInt(teamMemberTwo)},
+                                                    success: function (data) {
+                                                        if(data !== "NO-ERROR") {
+                                                            console.log(data);
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+
+                                    $.ajax({
+                                        url: "../assets/php/ajax/rider/getTeamDetails.php",
+                                        method: "POST",
+                                        cache: false,
+                                        data: {Team_ID: teamID, Team_Data: "Team_Name"},
+                                        success: function (teamName) {
+                                            $('#team_name_nav').html(teamName);
+                                            
+                                            $('#rider-navigation-riding-3').addClass('d-none');
+                                            $('#rider-navigation-main').removeClass('d-none');
+                                            $('#btn-inactive').addClass('d-none');
+                                            $('#btn-active-team').removeClass('d-none');
+                                            Rider.getNewTeamOrders();
+                                        }
+                                    });
+
+
+                                });
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
+
+    }
+
     static getOngoingOrders() {
         // Get Rider's Status
         $.ajax({
@@ -415,35 +753,110 @@ class RiderLogic {
                         success: function (dataTType) {
                             let orderType = dataTType;
 
-                            // Get Rider's Current Transaction Details from ID
-                            $.ajax({
-                                url: "../assets/php/ajax/rider/getRiderData.php",
-                                method: "POST",
-                                cache: false,
-                                data: {User_Email: window.localStorage.getItem("User_Email"), User_Info: "Transaction_ID"},
-                                success: function (dataDetails) {
-                                    console.log("Transaction ID: " + dataDetails);
-                                    console.log(orderType);
-                                    RiderLogic.getOrderLogic(orderType, dataDetails);
+                            if(orderType === "PARCEL" || orderType === "FOOD") {
+                                // Get Rider's Current Transaction Details from ID
+                                $.ajax({
+                                    url: "../assets/php/ajax/rider/getRiderData.php",
+                                    method: "POST",
+                                    cache: false,
+                                    data: {User_Email: window.localStorage.getItem("User_Email"), User_Info: "Transaction_ID"},
+                                    success: function (dataDetails) {
+                                        console.log("Transaction ID: " + dataDetails);
+                                        console.log(orderType);
+                                        RiderLogic.getOrderLogic(orderType, dataDetails);
 
-                                    $.ajax({
-                                        url: "../assets/php/ajax/rider/getOrderDetails.php",
-                                        method: "POST",
-                                        cache: false,
-                                        data: {Order_Type: orderType, Order_ID: dataDetails},
-                                        success: function (dataOrderD) {
-                                            if(dataOrderD !== "ERROR") {
-                                                let dataDP = JSON.parse(dataOrderD);
+                                        $.ajax({
+                                            url: "../assets/php/ajax/rider/getOrderDetails.php",
+                                            method: "POST",
+                                            cache: false,
+                                            data: {Order_Type: orderType, Order_ID: dataDetails},
+                                            success: function (dataOrderD) {
+                                                if(dataOrderD !== "ERROR") {
+                                                    let dataDP = JSON.parse(dataOrderD);
 
-                                                RiderLayout.createPickUpLocationContent(dataDP[1]);
-                                                RiderLayout.createDropOffLocationContent(dataDP[2]);
-                                            } else {
-                                                // [ERROR] Not able to get Order Details
+                                                    RiderLayout.createPickUpLocationContent(dataDP[1]);
+                                                    RiderLayout.createDropOffLocationContent(dataDP[2]);
+                                                } else {
+                                                    // [ERROR] Not able to get Order Details
+                                                }
                                             }
-                                        }
-                                    });
-                                }
-                            });
+                                        });
+                                    }
+                                });
+                            }
+
+
+                        }
+                    });
+
+                }
+            }
+        });
+    }
+
+    static getTeamOngoingOrders() {
+        // Get Rider's Status
+        $.ajax({
+            url: "../assets/php/ajax/rider/getRiderData.php",
+            method: "POST",
+            cache: false,
+            data: {User_Email: window.localStorage.getItem("User_Email"), User_Info: "Status"},
+            success: function (data) {
+                if(data === "ACTIVE" || data === "INACTIVE") {
+                    Rider.getNewTeamOrders();
+                } else {
+                    if(data === "HEADING_TO_PICKUP") {
+                        RiderDataSet.setRiderMode(Mode.HEADING_TO_PICKUP);
+                    } else if(data === "HEADING_TO_DESTINATION") {
+                        RiderDataSet.setRiderMode(Mode.HEADING_TO_DESTINATION);
+                    } else if(data === "COMPLETED") {
+                        RiderDataSet.setRiderMode(Mode.COMPLETED);
+                    }
+
+                    console.log(RiderDataSet.getRiderMode());
+
+                    // Get Rider's Current Transaction Type
+                    $.ajax({
+                        url: "../assets/php/ajax/rider/getRiderData.php",
+                        method: "POST",
+                        cache: false,
+                        data: {User_Email: window.localStorage.getItem("User_Email"), User_Info: "Transaction_Type"},
+                        success: function (dataTType) {
+                            let orderType = dataTType;
+
+                            if(orderType === "DRIVER") {
+                                // Get Rider's Current Transaction Details from ID
+                                $.ajax({
+                                    url: "../assets/php/ajax/rider/getRiderData.php",
+                                    method: "POST",
+                                    cache: false,
+                                    data: {User_Email: window.localStorage.getItem("User_Email"), User_Info: "Transaction_ID"},
+                                    success: function (dataDetails) {
+                                        console.log("Transaction ID: " + dataDetails);
+                                        console.log(orderType);
+                                        RiderLogic.getTeamOrderLogic(orderType, dataDetails);
+
+                                        $.ajax({
+                                            url: "../assets/php/ajax/rider/getOrderDetails.php",
+                                            method: "POST",
+                                            cache: false,
+                                            data: {Order_Type: orderType, Order_ID: dataDetails},
+                                            success: function (dataOrderD) {
+                                                if(dataOrderD !== "ERROR") {
+                                                    let dataDP = JSON.parse(dataOrderD);
+
+                                                    RiderLayout.createPickUpLocationContent(dataDP[1]);
+                                                    RiderLayout.createDropOffLocationContent(dataDP[2]);
+                                                } else {
+                                                    // [ERROR] Not able to get Order Details
+                                                }
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+
+
                         }
                     });
 
@@ -542,19 +955,33 @@ class Rider {
                                                                                         $('#order-container').removeClass('d-none');
 
                                                                                         if(RiderDataSet.getOrderLogicCalled() === false) {
-                                                                                            RiderLogic.getOrderLogic(orderType, orderID, riID);
+                                                                                            RiderLogic.getOrderLogic(orderType, orderID);
                                                                                         }
                                                                                         RiderDataSet.setOrderLogicCalled(true);
 
-                                                                                        RiderLayout.createNewOrder(
-                                                                                            orderType,
-                                                                                            dataDetails[1],
-                                                                                            dataDetails[2],
-                                                                                            dataDetails[10],
-                                                                                            dataDetails[11],
-                                                                                            "1 x Nasi Goreng<br/>1 x Teh O' Ais",
-                                                                                            parseFloat(dataDetails[8]),
-                                                                                            "Paid");
+                                                                                        if(orderType === "PARCEL") {
+                                                                                            RiderLayout.createNewOrder(
+                                                                                                orderType,
+                                                                                                "",
+                                                                                                dataDetails[1],
+                                                                                                dataDetails[2],
+                                                                                                dataDetails[10],
+                                                                                                dataDetails[11],
+                                                                                                "",
+                                                                                                parseFloat(dataDetails[8]),
+                                                                                                "Paid");
+                                                                                        } else if(orderType === "FOOD") {
+                                                                                            RiderLayout.createNewOrder(
+                                                                                                orderType,
+                                                                                                "",
+                                                                                                dataDetails[1],
+                                                                                                dataDetails[2],
+                                                                                                dataDetails[10],
+                                                                                                dataDetails[11],
+                                                                                                "1 x Nasi Goreng<br/>1 x Teh O' Ais",
+                                                                                                parseFloat(dataDetails[8]),
+                                                                                                "Paid");
+                                                                                        }
 
                                                                                         RiderLayout.createPickUpLocationContent(dataDetails[1]);
                                                                                         RiderLayout.createDropOffLocationContent(dataDetails[2]);
@@ -587,6 +1014,193 @@ class Rider {
                         }
                     }, 1000);
                 }
+            }
+        });
+    }
+
+    static getNewTeamOrders() {
+        Rider.resetValues();
+
+        $.ajax({
+            url: "../assets/php/ajax/rider/getRiderData.php",
+            method: "POST",
+            cache: false,
+            data: {User_Email: window.localStorage.getItem("User_Email"), User_Info: "Team_ID"},
+            success: function (data) {
+
+                let teamID = parseInt(data);
+
+                let orderID = null;
+                let orderType = null;
+                let dataDetails = null;
+                let dataArray = null;
+
+                let teamMemberOne = 0, teamMemberTwo = 0;
+
+                $.ajax({
+                    url: "../assets/php/ajax/rider/getRiderData.php",
+                    method: "POST",
+                    cache: false,
+                    data: {User_Email: window.localStorage.getItem("User_Email"), User_Info: "Team_ID"},
+                    success: function (dataID) {
+                        teamID = parseInt(dataID);
+
+                        $.ajax({
+                            url: "../assets/php/ajax/rider/getTeamDetails.php",
+                            method: "POST",
+                            cache: false,
+                            data: {Team_ID: teamID, Team_Data: "Team_Members"},
+                            success: function (dataMembers) {
+                                let members = dataMembers.split(',');
+                                teamMemberOne = members[0];
+                                teamMemberTwo = members[1];
+
+                                // Check for new orders in 1000ms intervals
+                                if(realTimeCheck === null) {
+                                    realTimeCheck = setInterval(function () {
+
+                                        // clearInterval for realTimeCheck if RiderMode === INACTIVE or RiderMode === 0
+                                        if(RiderDataSet.getRiderMode() === Mode.INACTIVE) {
+                                            Rider.resetValues();
+                                            clearInterval(realTimeCheck);
+                                        } else {
+                                            // Get New Orders from Database
+                                            $.ajax({
+                                                url: "../assets/php/ajax/rider/getNewTeamOrders.php",
+                                                method: "POST",
+                                                cache: false,
+                                                data: {Team_ID: teamID},
+                                                success: function (data) {
+                                                    if(data !== "ERROR") {
+                                                        dataArray = JSON.parse(data);
+                                                        orderID = parseInt(dataArray[0]);
+                                                        orderType = dataArray[1];
+
+                                                        console.log(dataArray);
+
+                                                        if(orderType === "DRIVER") {
+                                                            $.ajax({
+                                                                url: "../assets/php/ajax/rider/getOrderDetails.php",
+                                                                method: "POST",
+                                                                cache: false,
+                                                                data: {Order_Type: orderType, Order_ID: orderID},
+                                                                success: function (dataD) {
+                                                                    if(dataD !== "ERROR") {
+                                                                        dataDetails = JSON.parse(dataD);
+
+                                                                        clearInterval(realTimeCheck);
+                                                                        realTimeCheck = null;
+
+                                                                        // Get max distance for Riders
+                                                                        $.ajax({
+                                                                            url: "../assets/php/ajax/rider/getRiderData.php",
+                                                                            method: "POST",
+                                                                            cache: false,
+                                                                            data: {User_Email: window.localStorage.getItem("User_Email"), User_Info: "Loc_LNG"},
+                                                                            success: function (dataLNG) {
+                                                                                let lng = dataLNG;
+
+                                                                                $.ajax({
+                                                                                    url: "../assets/php/ajax/rider/getRiderData.php",
+                                                                                    method: "POST",
+                                                                                    cache: false,
+                                                                                    data: {User_Email: window.localStorage.getItem("User_Email"), User_Info: "Loc_LAT"},
+                                                                                    success: function (dataLAT) {
+                                                                                        let lat = dataLAT;
+
+                                                                                        console.log(lat + ", " + lng);
+
+                                                                                        $.ajax({
+                                                                                            url: "../assets/php/ajax/rider/getSettingsInfo.php",
+                                                                                            method: "POST",
+                                                                                            cache: false,
+                                                                                            data: {Info: "Maximum_Radius_KM"},
+                                                                                            success: function (dataSettings) {
+                                                                                                $.ajax({
+                                                                                                    url: "../assets/php/ajax/rider/getDistance.php",
+                                                                                                    method: "POST",
+                                                                                                    cache: false,
+                                                                                                    data: {coordsAddOneLAT: lat, coordsAddOneLNG: lng, addressTwo: dataDetails[1]},
+                                                                                                    success: function (dataDistance) {
+                                                                                                        if(parseFloat(dataSettings) > parseFloat(dataDistance)) {
+                                                                                                            // Get Order Details
+                                                                                                            RiderDataSet.setOrderContainerDisplayed(true);
+                                                                                                            $('#order-container').removeClass('d-none');
+
+                                                                                                            if(RiderDataSet.getOrderLogicCalled() === false) {
+                                                                                                                RiderLogic.getTeamOrderLogic(orderType, orderID);
+                                                                                                            }
+                                                                                                            RiderDataSet.setOrderLogicCalled(true);
+
+                                                                                                            $.ajax({
+                                                                                                                url: "../assets/php/ajax/rider/getRiderData.php",
+                                                                                                                method: "POST",
+                                                                                                                cache: false,
+                                                                                                                data: {User_Email: window.localStorage.getItem("User_Email"), User_Info: "Team_ID"},
+                                                                                                                success: function (teamID) {
+                                                                                                                    $.ajax({
+                                                                                                                        url: "../assets/php/ajax/rider/getTeamDetails.php",
+                                                                                                                        method: "POST",
+                                                                                                                        cache: false,
+                                                                                                                        data: {Team_ID: teamID, Team_Data: "Team_Name"},
+                                                                                                                        success: function (teamName) {
+                                                                                                                            RiderLayout.createNewOrder(
+                                                                                                                                orderType,
+                                                                                                                                teamName,
+                                                                                                                                dataDetails[1],
+                                                                                                                                dataDetails[2],
+                                                                                                                                dataDetails[5],
+                                                                                                                                dataDetails[6],
+                                                                                                                                "",
+                                                                                                                                parseFloat(dataDetails[3]),
+                                                                                                                                "Paid");
+                                                                                                                        }
+                                                                                                                    });
+                                                                                                                }
+                                                                                                            });
+
+                                                                                                            RiderLayout.createPickUpLocationContent(dataDetails[1]);
+                                                                                                            RiderLayout.createDropOffLocationContent(dataDetails[2]);
+                                                                                                        } else {
+                                                                                                            // Add Rider to Denied List as range is too far
+                                                                                                            RiderAJAX.addTeamToDenialList(orderType, orderID, teamID);
+
+                                                                                                            // Give new order
+                                                                                                            Rider.getNewTeamOrders();
+                                                                                                        }
+                                                                                                    }
+                                                                                                });
+                                                                                            }
+                                                                                        });
+                                                                                    }
+                                                                                });
+
+                                                                            }
+                                                                        });
+                                                                    } else {
+                                                                        // [ERROR] Not able to get Order Details
+                                                                    }
+                                                                }
+                                                            });
+
+                                                        } else {
+                                                            // Not DRIVER Order Found
+                                                        }
+
+                                                    } else {
+                                                        // [ERROR] Not able to get New Orders
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }, 1000);
+                                }
+                            }
+                        });
+                    }
+                });
+
+
             }
         });
     }

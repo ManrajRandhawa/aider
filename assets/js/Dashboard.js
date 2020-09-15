@@ -164,6 +164,87 @@ function getParcelDashboardJS() {
     }
 }
 
+function getAiderDriverDashboardJS() {
+    if(window.localStorage.getItem("User_Email") === null) {
+        window.location.href = "../members/index.php";
+    } else {
+        let user_email = window.localStorage.getItem("User_Email");
+
+        // START: Click Deliver Now Button
+        $('#btn-deliver').click(function() {
+
+            // Check if input values are valid
+            let pickUpLocationVal = $('#pickUpSearch').val();
+            let dropOffLocationVal = $('#dropOffSearch').val();
+
+            if(!pickUpLocationVal && !dropOffLocationVal) {
+                let titleLocError = "Oops! Something went wrong.";
+                let messageLocError = "It seems that you've not completed the address entry. Please try again!";
+                // Display Toast Message
+                $.ajax({
+                    url: "../assets/php/ajax/ui/sendToastMessage.php",
+                    method: "POST",
+                    cache: false,
+                    data: {Title: titleLocError, Message: messageLocError},
+                    success: function(dataToast) {
+                        $('.toast-container').html(dataToast);
+                        $('.toast').toast('show');
+
+                        setTimeout(function() {
+                            $('.toast-container').html("");
+                        }, 5000);
+                    }
+                });
+            } else {
+                let priceText, price, finalPrice;
+                priceText = $('#text-price').text();
+                price = priceText.replace('RM ', '');
+                finalPrice = price.split(" ").slice(0, price.indexOf(',')).slice(0, price.indexOf(','));
+
+                $.ajax({
+                    url: "../assets/php/ajax/bookings/driver/bookDriver.php",
+                    method: "POST",
+                    cache: false,
+                    data: {Email: user_email, Pickup_Location: pickUpLocationVal, Dropoff_Location: dropOffLocationVal, Price: finalPrice},
+                    success: function(data){
+                        let title, message;
+                        if(data === "NO-ERROR") {
+                            title = "Finding a Rider";
+                            message = "Your request is now being sent to our riders. We'll find a rider for you soon enough. Hang tight!";
+                        } else {
+                            title = "Oops! Something went wrong.";
+                            message = data;
+                            alert(data);
+                        }
+
+                        // Display Toast Message
+                        $.ajax({
+                            url: "../assets/php/ajax/ui/sendToastMessage.php",
+                            method: "POST",
+                            cache: false,
+                            data: {Title: title, Message: message},
+                            success: function(dataToast){
+                                $('.toast-container').html(dataToast);
+                                $('.toast').toast('show');
+
+                                setTimeout(function() {
+                                    $('.toast-container').html("");
+                                }, 5000);
+
+                                $('#container-details').hide();
+
+                                $('#btn-deliver').hide();
+                                $('#btn-continue').show();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+        // END: Click Deliver Now Button
+    }
+}
+
 function getHomeDashboardJS() {
     if(window.localStorage.getItem("User_Email") === null) {
         window.location.href = "../members/index.php";

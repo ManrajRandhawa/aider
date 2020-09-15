@@ -213,6 +213,35 @@
         </div>
         <!-- END: Mode: Heading to Destination Location Layout -->
 
+        <!-- START: Select Active Modes -->
+        <div class="container mb-7 fixed-bottom d-none" style="z-index: 0;" id="rider-active-modes-list">
+            <div class="row">
+                <div class="col-12 ml-2" style="max-width: 96vw;">
+                    <div class="row rounded bg-white pt-3 pb-3">
+                        <div class="col-12 text-break">
+                            <i class="fas fa-times fa-lg float-right text-dark mt-n1" id="close-active-modes-selection"></i>
+                            <h4 class="card-title text-center">Choose a Mode</h4>
+
+                            <hr/>
+                            <div class="row">
+                                <div class="col-6">
+                                    <button class="btn btn-outline-dark w-100" id="btn-others">
+                                        <span>Parcel & Food</span>
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button class="btn btn-outline-primary w-100" id="btn-driver">
+                                        <span>Aider Driver</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END: Select Active Modes -->
+
         <!-- START: Bottom Navigation -->
         <div class="container mb-4 fixed-bottom" style="z-index: 0;" id="container-location">
             <div class="row">
@@ -226,7 +255,7 @@
                                 </span>
                             </a>
                         </div>
-                        <div class="col-6 text-center">
+                        <div class="col-6 text-center p-0">
                             <!-- Inactive Button -->
                             <div class="btn btn-outline-dark w-100" id="btn-inactive">
                                 <span>Inactive Mode</span>
@@ -235,6 +264,11 @@
                             <!-- Active Button -->
                             <div class="btn btn-outline-success w-100 d-none" id="btn-active">
                                 <span>Active Mode</span>
+                            </div>
+
+                            <!-- Active Button for Teams -->
+                            <div class="btn btn-outline-success w-100 d-none" id="btn-active-team">
+                                <span>Team <span id="team_name_nav"></span> - Active</span>
                             </div>
                         </div>
                         <div class="col-3 text-center">

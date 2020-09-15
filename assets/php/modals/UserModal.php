@@ -27,4 +27,8 @@ class UserModal {
         return new OrderModal();
     }
 
+    function getAiderDriverModal() {
+        return new AiderDriver();
+    }
+
 }

@@ -197,6 +197,27 @@ class RiderModal {
         return $response;
     }
 
+    function getTeamInformationByID($id, $info) {
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        $sql = "SELECT * FROM aider_driver_team WHERE ID=$id";
+        $statement = $connection->query($sql);
+
+        if($statement->num_rows > 0) {
+            $response['error'] = false;
+            while($row = $statement->fetch_assoc()) {
+                $response['data'] = $row[$info];
+            }
+        } else {
+            $response['error'] = true;
+            $response['message'] = "There was an error while trying to connect to the database.";
+        }
+
+        return $response;
+    }
+
+
     function getTeamsList() {
         $DatabaseHandler = new DatabaseHandler();
         $connection = $DatabaseHandler->getMySQLiConnection();
@@ -619,6 +640,27 @@ class RiderModal {
         $connection = $DatabaseHandler->getMySQLiConnection();
 
         $sql = "UPDATE aider_user_rider SET Status = '$status', Transaction_Type = '$t_type', Transaction_ID = $t_id WHERE Email_Address = '$email'";
+
+        $statement = $connection->query($sql);
+
+        if($statement) {
+            $response['error'] = false;
+            $response['message'] = "The rider's status has been updated.";
+        } else {
+            $response['error'] = true;
+            $response['message'] = "There was an error while trying to update the rider's status.";
+        }
+
+        $connection->close();
+
+        return $response;
+    }
+
+    function updateRiderStatusByID($status, $t_type, $t_id, $id) {
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        $sql = "UPDATE aider_user_rider SET Status = '$status', Transaction_Type = '$t_type', Transaction_ID = $t_id WHERE ID = $id";
 
         $statement = $connection->query($sql);
 

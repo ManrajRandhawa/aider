@@ -62,12 +62,23 @@
                     </a>
                 </div>
 
-                <div class="col-12 mt-2 mb-3">
+                <div class="col-12 mt-2">
                     <a class="text-decoration-none" href="food.php">
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title"><i class="fas fa-utensils mr-1"></i> Food</h5>
                                 <p class="card-text">Feeling hungry? Grab a bite!</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-12 mt-2 mb-3">
+                    <a class="text-decoration-none" href="driver.php">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-car mr-1"></i> Driver</h5>
+                                <p class="card-text">Tipsy? We'll help you out!</p>
                             </div>
                         </div>
                     </a>
