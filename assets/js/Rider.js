@@ -174,7 +174,7 @@ function getHomeJS() {
                                     teamMemberOne = members[0];
                                     teamMemberTwo = members[1];
 
-                                    // Set Rider Status -> ACTIVE
+                                    // Set Rider 1 Status -> ACTIVE
                                     $.ajax({
                                         url: "../assets/php/ajax/rider/setRiderStatusByID.php",
                                         method: "POST",
@@ -184,7 +184,7 @@ function getHomeJS() {
                                             if(data !== "NO-ERROR") {
                                                 console.log(data);
                                             } else {
-                                                // Set Rider Status -> ACTIVE
+                                                // Set Rider 2 Status -> ACTIVE
                                                 $.ajax({
                                                     url: "../assets/php/ajax/rider/setRiderStatusByID.php",
                                                     method: "POST",
@@ -194,7 +194,19 @@ function getHomeJS() {
                                                         if(dataTwo !== "NO-ERROR") {
                                                             console.log(dataTwo);
                                                         } else {
-                                                            console.log('Rider Status Data has been updated.');
+                                                            $.ajax({
+                                                                url: "../assets/php/ajax/rider/setTeamStatus.php",
+                                                                method: "POST",
+                                                                cache: false,
+                                                                data: {ID: teamID, Status: "ACTIVE"},
+                                                                success: function (dataTwo) {
+                                                                    if(dataTwo !== "NO-ERROR") {
+                                                                        console.log(dataTwo);
+                                                                    } else {
+                                                                        console.log('Status Data has been updated.');
+                                                                    }
+                                                                }
+                                                            });
                                                         }
                                                     }
                                                 });
@@ -246,34 +258,51 @@ function getHomeJS() {
         });
 
         $('#btn-active-team').click(function () {
-            $('#btn-active').addClass('d-none');
+            $('#btn-active-team').addClass('d-none');
             $('#btn-inactive').removeClass('d-none');
             riderMode = Mode.INACTIVE;
             RiderDataSet.setRiderMode(0);
 
-            // Set Rider Status -> INACTIVE
             $.ajax({
-                url: "../assets/php/ajax/rider/setRiderStatus.php",
-                method: "POST",
+                url: '../assets/php/ajax/rider/getRiderData.php',
+                method: 'POST',
                 cache: false,
-                data: {Status: "INACTIVE", T_Type: "", T_ID: 0, Email: window.localStorage.getItem("User_Email")},
-                success: function (data) {
-                    if(data !== "NO-ERROR") {
-                        console.log(data);
-                    } else {
-                        console.log('Rider Status Data has been updated.');
-                    }
+                data: {User_Email: user_email, User_Info: "Team_ID"},
+                success: function (teamID) {
+                    // Set Rider Status -> INACTIVE
+                    $.ajax({
+                        url: "../assets/php/ajax/rider/setRiderStatus.php",
+                        method: "POST",
+                        cache: false,
+                        data: {Status: "INACTIVE", T_Type: "", T_ID: 0, Email: window.localStorage.getItem("User_Email")},
+                        success: function (data) {
+                            if(data !== "NO-ERROR") {
+                                console.log(data);
+                            } else {
+                                $.ajax({
+                                    url: "../assets/php/ajax/rider/setTeamStatus.php",
+                                    method: "POST",
+                                    cache: false,
+                                    data: {ID: teamID, Status: "INACTIVE"},
+                                    success: function (dataTwo) {
+                                        if(dataTwo !== "NO-ERROR") {
+                                            console.log(dataTwo);
+                                        } else {
+                                            console.log('Status Data has been updated.');
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
                 }
             });
+
+
 
             Rider.removeRiderLocation(watchID);
 
             $('#order-container').addClass('d-none');
-        });
-
-        $('#btn-active-team').click(function() {
-            $('#btn-active-team').addClass('d-none');
-            $('#btn-inactive').removeClass('d-none');
         });
         // END: Rider - Active and Inactive Mode
     }

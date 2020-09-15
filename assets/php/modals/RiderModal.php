@@ -197,6 +197,27 @@ class RiderModal {
         return $response;
     }
 
+    function setTeamStatus($id, $status) {
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        $sql = "UPDATE aider_driver_team SET Team_Status = '$status' WHERE ID = $id";
+
+        $statement = $connection->query($sql);
+
+        if($statement) {
+            $response['error'] = false;
+            $response['message'] = "The team's status has been updated.";
+        } else {
+            $response['error'] = true;
+            $response['message'] = "There was an error while trying to update the team's status.";
+        }
+
+        $connection->close();
+
+        return $response;
+    }
+
     function getTeamInformationByID($id, $info) {
         $DatabaseHandler = new DatabaseHandler();
         $connection = $DatabaseHandler->getMySQLiConnection();

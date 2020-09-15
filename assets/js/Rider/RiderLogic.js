@@ -431,7 +431,6 @@ class RiderLogic {
     }
 
     static getTeamOrderLogic(orderType, orderID) {
-        let riID = RiderDataSet.getRiderID();
         let teamID = 0;
         let teamMemberOne = 0, teamMemberTwo = 0;
 
@@ -702,7 +701,7 @@ class RiderLogic {
                                         data: {Team_ID: teamID, Team_Data: "Team_Name"},
                                         success: function (teamName) {
                                             $('#team_name_nav').html(teamName);
-                                            
+
                                             $('#rider-navigation-riding-3').addClass('d-none');
                                             $('#rider-navigation-main').removeClass('d-none');
                                             $('#btn-inactive').addClass('d-none');
@@ -710,8 +709,6 @@ class RiderLogic {
                                             Rider.getNewTeamOrders();
                                         }
                                     });
-
-
                                 });
                             }
                         }
