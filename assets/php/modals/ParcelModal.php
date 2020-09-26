@@ -50,10 +50,10 @@ class ParcelModal {
 
                 if(!$response['error']) {
                     // [START] Add to Delivery Sorting
-                    $sqlSort = "INSERT INTO aider_transaction_sorting(Transaction_ID, Transaction_Type, Transaction_Datetime, Transaction_Status) VALUES (?, ?, ?, ?)";
+                    $sqlSort = "INSERT INTO aider_transaction_sorting(Transaction_ID, Transaction_Type, Customer_ID, Transaction_Datetime, Transaction_Status) VALUES (?, ?, ?, ?, ?)";
 
                     $statementSort = $connection->prepare($sqlSort);
-                    $statementSort->bind_param("isss", $insert_id, $t_type, $transactionDate, $status);
+                    $statementSort->bind_param("isiss", $insert_id, $t_type, $responseCustomerID['data'], $transactionDate, $status);
 
                     if($statementSort->execute()) {
                         $response['error'] = false;

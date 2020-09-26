@@ -112,11 +112,6 @@ class CustomerModal {
         return $response;
     }
 
-    function bookParcelDelivery() {
-        // RM 5 (Base Fare) + RM 1.50 every km
-
-    }
-
     function getRecentTransactions($cust_id) {
         $DatabaseHandler = new DatabaseHandler();
         $connection = $DatabaseHandler->getMySQLiConnection();
@@ -163,6 +158,42 @@ class CustomerModal {
 
         $statement->close();
         $connection->close();
+
+        return $response;
+    }
+
+
+    // TODO: Only Driver Module works for Ongoing Order -> Fix this function to include all modules to work seamlessly
+    function getOngoingOrder($email) {
+        $responseUserID = $this->getCustomerInformationByEmail($email, "ID");
+
+        if($responseUserID['error']) {
+            $response['error'] = true;
+        } else {
+            $response['error'] = false;
+
+            $userID = $responseUserID['data'];
+
+            $DatabaseHandler = new DatabaseHandler();
+            $connection = $DatabaseHandler->getMySQLiConnection();
+
+            $sqlSortingSelect = "SELECT * FROM aider_transaction_sorting WHERE 
+                                              (Transaction_Status!='FINDING-RIDER' AND Transaction_Status!='COMPLETED'
+                                                  AND Transaction_Status!='CANCELLED_BY_CUSTOMER') AND Customer_ID=$userID";
+
+            $resultsSortingSelect = $connection->query($sqlSortingSelect);
+            if($resultsSortingSelect->num_rows > 0) {
+                $i = 0;
+                while($row = $resultsSortingSelect->fetch_array()) {
+                    $response['data'][$i] = $row;
+                    $i++;
+                }
+
+                $response['count'] = $i;
+            } else {
+                $response['error'] = true;
+            }
+        }
 
         return $response;
     }

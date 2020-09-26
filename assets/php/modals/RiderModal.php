@@ -238,7 +238,6 @@ class RiderModal {
         return $response;
     }
 
-
     function getTeamsList() {
         $DatabaseHandler = new DatabaseHandler();
         $connection = $DatabaseHandler->getMySQLiConnection();

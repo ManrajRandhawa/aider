@@ -19,6 +19,13 @@
         <?php
             echo $Aider->getUI()->getBootstrapHead();
         ?>
+
+        <style>
+            .pac-container {
+                overflow-y: scroll;
+                z-index: 9999;
+            }
+        </style>
     </head>
 
     <body class="bg-white">
@@ -128,6 +135,38 @@
             </div>
         </div>
 
+        <!-- Set Home Address Modal -->
+        <div class='modal fade' id="set-home-address" tabindex='-1' role='dialog' aria-labelledby='setHomeModalLabel' aria-hidden='true'>
+            <div class='modal-dialog modal-lg'>
+                <div class='modal-content'>
+                    <div class='modal-header'>
+                        <h5 class='modal-title' id='setHomeModalLabel'>Account > Set Home Address</h5>
+                    </div>
+                    <div class='modal-body'>
+                        <form method='post'>
+                            <div class='form-group'>
+                                <label for='current-home' class='col-form-label'>Your Current Address:</label>
+                                <input type='text' class='form-control' name='current-home' id='current-home' disabled>
+                            </div>
+                            <div class='form-group'>
+                                <label for='set-home' class='col-form-label'>Enter Your Address:</label>
+                                <input type='text' class='form-control' name='set-home' id='set-home'>
+                            </div>
+                        </form>
+                    </div>
+                    <div class='modal-footer'>
+                        <button type='button' class='btn btn-primary' id='set-home-btn'>Set Home Address</button>
+                    </div>
+                </div>
+
+                <!-- START: Toast Messages Area -->
+                <div class="toast-container-modal" style="z-index: 9999;">
+
+                </div>
+                <!-- END: Toast Messages Area -->
+            </div>
+        </div>
+
 
         <!-- Main Content -->
         <div class="container">
@@ -177,6 +216,19 @@
 
             <hr/>
 
+            <div class="mt-5"></div>
+
+            <a class="text-decoration-none" data-toggle="modal" data-target="#set-home-address">
+                <div class="row">
+                    <div class="col-12">
+                        <span class="h6 text-primary">Set Home Address</span>
+                        <i class="fas fa-chevron-right text-black-50 float-right"></i>
+                    </div>
+                </div>
+            </a>
+
+            <hr/>
+
             <a class="text-decoration-none" id="logout">
                 <div class="row mt-5">
                     <div class="col-12">
@@ -206,7 +258,16 @@
             echo $Aider->getUI()->getBootstrapScripts();
         ?>
         <script src="../assets/js/Dashboard.js"></script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=<?php echo MAP_API_KEY; ?>&libraries=places&callback=initMap"></script>
         <script>
+            function initMap() {
+                let home, autocompleteHome;
+
+                home = document.getElementById('set-home');
+                autocompleteHome = new google.maps.places.Autocomplete(home);
+                autocompleteHome.setComponentRestrictions({'country': ['my']});
+            }
+
             $(document).ready(function() {
                 getDashboardJS();
                 getAccountDashboardJS();

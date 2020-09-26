@@ -54,7 +54,7 @@
         <div class="container-fluid fixed-top mt-4">
             <div class="row">
                 <div class="col-2">
-                    <i class="fas fa-chevron-circle-left fa-2x text-light float-right" id="btn-back"></i>
+                    <i class="fas fa-chevron-circle-left fa-2x text-light float-right shadow-lg rounded-circle" id="btn-back"></i>
                 </div>
                 <div class="col-10 bg-transparent"></div>
             </div>
@@ -80,7 +80,7 @@
             <div class="row">
                 <div class="col-1"></div>
                 <div class="col-10">
-                    <div class="row rounded bg-white p-0">
+                    <div class="row rounded bg-white p-0 shadow-sm">
                         <div class="col-12">
                             <h5 class="text-center mt-2 mb-4 text-dark">Contact Details</h5>
                             <div class="row">
@@ -111,7 +111,7 @@
             <div class="row">
                 <div class="col-1"></div>
                 <div class="col-10">
-                    <div class="row rounded bg-white p-0">
+                    <div class="row rounded bg-white p-0 shadow-lg">
                         <div class="col-12">
                             <div class="row mb-n2">
                                 <div class="col-2 mt-3 text-center">
@@ -151,10 +151,10 @@
             <div class="row">
                 <div class="col-1"></div>
                 <div class="col-10 p-0">
-                    <button class="btn btn-light rounded w-100 bg-white" id="btn-continue">
+                    <button class="btn btn-light rounded w-100 bg-white shadow-lg" id="btn-continue">
                         Continue
                     </button>
-                    <button class="btn btn-light rounded w-100 bg-white" id="btn-deliver" style="display: none;">
+                    <button class="btn btn-light rounded w-100 bg-white shadow-lg" id="btn-deliver" style="display: none;">
                         Deliver Now <h6 id="text-price">RM 0.00 <span id='text-distance'>(0 km)</span></h6>
                     </button>
                 </div>

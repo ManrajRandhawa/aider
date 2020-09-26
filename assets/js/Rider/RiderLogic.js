@@ -85,6 +85,23 @@ class RiderAJAX {
             }
         });
     }
+
+    static changeOrderStatus(orderType, orderID, status) {
+        $.ajax({
+            url: "../assets/php/ajax/rider/setOrderStatus.php",
+            method: "POST",
+            cache: false,
+            data: {Order_Type: orderType, Order_ID: orderID, Status: status},
+            success: function (data) {
+                if(data !== "TRUE") {
+                    console.log('Updated:');
+                    console.log('Order Type:' + orderType);
+                    console.log('Order ID:' + orderID);
+                    console.log('Status:' + status);
+                }
+            }
+        });
+    }
 }
 
 class RiderDataSet {
@@ -332,6 +349,9 @@ class RiderLogic {
             // Mode.INACTIVE implementations have been set in getNewOrders() function
 
             if(RiderDataSet.getRiderMode() === Mode.HEADING_TO_PICKUP) {
+                // Set Transaction Status -> HEADING_TO_PICKUP
+                RiderAJAX.changeOrderStatus(orderType, orderID, "HEADING_TO_PICKUP");
+
                 // Set Rider Status -> HEADING_TO_PICKUP
                 $.ajax({
                     url: "../assets/php/ajax/rider/setRiderStatus.php",
@@ -356,6 +376,9 @@ class RiderLogic {
             }
 
             if(RiderDataSet.getRiderMode() === Mode.HEADING_TO_DESTINATION) {
+                // Set Transaction Status -> HEADING_TO_DESTINATION
+                RiderAJAX.changeOrderStatus(orderType, orderID, "HEADING_TO_DESTINATION");
+
                 // Set Rider Status -> HEADING_TO_DESTINATION
                 $.ajax({
                     url: "../assets/php/ajax/rider/setRiderStatus.php",
@@ -384,6 +407,9 @@ class RiderLogic {
             }
 
             if(RiderDataSet.getRiderMode() === Mode.COMPLETED) {
+                // Set Transaction Status -> COMPLETED
+                RiderAJAX.changeOrderStatus(orderType, orderID, "COMPLETED");
+
                 // Set Rider Status -> COMPLETED
                 $.ajax({
                     url: "../assets/php/ajax/rider/setRiderStatus.php",
@@ -556,6 +582,9 @@ class RiderLogic {
                             // Mode.INACTIVE implementations have been set in getNewOrders() function
 
                             if(RiderDataSet.getRiderMode() === Mode.HEADING_TO_PICKUP) {
+                                // Set Transaction Status -> HEADING_TO_PICKUP
+                                RiderAJAX.changeOrderStatus(orderType, orderID, "HEADING_TO_PICKUP");
+
                                 // Set Rider Status -> HEADING_TO_PICKUP
                                 $.ajax({
                                     url: "../assets/php/ajax/rider/setRiderStatusByID.php",
@@ -592,6 +621,9 @@ class RiderLogic {
                             }
 
                             if(RiderDataSet.getRiderMode() === Mode.HEADING_TO_DESTINATION) {
+                                // Set Transaction Status -> HEADING_TO_DESTINATION
+                                RiderAJAX.changeOrderStatus(orderType, orderID, "HEADING_TO_DESTINATION");
+
                                 // Set Rider Status -> HEADING_TO_DESTINATION
                                 $.ajax({
                                     url: "../assets/php/ajax/rider/setRiderStatusByID.php",
@@ -632,6 +664,9 @@ class RiderLogic {
                             }
 
                             if(RiderDataSet.getRiderMode() === Mode.COMPLETED) {
+                                // Set Transaction Status -> COMPLETED
+                                RiderAJAX.changeOrderStatus(orderType, orderID, "COMPLETED");
+
                                 // Set Rider Status -> COMPLETED
                                 $.ajax({
                                     url: "../assets/php/ajax/rider/setRiderStatusByID.php",

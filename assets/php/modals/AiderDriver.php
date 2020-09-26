@@ -50,13 +50,14 @@ class AiderDriver {
 
                 if(!$response['error']) {
                     // [START] Add to Delivery Sorting
-                    $sqlSort = "INSERT INTO aider_transaction_sorting(Transaction_ID, Transaction_Type, Transaction_Datetime, Transaction_Status) VALUES (?, ?, ?, ?)";
+                    $sqlSort = "INSERT INTO aider_transaction_sorting(Transaction_ID, Transaction_Type, Customer_ID, Transaction_Datetime, Transaction_Status) VALUES (?, ?, ?, ?, ?)";
 
                     $statementSort = $connection->prepare($sqlSort);
-                    $statementSort->bind_param("isss", $insert_id, $t_type, $transactionDate, $status);
+                    $statementSort->bind_param("isiss", $insert_id, $t_type, $responseCustomerID['data'], $transactionDate, $status);
 
                     if($statementSort->execute()) {
                         $response['error'] = false;
+                        $response['message'] = $insert_id;
                     } else {
                         $response['error'] = true;
                         $response['message'] = "There was an error while pushing the data to the sorting service.";
@@ -68,6 +69,25 @@ class AiderDriver {
                 $connection->close();
             }
         }
+        return $response;
+    }
+
+    function cancelRide($rideID) {
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        $sqlDriver = "UPDATE aider_transaction_driver SET Status='CANCELLED_BY_CUSTOMER' WHERE ID=" . intval($rideID);
+        $sqlSorting = "UPDATE aider_transaction_sorting SET Transaction_Status='CANCELLED_BY_CUSTOMER' WHERE Transaction_Type='DRIVER' AND Transaction_ID=" . intval($rideID);
+
+        $queryDriver = $connection->query($sqlDriver);
+        $querySorting = $connection->query($sqlSorting);
+
+        if($queryDriver && $querySorting) {
+            $response['error'] = false;
+        } else {
+            $response['error'] = true;
+        }
+
         return $response;
     }
 

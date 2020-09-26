@@ -103,7 +103,8 @@ class OrderModal {
                         $row['Price'],
                         $row['Transaction_Datetime'],
                         $drivingDistance['distance'],
-                        $drivingDistance['time']
+                        $drivingDistance['time'],
+                        $row['Rider_ID']
                     );
                 } elseif($orderType === "FOOD") {
                     $dataArray = array(
@@ -119,7 +120,8 @@ class OrderModal {
                         $row['Price'],
                         $row['Transaction_Datetime'],
                         $drivingDistance['distance'],
-                        $drivingDistance['time']
+                        $drivingDistance['time'],
+                        $row['Rider_ID']
                     );
                 } elseif($orderType === "DRIVER") {
                     $dataArray = array(
@@ -129,7 +131,8 @@ class OrderModal {
                         $row['Price'],
                         $row['Transaction_Datetime'],
                         $drivingDistance['distance'],
-                        $drivingDistance['time']
+                        $drivingDistance['time'],
+                        $row['Team_ID']
                     );
                 }
 
@@ -454,6 +457,42 @@ class OrderModal {
 
         if($statement) {
             $sqlSort = "UPDATE aider_transaction_sorting SET `Transaction_Status` = 'RIDER-FOUND' WHERE Transaction_ID = " . intval($OrderID) . " AND Transaction_Type = '$OrderType'";
+            $statementSort = $connection->query($sqlSort);
+
+            if($statementSort) {
+                $response['error'] = false;
+            } else {
+                $response['error'] = true;
+            }
+        } else {
+            $response['error'] = true;
+        }
+
+        $connection->close();
+
+        return $response;
+    }
+
+    function setOrderStatus($OrderType, $OrderID, $Status) {
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        $tableName = "";
+
+        if($OrderType === "PARCEL") {
+            $tableName = "aider_transaction_parcel";
+        } elseif($OrderType === "FOOD") {
+            $tableName = "aider_transaction_food";
+        } elseif($OrderType === "DRIVER") {
+            $tableName = "aider_transaction_driver";
+        }
+
+        $sql = "UPDATE $tableName SET `Status`='$Status' WHERE ID = " . intval($OrderID);
+
+        $statement = $connection->query($sql);
+
+        if($statement) {
+            $sqlSort = "UPDATE aider_transaction_sorting SET `Transaction_Status` = '$Status' WHERE Transaction_ID = " . intval($OrderID) . " AND Transaction_Type = '$OrderType'";
             $statementSort = $connection->query($sqlSort);
 
             if($statementSort) {
