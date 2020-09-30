@@ -246,7 +246,7 @@
         <div class="container mb-4 fixed-bottom" style="z-index: 0;" id="container-location">
             <div class="row">
                 <div class="col-12 ml-2" style="max-width: 96vw;">
-                    <div class="row rounded bg-white pt-3 pb-2" id="rider-navigation-main">
+                    <div class="row rounded bg-white pt-3 pb-2 shadow-lg" id="rider-navigation-main">
                         <div class="col-3 text-center">
                             <a href="earnings.php" class="text-decoration-none">
                                 <span>

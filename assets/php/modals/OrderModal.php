@@ -427,7 +427,7 @@ class OrderModal {
         $statement = $connection->query($sql);
 
         if($statement) {
-            $sqlSort = "UPDATE aider_transaction_sorting SET `Transaction_Status` = 'RIDER-FOUND' WHERE Transaction_ID = " . intval($OrderID) . " AND Transaction_Type = '$OrderType'";
+            $sqlSort = "UPDATE aider_transaction_sorting SET `Transaction_Status` = 'RIDER-FOUND', `RT_ID` = " . intval($Rider_ID) . " WHERE Transaction_ID = " . intval($OrderID) . " AND Transaction_Type = '$OrderType'";
             $statementSort = $connection->query($sqlSort);
 
             if($statementSort) {
@@ -456,7 +456,7 @@ class OrderModal {
         $statement = $connection->query($sql);
 
         if($statement) {
-            $sqlSort = "UPDATE aider_transaction_sorting SET `Transaction_Status` = 'RIDER-FOUND' WHERE Transaction_ID = " . intval($OrderID) . " AND Transaction_Type = '$OrderType'";
+            $sqlSort = "UPDATE aider_transaction_sorting SET `Transaction_Status` = 'RIDER-FOUND', `RT_ID` = " . intval($Team_ID) . " WHERE Transaction_ID = " . intval($OrderID) . " AND Transaction_Type = '$OrderType'";
             $statementSort = $connection->query($sqlSort);
 
             if($statementSort) {
@@ -502,6 +502,193 @@ class OrderModal {
             }
         } else {
             $response['error'] = true;
+        }
+
+        $connection->close();
+
+        return $response;
+    }
+
+    function getRecentTrips($riderEmail, $tripType) {
+        $Aider = new Aider();
+
+        $IDResponse = $Aider->getUserModal()->getRiderModal()->getRiderInformationByEmail($riderEmail, "ID");
+        $riderID = intval($IDResponse['data']);
+
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        if($tripType === "DRIVER") {
+            $TeamResponse = $Aider->getUserModal()->getRiderModal()->getRiderInformationByID(intval($riderID), "Team_ID");
+
+            $sql = "SELECT * FROM aider_transaction_sorting WHERE `Transaction_Status`='COMPLETED' AND `Transaction_Type`='DRIVER' AND RT_ID = " . intval($TeamResponse['data']) . " ORDER BY ID DESC LIMIT 3";
+            $statement = $connection->query($sql);
+
+            $response['data'] = "";
+            $i = 1;
+
+            if($statement->num_rows > 0) {
+                $response['error'] = false;
+                while($row = $statement->fetch_assoc()) {
+                    $sqlTeam = "SELECT * FROM aider_transaction_driver WHERE ID = " . intval($row['Transaction_ID']);
+                    $statementTeam = $connection->query($sqlTeam);
+
+                    $response['error'] = false;
+
+                    if($statementTeam->num_rows > 0) {
+                        while($rowTeam = $statementTeam->fetch_assoc()) {
+                            $response['data'] .= "<div class=\"col-12 mt-2\">
+                            <div class=\"card\">
+                                <div class=\"card-body\">
+                                    <div class=\"row mb-3\">
+                                        <div class=\"col-7\">
+                                            <h4 class=\"card-title text-success font-weight-bold mt-1\">Trip #" . $i . "</h4>
+                                        </div>
+                                        <div class=\"col-5\">
+                                            <h6 class=\"text-right\">RM <span class=\"h3 text-success font-weight-bold\">" . $rowTeam['Rider_Cut'] . "</span></h6>
+                                        </div>
+                                    </div>
+
+                                    <div class=\"row\">
+                                        <div class=\"col-12\">
+                                            <h6 class=\"text-center\">" . $rowTeam['Pickup_Location'] . "</h6>
+                                        </div>
+                                        <div class=\"col-12 text-center\">
+                                            <i class=\"fas fa-angle-double-down fa-lg text-success mt-1 mb-2\"></i>
+                                        </div>
+                                        <div class=\"col-12\">
+                                            <h6 class=\"text-center\">" . $rowTeam['Dropoff_Location'] . "</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>";
+
+                            $i++;
+                        }
+                    } else {
+                        $response['data'] = "<div class='container mt-4 mb-5'>
+                            <div class='row'>
+                                <div class='col-1'></div>
+                                <div class='col-10 text-center mt-5'>
+                                    <i class='fas fa-scroll fa-4x' style='color: #DCDCDC;'></i>
+                                    <h6 class='font-weight-bold mt-4'>Nothing here yet!</h6>
+                                    <h6 class='text-black-50'>Any rides completed will appear here.</h6>
+                                </div>
+                                <div class='col-1'></div>
+                            </div>
+                        </div>";
+                    }
+
+                    $statementTeam->close();
+                }
+            } else {
+                $response['error'] = true;
+                $response['message'] = "No results found.";
+                $response['data'] = "<div class='container mt-4 mb-5'>
+                            <div class='row'>
+                                <div class='col-1'></div>
+                                <div class='col-10 text-center mt-5'>
+                                    <i class='fas fa-scroll fa-4x' style='color: #DCDCDC;'></i>
+                                    <h6 class='font-weight-bold mt-4'>Nothing here yet!</h6>
+                                    <h6 class='text-black-50'>Any rides completed will appear here.</h6>
+                                </div>
+                                <div class='col-1'></div>
+                            </div>
+                        </div>";
+            }
+
+            $statement->close();
+
+        } elseif($tripType === "OTHERS") {
+            $sql = "SELECT * FROM aider_transaction_sorting WHERE `Transaction_Status`='COMPLETED' AND `Transaction_Type`!='DRIVER' AND RT_ID = " . intval($riderID) . " ORDER BY ID DESC LIMIT 3";
+
+            $statement = $connection->query($sql);
+
+            $response['data'] = "";
+            $i = 1;
+
+            if($statement->num_rows > 0) {
+                $response['error'] = false;
+                while($row = $statement->fetch_assoc()) {
+                    if($row['Transaction_Type'] === "PARCEL") {
+                        $sqlInner = "SELECT * FROM aider_transaction_parcel WHERE ID = " . intval($row['Transaction_ID']);
+                    } else {
+                        $sqlInner = "SELECT * FROM aider_transaction_food WHERE ID = " . intval($row['Transaction_ID']);
+                    }
+
+                    $statementInner = $connection->query($sqlInner);
+
+                    if($statementInner->num_rows > 0) {
+                        $response['error'] = false;
+
+                        while($rowInner = $statementInner->fetch_assoc()) {
+                            $response['data'] .= "<div class=\"col-12 mt-2\">
+                            <div class=\"card\">
+                                <div class=\"card-body\">
+                                    <div class=\"row mb-3\">
+                                        <div class=\"col-7\">
+                                            <h4 class=\"card-title text-success font-weight-bold mt-1\">Trip #" . $i . "</h4>
+                                        </div>
+                                        <div class=\"col-5\">
+                                            <h6 class=\"text-right\">RM <span class=\"h3 text-success font-weight-bold\">" . $rowInner['Rider_Cut'] . "</span></h6>
+                                        </div>
+                                    </div>
+
+                                    <div class=\"row\">
+                                        <div class=\"col-12\">
+                                            <h6 class=\"text-center\">" . $rowInner['Pickup_Location'] . "</h6>
+                                        </div>
+                                        <div class=\"col-12 text-center\">
+                                            <i class=\"fas fa-angle-double-down fa-lg text-success mt-1 mb-2\"></i>
+                                        </div>
+                                        <div class=\"col-12\">
+                                            <h6 class=\"text-center\">" . $rowInner['Dropoff_Location'] . "</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>";
+
+                            $i++;
+                        }
+                    } else {
+                        $response['data'] = "<div class='container mt-4 mb-5'>
+                            <div class='row'>
+                                <div class='col-1'></div>
+                                <div class='col-10 text-center mt-5'>
+                                    <i class='fas fa-scroll fa-4x' style='color: #DCDCDC;'></i>
+                                    <h6 class='font-weight-bold mt-4'>Nothing here yet!</h6>
+                                    <h6 class='text-black-50'>Any rides completed will appear here.</h6>
+                                </div>
+                                <div class='col-1'></div>
+                            </div>
+                        </div>";
+                    }
+
+                    $statementInner->close();
+                }
+
+            } else {
+                $response['error'] = true;
+                $response['message'] = "No results found.";
+                $response['data'] = "<div class='container mt-4 mb-5'>
+                            <div class='row'>
+                                <div class='col-1'></div>
+                                <div class='col-10 text-center mt-5'>
+                                    <i class='fas fa-scroll fa-4x' style='color: #DCDCDC;'></i>
+                                    <h6 class='font-weight-bold mt-4'>Nothing here yet!</h6>
+                                    <h6 class='text-black-50'>Any rides completed will appear here.</h6>
+                                </div>
+                                <div class='col-1'></div>
+                            </div>
+                        </div>";
+            }
+
+            $statement->close();
+        } else {
+            $response['error'] = true;
+            $response['message'] = "Incorrect data type.";
         }
 
         $connection->close();

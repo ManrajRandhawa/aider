@@ -308,6 +308,50 @@ function getHomeJS() {
     }
 }
 
+function getEarningsDashboardJS() {
+    if(window.localStorage.getItem("User_Email") === null) {
+        window.location.href = "../members/index.php";
+    } else {
+        let user_email = window.localStorage.getItem("User_Email");
+
+        // START: Get Wallet Balance
+        $.ajax({
+            url: '../assets/php/ajax/rider/getRiderData.php',
+            method: 'POST',
+            cache: false,
+            data: {User_Email: user_email, User_Info: "Wallet_Balance"},
+            success: function(data) {
+                $('#wallet-balance').html(data);
+            }
+        });
+        // END: Get Wallet Balance
+
+        // START: Get Driver Trips
+        $.ajax({
+            url: '../assets/php/ajax/rider/getRecentTrips.php',
+            method: 'POST',
+            cache: false,
+            data: {User_Email: user_email, Trip_Type: "DRIVER"},
+            success: function(data) {
+                $('#driver-trips-container').html(data);
+            }
+        });
+        // END: Get Driver Trips
+
+        // START: Get Other Trips
+        $.ajax({
+            url: '../assets/php/ajax/rider/getRecentTrips.php',
+            method: 'POST',
+            cache: false,
+            data: {User_Email: user_email, Trip_Type: "OTHERS"},
+            success: function(data) {
+                $('#other-trips-container').html(data);
+            }
+        });
+        // END: Get Other Trips
+    }
+}
+
 function getAccountDashboardJS() {
     if(window.localStorage.getItem("User_Email") === null) {
         window.location.href = "../members/index.php";

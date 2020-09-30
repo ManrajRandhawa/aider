@@ -369,7 +369,7 @@ class RiderLogic {
                 $('#rider-navigation-riding-1').removeClass('d-none');
                 $('#rider-navigation-riding-1-content').removeClass('d-none');
 
-                $('#btn-arrived-pickup').click(function() {
+                $('#btn-arrived-pickup').unbind().click(function() {
                     RiderDataSet.setRiderMode(Mode.HEADING_TO_DESTINATION);
                     RiderLogic.getOrderLogic(orderType, orderID);
                 });
@@ -400,7 +400,7 @@ class RiderLogic {
                 $('#rider-navigation-riding-2').removeClass('d-none');
                 $('#rider-navigation-riding-2-content').removeClass('d-none');
 
-                $('#btn-arrived-destination').click(function() {
+                $('#btn-arrived-destination').unbind().click(function() {
                     RiderDataSet.setRiderMode(Mode.COMPLETED);
                     RiderLogic.getOrderLogic(orderType, orderID);
                 });
@@ -430,7 +430,7 @@ class RiderLogic {
                 $('#rider-navigation-riding-2-content').addClass('d-none');
                 $('#rider-navigation-riding-3').removeClass('d-none');
 
-                $('#rider-navigation-riding-3-btn').click(function() {
+                $('#rider-navigation-riding-3-btn').unbind().click(function() {
                     RiderDataSet.setRiderMode(Mode.ACTIVE);
 
                     // Set Rider Status -> ACTIVE
@@ -614,7 +614,7 @@ class RiderLogic {
                                 $('#rider-navigation-riding-1').removeClass('d-none');
                                 $('#rider-navigation-riding-1-content').removeClass('d-none');
 
-                                $('#btn-arrived-pickup').click(function() {
+                                $('#btn-arrived-pickup').unbind().click(function() {
                                     RiderDataSet.setRiderMode(Mode.HEADING_TO_DESTINATION);
                                     RiderLogic.getTeamOrderLogic(orderType, orderID);
                                 });
@@ -657,7 +657,7 @@ class RiderLogic {
                                 $('#rider-navigation-riding-2').removeClass('d-none');
                                 $('#rider-navigation-riding-2-content').removeClass('d-none');
 
-                                $('#btn-arrived-destination').click(function() {
+                                $('#btn-arrived-destination').unbind().click(function() {
                                     RiderDataSet.setRiderMode(Mode.COMPLETED);
                                     RiderLogic.getTeamOrderLogic(orderType, orderID);
                                 });
@@ -701,7 +701,7 @@ class RiderLogic {
                                 $('#rider-navigation-riding-2-content').addClass('d-none');
                                 $('#rider-navigation-riding-3').removeClass('d-none');
 
-                                $('#rider-navigation-riding-3-btn').click(function() {
+                                $('#rider-navigation-riding-3-btn').unbind().click(function() {
                                     RiderDataSet.setRiderMode(Mode.ACTIVE);
 
                                     // Set Rider Status -> ACTIVE

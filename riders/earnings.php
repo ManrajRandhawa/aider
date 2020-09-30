@@ -135,7 +135,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title text-primary font-weight-bold">Wallet Balance</h5>
-                                <h6>RM <span class="h3 font-weight-bold" id="wallet-balance">28.50</span></h6>
+                                <h6>RM <span class="h3 font-weight-bold" id="wallet-balance"></span></h6>
                             </div>
                             <div class="card-footer bg-white" id="top-up-wallet">
                                 <span class="card-text text-dark h6">Cash out</span>
@@ -149,90 +149,28 @@
             <div class="container mt-4">
                 <div class="row">
                     <div class="col-12">
-                        <h4 class="font-weight-bold">Trips</h4>
+                        <h4 class="font-weight-bold">Driver Trips <span class="h6">(Last 3 trips)</span></h4>
                     </div>
 
-                    <!-- Trips -->
-                    <div class="col-12 mt-2">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row mb-3">
-                                    <div class="col-7">
-                                        <h4 class="card-title text-success font-weight-bold mt-1">Trip #1</h4>
-                                    </div>
-                                    <div class="col-5">
-                                        <h6 class="text-right">RM <span class="h3 text-success font-weight-bold">12.50</span></h6>
-                                    </div>
-                                </div>
+                    <!-- Driver Trips -->
+                    <div id="driver-trips-container">
 
-                                <div class="row">
-                                    <div class="col-12">
-                                        <h6 class="text-center">123, Jalan Kebun 25, Taman Jasmani, Selangor.</h6>
-                                    </div>
-                                    <div class="col-12 text-center">
-                                        <i class="fas fa-angle-double-down fa-lg text-success mt-1 mb-2"></i>
-                                    </div>
-                                    <div class="col-12">
-                                        <h6 class="text-center">53, Jalan Industri, Taman Kebun, Selangor.</h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
-                    <div class="col-12 mt-2">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row mb-3">
-                                    <div class="col-7">
-                                        <h4 class="card-title text-success font-weight-bold mt-1">Trip #2</h4>
-                                    </div>
-                                    <div class="col-5">
-                                        <h6 class="text-right">RM <span class="h3 text-success font-weight-bold">9.50</span></h6>
-                                    </div>
-                                </div>
+                </div>
+            </div>
 
-                                <div class="row">
-                                    <div class="col-12">
-                                        <h6 class="text-center">123, Jalan Kebun 25, Taman Jasmani, Selangor.</h6>
-                                    </div>
-                                    <div class="col-12 text-center">
-                                        <i class="fas fa-angle-double-down fa-lg text-success mt-1 mb-2"></i>
-                                    </div>
-                                    <div class="col-12">
-                                        <h6 class="text-center">53, Jalan Industri, Taman Kebun, Selangor.</h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            <div class="container mt-4">
+                <div class="row">
+                    <div class="col-12">
+                        <h4 class="font-weight-bold">Other Trips <span class="h6">(Last 3 trips)</span></h4>
                     </div>
 
-                    <div class="col-12 mt-2">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row mb-3">
-                                    <div class="col-7">
-                                        <h4 class="card-title text-success font-weight-bold mt-1">Trip #3</h4>
-                                    </div>
-                                    <div class="col-5">
-                                        <h6 class="text-right">RM <span class="h3 text-success font-weight-bold">6.50</span></h6>
-                                    </div>
-                                </div>
+                    <!-- Other Trips -->
+                    <div id="other-trips-container">
 
-                                <div class="row">
-                                    <div class="col-12">
-                                        <h6 class="text-center">123, Jalan Kebun 25, Taman Jasmani, Selangor.</h6>
-                                    </div>
-                                    <div class="col-12 text-center">
-                                        <i class="fas fa-angle-double-down fa-lg text-success mt-1 mb-2"></i>
-                                    </div>
-                                    <div class="col-12">
-                                        <h6 class="text-center">53, Jalan Industri, Taman Kebun, Selangor.</h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
+
                 </div>
             </div>
 
@@ -249,7 +187,7 @@
         <div class="container mb-4 fixed-bottom" style="z-index: 0;" id="container-location">
             <div class="row">
                 <div class="col-12 ml-2" style="max-width: 96vw;">
-                    <div class="row rounded bg-white pt-3 pb-2" id="rider-navigation-main">
+                    <div class="row rounded bg-white pt-3 pb-2 shadow-lg" id="rider-navigation-main">
                         <div class="col-3 text-center">
                             <span>
                                 <i class="fas fa-coins fa-lg text-primary"></i>
@@ -295,7 +233,7 @@
         <script>
             $(document).ready(function() {
                 getRiderDashboardJS();
-                getAccountDashboardJS();
+                getEarningsDashboardJS();
             });
 
         </script>

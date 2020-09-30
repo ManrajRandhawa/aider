@@ -60,7 +60,7 @@ class AiderDriver {
                         $response['message'] = $insert_id;
                     } else {
                         $response['error'] = true;
-                        $response['message'] = "There was an error while pushing the data to the sorting service.";
+                        $response['message'] = "There was an error while pushing the data to the sorting service: " . $statementSort->error;
                     }
                     $statementSort->close();
                     // [END] Add to Delivery Sorting

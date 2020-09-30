@@ -623,7 +623,7 @@ function getHomeDashboardJS() {
                                                                     $('#time-order').html(time);
 
                                                                     if($('#ongoing-order-small-container').hasClass('d-none')) {
-                                                                        $('#ongoing-order-small-container').removeClass('d-none');
+                                                                        $('#ongoing-order-small-container').fadeIn('fast').removeClass('d-none');
                                                                     }
 
                                                                     $('#ca-ind').html(carouselIndicators);

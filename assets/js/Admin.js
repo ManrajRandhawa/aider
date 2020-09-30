@@ -213,6 +213,28 @@ function getSettingsDashboard() {
         });
         // END: Display Rider Details
 
+        // START: Display Aider Driver Module Settings
+        $.ajax({
+            url: "../assets/php/ajax/admin/getSettingsInformation.php",
+            method: "POST",
+            cache: false,
+            data: {Settings_Info: "Aider_Driver_Primary_Cut"},
+            success: function(data){
+                $('#primary-driver-cut-per').val(data);
+            }
+        });
+
+        $.ajax({
+            url: "../assets/php/ajax/admin/getSettingsInformation.php",
+            method: "POST",
+            cache: false,
+            data: {Settings_Info: "Aider_Driver_Secondary_Cut"},
+            success: function(data){
+                $('#secondary-driver-cut-per').val(data);
+            }
+        });
+        // END: Display Aider Driver Module Settings
+
         // START: [Settings] Pricing - Save Button
         $('#save-pricing').click(function() {
 
@@ -317,6 +339,64 @@ function getSettingsDashboard() {
             });
         });
         // END: [Settings] Rider - Save Button
+
+        // START: [Settings] Aider Driver - Save Button
+        $('#save-aider-driver').click(function() {
+            let error = false;
+
+            // STEP 1: Update Primary Percentage
+            $.ajax({
+                url: "../assets/php/ajax/admin/updateSettingsInformation.php",
+                method: "POST",
+                cache: false,
+                data: {Settings_Info: "Aider_Driver_Primary_Cut", Settings_Value: $('#primary-driver-cut-per').val(), isNumber: true},
+                success: function(data){
+                    if(data === "YES") {
+                        error = true;
+                    }
+                }
+            });
+
+            // STEP 2: Update Secondary Percentage
+            $.ajax({
+                url: "../assets/php/ajax/admin/updateSettingsInformation.php",
+                method: "POST",
+                cache: false,
+                data: {Settings_Info: "Aider_Driver_Secondary_Cut", Settings_Value: $('#secondary-driver-cut-per').val(), isNumber: true},
+                success: function(data){
+                    if(data === "YES") {
+                        error = true;
+                    }
+                }
+            });
+
+            // STEP 3: Display Toast Message
+            let pricingToastTitle, pricingToastMessage;
+            if(error) {
+                pricingToastTitle = "An error occurred!";
+                pricingToastMessage = "There was an issue while trying to update the percentage settings.";
+            } else {
+                pricingToastTitle = "Settings Updated!";
+                pricingToastMessage = "The pricing settings has been updated.";
+            }
+
+            // Display Toast Message
+            $.ajax({
+                url: "../assets/php/ajax/ui/sendToastMessage.php",
+                method: "POST",
+                cache: false,
+                data: {Title: pricingToastTitle, Message: pricingToastMessage},
+                success: function(dataToast){
+                    $('.toast-container').html(dataToast);
+                    $('.toast').toast('show');
+
+                    setTimeout(function() {
+                        $('.toast-container').html("");
+                    }, 5000);
+                }
+            });
+        });
+        // END: [Settings] Aider Driver - Save Button
     }
 }
 /* END: Dashboard */
