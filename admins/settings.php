@@ -105,6 +105,34 @@
                         <button class="btn btn-dark float-right" id="save-aider-driver">Save</button>
                     </div>
                 </div>
+
+                <div class="col-12 mt-3">
+                    <div class="border border-dark rounded pt-3 pr-3 pl-3 pb-5">
+                        <h5 class="font-weight-bold mb-3">Aider Parcel</h5>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="parcel-rider-cut">Rider's Cut (%)</span>
+                            </div>
+                            <input type="number" id="parcel-rider-cut-per" class="form-control" aria-describedby="parcel-rider-cut" min="0" max="100"/>
+                        </div>
+
+                        <button class="btn btn-dark float-right" id="save-aider-parcel">Save</button>
+                    </div>
+                </div>
+
+                <div class="col-12 mt-3">
+                    <div class="border border-dark rounded pt-3 pr-3 pl-3 pb-5">
+                        <h5 class="font-weight-bold mb-3">Aider Food</h5>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="food-rider-cut">Rider's Cut (%)</span>
+                            </div>
+                            <input type="number" id="food-rider-cut-per" class="form-control" aria-describedby="food-rider-cut" min="0" max="100"/>
+                        </div>
+
+                        <button class="btn btn-dark float-right" id="save-aider-food">Save</button>
+                    </div>
+                </div>
             </div>
         </div>
 

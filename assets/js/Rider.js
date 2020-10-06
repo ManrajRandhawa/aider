@@ -84,6 +84,8 @@ function getHomeJS() {
     } else {
         let user_email = window.localStorage.getItem("User_Email");
 
+        watchID = Rider.saveRiderLocation();
+
         RiderLogic.getOngoingOrders();
         RiderLogic.getTeamOngoingOrders();
 
@@ -130,8 +132,6 @@ function getHomeJS() {
                     }
                 }
             });
-
-            watchID = Rider.saveRiderLocation();
 
             Rider.getNewOrders();
             RiderDataSet.setNewOrderCalled(true);
@@ -215,8 +215,6 @@ function getHomeJS() {
                                     });
                                 }
                             });
-
-                            watchID = Rider.saveRiderLocation();
 
                             Rider.getNewTeamOrders();
                             RiderDataSet.setNewOrderCalled(true);
@@ -305,6 +303,10 @@ function getHomeJS() {
             $('#order-container').addClass('d-none');
         });
         // END: Rider - Active and Inactive Mode
+
+        // Completion Spinner
+        $('.circle-loader').toggleClass('load-complete');
+        $('.checkmark').toggle();
     }
 }
 

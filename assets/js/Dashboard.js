@@ -731,6 +731,32 @@ function getPaymentDashboardJS() {
                 }, 133);
             });
         });
+
+        // Create bill and perform transaction
+        $('#confirm-transaction-btn').click(function() {
+            let select = document.getElementById('bank-code');
+            let bankCode = select.options[select.selectedIndex].value;
+
+            let amount = $('#transaction-amount').val();
+
+            $.ajax({
+                url: '../assets/php/ajax/user/getUserData.php',
+                method: 'POST',
+                cache: false,
+                data: {User_Email: user_email, User_Info: "Name"},
+                success: function(data) {
+                    $.ajax({
+                        url: '../assets/php/ajax/user/payment/performTransaction.php',
+                        method: 'POST',
+                        cache: false,
+                        data: {User_Email: user_email, User_Name: data, Bank_Code: bankCode, Amount: amount},
+                        success: function(transactionData) {
+                            window.open(transactionData);
+                        }
+                    });
+                }
+            });
+        });
     }
 }
 

@@ -402,6 +402,20 @@ class RiderLogic {
 
                 $('#btn-arrived-destination').unbind().click(function() {
                     RiderDataSet.setRiderMode(Mode.COMPLETED);
+
+                    // Set Rider Cut
+                    $.ajax({
+                        url: "../assets/php/ajax/rider/getRiderCut.php",
+                        method: "POST",
+                        cache: false,
+                        data: {User_Email: window.localStorage.getItem("User_Email"), Trip_Type: orderType, Trip_ID: orderID},
+                        success: function (data) {
+                            if(data !== "NO-ERROR") {
+                                $('#earned-amount').html(data);
+                            }
+                        }
+                    });
+
                     RiderLogic.getOrderLogic(orderType, orderID);
                 });
             }
@@ -459,6 +473,7 @@ class RiderLogic {
     static getTeamOrderLogic(orderType, orderID) {
         let teamID = 0;
         let teamMemberOne = 0, teamMemberTwo = 0;
+        let locationWatcherID = 0;
 
         $.ajax({
             url: "../assets/php/ajax/rider/getRiderData.php",
@@ -579,6 +594,26 @@ class RiderLogic {
                                 RiderLogic.getTeamOrderLogic(orderType, orderID);
                             });
                         } else {
+                            // Location Watcher and Button Visibility
+                            locationWatcherID = navigator.geolocation.watchPosition(function(position) {
+                                if(RiderDataSet.getRiderMode() === Mode.HEADING_TO_PICKUP) {
+                                    $.ajax({
+                                        url: "../assets/php/ajax/rider/getOrderDetailsByID.php",
+                                        method: "POST",
+                                        cache: false,
+                                        data: {
+                                            Order_Type: orderType,
+                                            Order_ID: orderID,
+                                            Order_Data: "Pickup_Location"
+                                        },
+                                        success: function (data) {
+                                            
+                                        }
+                                    });
+                                }
+                            });
+
+
                             // Mode.INACTIVE implementations have been set in getNewOrders() function
 
                             if(RiderDataSet.getRiderMode() === Mode.HEADING_TO_PICKUP) {
@@ -616,6 +651,20 @@ class RiderLogic {
 
                                 $('#btn-arrived-pickup').unbind().click(function() {
                                     RiderDataSet.setRiderMode(Mode.HEADING_TO_DESTINATION);
+
+                                    // Set Rider Cut
+                                    $.ajax({
+                                        url: "../assets/php/ajax/rider/getRiderCut.php",
+                                        method: "POST",
+                                        cache: false,
+                                        data: {User_Email: window.localStorage.getItem("User_Email"), Trip_Type: orderType, Trip_ID: orderID},
+                                        success: function (data) {
+                                            if(data !== "NO-ERROR") {
+                                                $('#earned-amount').html(data);
+                                            }
+                                        }
+                                    });
+
                                     RiderLogic.getTeamOrderLogic(orderType, orderID);
                                 });
                             }

@@ -513,6 +513,7 @@ class OrderModal {
         $Aider = new Aider();
 
         $IDResponse = $Aider->getUserModal()->getRiderModal()->getRiderInformationByEmail($riderEmail, "ID");
+
         $riderID = intval($IDResponse['data']);
 
         $DatabaseHandler = new DatabaseHandler();
@@ -521,23 +522,41 @@ class OrderModal {
         if($tripType === "DRIVER") {
             $TeamResponse = $Aider->getUserModal()->getRiderModal()->getRiderInformationByID(intval($riderID), "Team_ID");
 
-            $sql = "SELECT * FROM aider_transaction_sorting WHERE `Transaction_Status`='COMPLETED' AND `Transaction_Type`='DRIVER' AND RT_ID = " . intval($TeamResponse['data']) . " ORDER BY ID DESC LIMIT 3";
-            $statement = $connection->query($sql);
+            if(!$TeamResponse['error']) {
+                $sqlTeamData = "SELECT * FROM aider_driver_team WHERE ID=" . $TeamResponse['data'];
 
-            $response['data'] = "";
-            $i = 1;
+                $statementTeamData = $connection->query($sqlTeamData);
+                $driverType = "";
 
-            if($statement->num_rows > 0) {
-                $response['error'] = false;
-                while($row = $statement->fetch_assoc()) {
-                    $sqlTeam = "SELECT * FROM aider_transaction_driver WHERE ID = " . intval($row['Transaction_ID']);
-                    $statementTeam = $connection->query($sqlTeam);
+                if($statementTeamData->num_rows > 0) {
+                    while ($rowTeamData = $statementTeamData->fetch_assoc()) {
+                        $teamMembers = $rowTeamData['Team_Members'];
+                        $teamMembers = explode(',', $teamMembers);
 
-                    $response['error'] = false;
+                        if(intval($riderID) === intval($teamMembers[0])) {
+                            $driverType = "Primary_Rider_Cut";
+                        } else {
+                            $driverType = "Secondary_Rider_Cut";
+                        }
+                    }
 
-                    if($statementTeam->num_rows > 0) {
-                        while($rowTeam = $statementTeam->fetch_assoc()) {
-                            $response['data'] .= "<div class=\"col-12 mt-2\">
+                    $sql = "SELECT * FROM aider_transaction_sorting WHERE `Transaction_Status`='COMPLETED' AND `Transaction_Type`='DRIVER' AND RT_ID = " . intval($TeamResponse['data']) . " ORDER BY ID DESC LIMIT 3";
+                    $statement = $connection->query($sql);
+
+                    $response['data'] = "";
+                    $i = 1;
+
+                    if($statement->num_rows > 0) {
+                        $response['error'] = false;
+                        while($row = $statement->fetch_assoc()) {
+                            $sqlTeam = "SELECT * FROM aider_transaction_driver WHERE ID = " . intval($row['Transaction_ID']);
+                            $statementTeam = $connection->query($sqlTeam);
+
+                            $response['error'] = false;
+
+                            if($statementTeam->num_rows > 0) {
+                                while($rowTeam = $statementTeam->fetch_assoc()) {
+                                    $response['data'] .= "<div class=\"col-12 mt-2\">
                             <div class=\"card\">
                                 <div class=\"card-body\">
                                     <div class=\"row mb-3\">
@@ -545,7 +564,7 @@ class OrderModal {
                                             <h4 class=\"card-title text-success font-weight-bold mt-1\">Trip #" . $i . "</h4>
                                         </div>
                                         <div class=\"col-5\">
-                                            <h6 class=\"text-right\">RM <span class=\"h3 text-success font-weight-bold\">" . $rowTeam['Rider_Cut'] . "</span></h6>
+                                            <h6 class=\"text-right\">RM <span class=\"h3 text-success font-weight-bold\">" . $rowTeam[$driverType] . "</span></h6>
                                         </div>
                                     </div>
 
@@ -564,9 +583,27 @@ class OrderModal {
                             </div>
                         </div>";
 
-                            $i++;
+                                    $i++;
+                                }
+                            } else {
+                                $response['data'] = "<div class='container mt-4 mb-5'>
+                            <div class='row'>
+                                <div class='col-1'></div>
+                                <div class='col-10 text-center mt-5'>
+                                    <i class='fas fa-scroll fa-4x' style='color: #DCDCDC;'></i>
+                                    <h6 class='font-weight-bold mt-4'>Nothing here yet!</h6>
+                                    <h6 class='text-black-50'>Any rides completed will appear here.</h6>
+                                </div>
+                                <div class='col-1'></div>
+                            </div>
+                        </div>";
+                            }
+
+                            $statementTeam->close();
                         }
                     } else {
+                        $response['error'] = true;
+                        $response['message'] = "No results found.";
                         $response['data'] = "<div class='container mt-4 mb-5'>
                             <div class='row'>
                                 <div class='col-1'></div>
@@ -580,25 +617,13 @@ class OrderModal {
                         </div>";
                     }
 
-                    $statementTeam->close();
-                }
-            } else {
-                $response['error'] = true;
-                $response['message'] = "No results found.";
-                $response['data'] = "<div class='container mt-4 mb-5'>
-                            <div class='row'>
-                                <div class='col-1'></div>
-                                <div class='col-10 text-center mt-5'>
-                                    <i class='fas fa-scroll fa-4x' style='color: #DCDCDC;'></i>
-                                    <h6 class='font-weight-bold mt-4'>Nothing here yet!</h6>
-                                    <h6 class='text-black-50'>Any rides completed will appear here.</h6>
-                                </div>
-                                <div class='col-1'></div>
-                            </div>
-                        </div>";
-            }
+                    $statement->close();
 
-            $statement->close();
+                } else {
+                    $response['error'] = true;
+                    $response['message'] = "No data found.";
+                }
+            }
 
         } elseif($tripType === "OTHERS") {
             $sql = "SELECT * FROM aider_transaction_sorting WHERE `Transaction_Status`='COMPLETED' AND `Transaction_Type`!='DRIVER' AND RT_ID = " . intval($riderID) . " ORDER BY ID DESC LIMIT 3";

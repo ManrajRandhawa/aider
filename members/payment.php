@@ -1,8 +1,10 @@
 <?php
 
     include $_SERVER['DOCUMENT_ROOT'] . "/aider/assets/php/Aider.php";
+    include $_SERVER['DOCUMENT_ROOT'] . "/aider/assets/php/modals/CredentialModal.php";
 
     $Aider = new Aider();
+    $credentialsModal = new CredentialModal();
 
 
 ?>
@@ -65,20 +67,17 @@
                             <div class="card-body">
                                 <h5 class="card-title text-primary font-weight-bold">Enter a top-up value (RM)</h5>
                                 <div class="input-group input-group-lg mb-3">
-                                    <input type="number" class="form-control" placeholder="Enter an amount (RM)">
+                                    <input type="number" class="form-control" placeholder="Enter an amount (RM)" id="transaction-amount">
                                 </div>
 
-                                <select title="Select a bank" class="selectpicker w-100">
-                                    <option data-thumbnail="images/icon-chrome.png">Chrome</option>
-                                    <option data-thumbnail="images/icon-firefox.png">Firefox</option>
-                                    <option data-thumbnail="images/icon-ie.png">IE</option>
-                                    <option data-thumbnail="images/icon-opera.png">Opera</option>
-                                    <option data-thumbnail="images/icon-safari.png">Safari</option>
+                                <select title="Select a bank" class="selectpicker w-100" id="bank-code">
+                                    <option selected disabled>Select a bank</option>
+                                    <?php echo $credentialsModal->getBanks()['data']; ?>
                                 </select>
                             </div>
                         </div>
 
-                        <button class="btn btn-primary btn-lg w-100 mt-4">Confirm</button>
+                        <button class="btn btn-primary btn-lg w-100 mt-4" id="confirm-transaction-btn">Confirm</button>
                     </div>
                 </div>
             </div>

@@ -235,6 +235,30 @@ function getSettingsDashboard() {
         });
         // END: Display Aider Driver Module Settings
 
+        // START: Display Aider Parcel Module Settings
+        $.ajax({
+            url: "../assets/php/ajax/admin/getSettingsInformation.php",
+            method: "POST",
+            cache: false,
+            data: {Settings_Info: "Aider_Parcel_Cut"},
+            success: function(data){
+                $('#parcel-rider-cut-per').val(data);
+            }
+        });
+        // END: Display Aider Parcel Module Settings
+
+        // START: Display Aider Food Module Settings
+        $.ajax({
+            url: "../assets/php/ajax/admin/getSettingsInformation.php",
+            method: "POST",
+            cache: false,
+            data: {Settings_Info: "Aider_Food_Cut"},
+            success: function(data){
+                $('#food-rider-cut-per').val(data);
+            }
+        });
+        // END: Display Aider Food Module Settings
+
         // START: [Settings] Pricing - Save Button
         $('#save-pricing').click(function() {
 
@@ -397,6 +421,96 @@ function getSettingsDashboard() {
             });
         });
         // END: [Settings] Aider Driver - Save Button
+
+        // START: [Settings] Aider Parcel - Save Button
+        $('#save-aider-parcel').click(function() {
+            let error = false;
+
+            // STEP 1: Update Primary Percentage
+            $.ajax({
+                url: "../assets/php/ajax/admin/updateSettingsInformation.php",
+                method: "POST",
+                cache: false,
+                data: {Settings_Info: "Aider_Parcel_Cut", Settings_Value: $('#parcel-rider-cut-per').val(), isNumber: true},
+                success: function(data){
+                    if(data === "YES") {
+                        error = true;
+                    }
+                }
+            });
+
+            // STEP 2: Display Toast Message
+            let pricingToastTitle, pricingToastMessage;
+            if(error) {
+                pricingToastTitle = "An error occurred!";
+                pricingToastMessage = "There was an issue while trying to update the module settings.";
+            } else {
+                pricingToastTitle = "Settings Updated!";
+                pricingToastMessage = "The module settings has been updated.";
+            }
+
+            // Display Toast Message
+            $.ajax({
+                url: "../assets/php/ajax/ui/sendToastMessage.php",
+                method: "POST",
+                cache: false,
+                data: {Title: pricingToastTitle, Message: pricingToastMessage},
+                success: function(dataToast){
+                    $('.toast-container').html(dataToast);
+                    $('.toast').toast('show');
+
+                    setTimeout(function() {
+                        $('.toast-container').html("");
+                    }, 5000);
+                }
+            });
+        });
+        // END: [Settings] Aider Parcel - Save Button
+
+        // START: [Settings] Aider Food - Save Button
+        $('#save-aider-food').click(function() {
+            let error = false;
+
+            // STEP 1: Update Primary Percentage
+            $.ajax({
+                url: "../assets/php/ajax/admin/updateSettingsInformation.php",
+                method: "POST",
+                cache: false,
+                data: {Settings_Info: "Aider_Food_Cut", Settings_Value: $('#food-rider-cut-per').val(), isNumber: true},
+                success: function(data){
+                    if(data === "YES") {
+                        error = true;
+                    }
+                }
+            });
+
+            // STEP 2: Display Toast Message
+            let pricingToastTitle, pricingToastMessage;
+            if(error) {
+                pricingToastTitle = "An error occurred!";
+                pricingToastMessage = "There was an issue while trying to update the module settings.";
+            } else {
+                pricingToastTitle = "Settings Updated!";
+                pricingToastMessage = "The module settings has been updated.";
+            }
+
+            // Display Toast Message
+            $.ajax({
+                url: "../assets/php/ajax/ui/sendToastMessage.php",
+                method: "POST",
+                cache: false,
+                data: {Title: pricingToastTitle, Message: pricingToastMessage},
+                success: function(dataToast){
+                    $('.toast-container').html(dataToast);
+                    $('.toast').toast('show');
+
+                    setTimeout(function() {
+                        $('.toast-container').html("");
+                    }, 5000);
+                }
+            });
+        });
+        // END: [Settings] Aider Food - Save Button
     }
 }
 /* END: Dashboard */

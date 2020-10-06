@@ -56,6 +56,17 @@
                     </a>
                 </div>
 
+                <div class="col-12 mt-3">
+                    <a class="text-decoration-none" href="admins.php">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-user-shield mr-1"></i> Admins</h5>
+                                <p class="card-text">Manage your administrators.</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
             </div>
         </div>
 

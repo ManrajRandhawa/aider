@@ -39,7 +39,7 @@ class Register {
                 $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
                 $headers .= 'From: Aider<info@aider.my>' . "\r\n";
 
-                $content = $this->getCustomerConfirmationEmailContent($name, $email, $pswd, "aider.my/members/", "", "");
+                $content = $this->getCustomerConfirmationEmailContent($name, $email, $pswd, "aider.my/", "", "");
 
                 if(mail($to, $subject, $content, $headers)) {
                     $response['error'] = false;

@@ -153,10 +153,11 @@
                     </div>
 
                     <!-- Driver Trips -->
-                    <div id="driver-trips-container">
+                    <div class="col-12">
+                        <div id="driver-trips-container">
 
+                        </div>
                     </div>
-
                 </div>
             </div>
 
@@ -167,10 +168,11 @@
                     </div>
 
                     <!-- Other Trips -->
-                    <div id="other-trips-container">
+                    <div class="col-12">
+                        <div id="other-trips-container">
 
+                        </div>
                     </div>
-
                 </div>
             </div>
 

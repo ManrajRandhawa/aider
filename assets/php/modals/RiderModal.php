@@ -290,6 +290,138 @@ class RiderModal {
         return $response;
     }
 
+    function getTripCut($riderEmail, $tripType, $tripID) {
+        $Aider = new Aider();
+
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        if($tripType === "DRIVER") {
+            $TeamResponse = $Aider->getUserModal()->getRiderModal()->getRiderInformationByEmail($riderEmail, "Team_ID");
+            $TeamIDResponse = $Aider->getUserModal()->getRiderModal()->getRiderInformationByEmail($riderEmail, "ID");
+
+            if(!$TeamResponse['error'] && !$TeamIDResponse['error']) {
+                $OrderResponse = $Aider->getUserModal()->getOrderModal()->getOrderDetailsByID($tripType, $tripID, "Price");
+                $SettingsPrimaryResponse = $Aider->getUserModal()->getAdminModal()->getSettingsInformation("Aider_Driver_Primary_Cut");
+                $SettingsSecondaryResponse = $Aider->getUserModal()->getAdminModal()->getSettingsInformation("Aider_Driver_Secondary_Cut");
+
+                if(!$OrderResponse['error'] && !$SettingsPrimaryResponse['error'] && !$SettingsSecondaryResponse['error']) {
+                    $sqlTeamData = "SELECT * FROM aider_driver_team WHERE ID=" . $TeamResponse['data'];
+
+                    $statementTeamData = $connection->query($sqlTeamData);
+
+                    if($statementTeamData->num_rows > 0) {
+                        while($rowTeamData = $statementTeamData->fetch_assoc()) {
+                            $teamMembers = $rowTeamData['Team_Members'];
+                            $teamMembers = explode(',', $teamMembers);
+
+                            $primaryPercentage = doubleval($SettingsPrimaryResponse['data']);
+                            $secondaryPercentage = doubleval($SettingsSecondaryResponse['data']);
+
+                            $primaryCut = doubleval($OrderResponse['data']) * ($primaryPercentage/100);
+                            $secondaryCut = doubleval($OrderResponse['data']) * ($secondaryPercentage/100);
+
+                            $sqlDriverUpdate = "UPDATE aider_transaction_driver SET Primary_Rider_Cut=$primaryCut, Secondary_Rider_Cut=$secondaryCut WHERE ID=" . intval($tripID);
+
+                            $sqlTeamMemberPrimary = "UPDATE aider_user_rider SET Wallet_Balance=Wallet_Balance + " . doubleval($primaryCut) . " WHERE ID=" . intval($teamMembers[0]);
+                            $sqlTeamMemberSecondary = "UPDATE aider_user_rider SET Wallet_Balance=Wallet_Balance + " . doubleval($secondaryCut) . " WHERE ID=" . intval($teamMembers[1]);
+
+                            $statementDriverUpdate = $connection->query($sqlDriverUpdate);
+
+                            $statementTMP = $connection->query($sqlTeamMemberPrimary);
+                            $statementTMS = $connection->query($sqlTeamMemberSecondary);
+
+                            if($statementDriverUpdate && $statementTMP && $statementTMS) {
+                                $response['error'] = false;
+                                if(intval($teamMembers[0]) === intval($TeamIDResponse['data'])) {
+                                    $response['data'] = number_format($primaryCut, 2, '.', '');
+                                } else {
+                                    $response['data'] = number_format($secondaryCut, 2, '.', '');
+                                }
+                            } else {
+                                $response['error'] = true;
+                                $response['message'] = "There was an issue while updating the Riders' cuts and Wallet Balances.";
+                            }
+                        }
+                    } else {
+                        $response['error'] = true;
+                        $response['data'] = "You are not assigned to a team. How did this happen?";
+                    }
+
+                    $statementTeamData->close();
+                } else {
+                    $response['error'] = true;
+                    $response['message'] = "There was an issue while trying to fetch the Order and Settings details.";
+                }
+            } else {
+                $response['error'] = true;
+                $response['message'] = $TeamResponse['message'];
+            }
+
+        } elseif($tripType === "PARCEL") {
+            $RiderIDResponse = $Aider->getUserModal()->getRiderModal()->getRiderInformationByEmail($riderEmail, "ID");
+            $OrderResponse = $Aider->getUserModal()->getOrderModal()->getOrderDetailsByID($tripType, $tripID, "Price");
+            $SettingsParcelResponse = $Aider->getUserModal()->getAdminModal()->getSettingsInformation("Aider_Parcel_Cut");
+
+            if(!$RiderIDResponse['error'] && !$OrderResponse['error'] && !$SettingsParcelResponse['error']) {
+                $orderPrice = doubleval($OrderResponse['data']);
+                $parcelCutPercentage = doubleval($SettingsParcelResponse['data']);
+
+                $riderCut = $orderPrice * ($parcelCutPercentage / 100);
+
+                $sqlParcelUpdate = "UPDATE aider_transaction_parcel SET Rider_Cut=" . doubleval($riderCut) . " WHERE ID=" . intval($tripID);
+                $sqlRiderUpdate = "UPDATE aider_user_rider SET Wallet_Balance=Wallet_Balance + " . doubleval($riderCut) . " WHERE ID=" . intval($RiderIDResponse['data']);
+
+                $statementParcelUpdate = $connection->query($sqlParcelUpdate);
+                $statementRiderUpdate = $connection->query($sqlRiderUpdate);
+
+                if($statementParcelUpdate && $statementRiderUpdate) {
+                    $response['error'] = false;
+                    $response['data'] = number_format($riderCut, 2, '.', '');
+                } else {
+                    $response['error'] = false;
+                    $response['message'] = "There was an issue while updating the Rider's Cut.";
+                }
+            } else {
+                $response['error'] = true;
+                $response['message'] = "There was an issue while trying to fetch the Order and Settings details.";
+            }
+        } elseif($tripType === "FOOD") {
+            $RiderIDResponse = $Aider->getUserModal()->getRiderModal()->getRiderInformationByEmail($riderEmail, "ID");
+            $OrderResponse = $Aider->getUserModal()->getOrderModal()->getOrderDetailsByID($tripType, $tripID, "Price");
+            $SettingsFoodResponse = $Aider->getUserModal()->getAdminModal()->getSettingsInformation("Aider_Food_Cut");
+
+            if(!$RiderIDResponse['error'] && !$OrderResponse['error'] && !$SettingsFoodResponse['error']) {
+                $orderPrice = doubleval($OrderResponse['data']);
+                $parcelCutPercentage = doubleval($SettingsFoodResponse['data']);
+
+                $riderCut = $orderPrice * ($parcelCutPercentage / 100);
+
+                $sqlParcelUpdate = "UPDATE aider_transaction_food SET Rider_Cut=" . doubleval($riderCut) . " WHERE ID=" . intval($tripID);
+                $sqlRiderUpdate = "UPDATE aider_user_rider SET Wallet_Balance=Wallet_Balance + " . doubleval($riderCut) . " WHERE ID=" . intval($RiderIDResponse['data']);
+
+                $statementParcelUpdate = $connection->query($sqlParcelUpdate);
+                $statementRiderUpdate = $connection->query($sqlRiderUpdate);
+
+                if($statementParcelUpdate && $statementRiderUpdate) {
+                    $response['error'] = false;
+                    $response['data'] = number_format($riderCut, 2, '.', '');
+                } else {
+                    $response['error'] = false;
+                    $response['message'] = "There was an issue while updating the Rider's Cut.";
+                }
+            } else {
+                $response['error'] = true;
+                $response['message'] = "There was an issue while trying to fetch the Order and Settings details.";
+            }
+        } else {
+            $response['error'] = true;
+            $response['message'] = "Incorrect trip type.";
+        }
+
+        return $response;
+    }
+
     function getRidersSelectList($type) {
         $DatabaseHandler = new DatabaseHandler();
         $connection = $DatabaseHandler->getMySQLiConnection();
