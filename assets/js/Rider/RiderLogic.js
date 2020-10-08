@@ -594,26 +594,6 @@ class RiderLogic {
                                 RiderLogic.getTeamOrderLogic(orderType, orderID);
                             });
                         } else {
-                            // Location Watcher and Button Visibility
-                            locationWatcherID = navigator.geolocation.watchPosition(function(position) {
-                                if(RiderDataSet.getRiderMode() === Mode.HEADING_TO_PICKUP) {
-                                    $.ajax({
-                                        url: "../assets/php/ajax/rider/getOrderDetailsByID.php",
-                                        method: "POST",
-                                        cache: false,
-                                        data: {
-                                            Order_Type: orderType,
-                                            Order_ID: orderID,
-                                            Order_Data: "Pickup_Location"
-                                        },
-                                        success: function (data) {
-                                            
-                                        }
-                                    });
-                                }
-                            });
-
-
                             // Mode.INACTIVE implementations have been set in getNewOrders() function
 
                             if(RiderDataSet.getRiderMode() === Mode.HEADING_TO_PICKUP) {
@@ -643,6 +623,39 @@ class RiderLogic {
                                             });
                                         }
                                     }
+                                });
+
+                                // Location Watcher and Button Visibility
+                                locationWatcherID = navigator.geolocation.watchPosition(function(position) {
+
+                                    // Get Pickup Location
+                                    $.ajax({
+                                        url: "../assets/php/ajax/rider/getOrderDetailsByID.php",
+                                        method: "POST",
+                                        cache: false,
+                                        data: {
+                                            Order_Type: orderType,
+                                            Order_ID: orderID,
+                                            Order_Data: "Pickup_Location"
+                                        },
+                                        success: function (data) {
+                                            $.ajax({
+                                                url: "../assets/php/ajax/rider/getDistance.php",
+                                                method: "POST",
+                                                cache: false,
+                                                data: {
+                                                    coordsAddOneLAT: position.coords.latitude,
+                                                    coordsAddOneLNG: position.coords.longitude,
+                                                    addressTwo: data
+                                                },
+                                                success: function (dataDistance) {
+                                                    if(dataDistance.split(" ")[1] === "m") {
+                                                        $('#btn-arrived-pickup').prop('disabled', false);
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    });
                                 });
 
                                 $('#rider-navigation-main').addClass('d-none');
@@ -696,6 +709,39 @@ class RiderLogic {
                                             });
                                         }
                                     }
+                                });
+
+                                // Location Watcher and Button Visibility
+                                locationWatcherID = navigator.geolocation.watchPosition(function(position) {
+
+                                    // Get Pickup Location
+                                    $.ajax({
+                                        url: "../assets/php/ajax/rider/getOrderDetailsByID.php",
+                                        method: "POST",
+                                        cache: false,
+                                        data: {
+                                            Order_Type: orderType,
+                                            Order_ID: orderID,
+                                            Order_Data: "Dropoff_Location"
+                                        },
+                                        success: function (data) {
+                                            $.ajax({
+                                                url: "../assets/php/ajax/rider/getDistance.php",
+                                                method: "POST",
+                                                cache: false,
+                                                data: {
+                                                    coordsAddOneLAT: position.coords.latitude,
+                                                    coordsAddOneLNG: position.coords.longitude,
+                                                    addressTwo: data
+                                                },
+                                                success: function (dataDistance) {
+                                                    if(dataDistance.split(" ")[1] === "m") {
+                                                        $('#btn-arrived-destination').prop('disabled', false);
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    });
                                 });
 
                                 if(!($('#rider-navigation-main').hasClass('d-none'))) {
