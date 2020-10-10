@@ -57,18 +57,17 @@
         <!-- Main Content -->
         <div class="" id="main-content-home">
 
-            <!-- Header -->
-            <div class="bg-primary" style="top: 0 !important; height: 60px;">
-                <h4 class="pt-4 text-white text-uppercase text-center"><?php echo SITE_NAME; ?></h4>
-            </div>
+            <?php
+                $Aider->getUI()->getDashboard()->getDashboardHeader();
+            ?>
 
             <div class="container">
                 <div class="row">
-                    <div class="col-6 mt-5">
+                    <div class="col-6 mt-2">
                         <span class="h3 text-black-50">Hi, <span class="h3 text-dark font-weight-bold" id="home-hello-name"></span></span>
                     </div>
                     <div class="col-6">
-                        <div class="mt-5 text-right">
+                        <div class="mt-2 text-right">
                             <span class="h6 text-black-50">RM <span class="h3 text-dark font-weight-bold" id="home-wallet-balance"></span></span>
                         </div>
                     </div>
@@ -79,7 +78,7 @@
 
             <div class="container">
                 <div class="row">
-                    <div class="col-12 mt-3">
+                    <div class="col-12 mt-3 d-none">
                         <a class="text-decoration-none" href="parcel.php">
                             <div class="card">
                                 <div class="card-body">
@@ -90,7 +89,7 @@
                         </a>
                     </div>
 
-                    <div class="col-12 mt-2">
+                    <div class="col-12 mt-2 d-none">
                         <a class="text-decoration-none" href="food.php">
                             <div class="card">
                                 <div class="card-body">
@@ -105,7 +104,7 @@
                         <a class="text-decoration-none" href="driver.php">
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="card-title"><i class="fas fa-car mr-1"></i> Driver</h5>
+                                    <h4 class="card-title"><i class="fas fa-car mr-1"></i> Driver</h4>
                                     <p class="card-text">Can't drive home? We'll help you out!</p>
                                 </div>
                             </div>
@@ -134,14 +133,6 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title text-center p-0 m-0">Promotion 2</h5>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 mt-2">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title text-center p-0 m-0">Promotion 3</h5>
                             </div>
                         </div>
                     </div>
@@ -193,7 +184,9 @@
                             <div class="col-2">
                                 <i class="fas fa-chevron-circle-left fa-2x text-dark text-center" id="close-ongoing-order"></i>
                             </div>
-                            <div class="col-10"></div>
+                            <div class="col-10 text-right p-0">
+                                <img src='../assets/images/aider-logo-alt.png' style='height: 130px; width: auto;' class="mt-n5" id="order-type" />
+                            </div>
                         </div>
 
                         <div id="carouselOrders" class="carousel slide" data-ride="carousel" data-interval="false">

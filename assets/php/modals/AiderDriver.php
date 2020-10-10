@@ -15,15 +15,11 @@ class AiderDriver {
             $DatabaseHandler = new DatabaseHandler();
             $connection = $DatabaseHandler->getMySQLiConnection();
 
-            $priceAmount = implode($Price);
+            $responseCheckFunds = $this->checkFunds($customerEmail, doubleval($Price));
 
-            // Subtract Funds
-            $responseFunds = $this->checkAndSubtractFunds($customerEmail, $priceAmount);
+            if(!$responseCheckFunds['error']) {
+                $priceAmount = implode($Price);
 
-            if($responseFunds['error']) {
-                $response['error'] = true;
-                $response['message'] = $responseFunds['message'];
-            } else {
                 $insert_id = null;
                 $t_type = "DRIVER";
 
@@ -65,9 +61,12 @@ class AiderDriver {
                     $statementSort->close();
                     // [END] Add to Delivery Sorting
                 }
-
-                $connection->close();
+            } else {
+                $response['error'] = true;
+                $response['message'] = $responseCheckFunds['message'];
             }
+
+            $connection->close();
         }
         return $response;
     }
@@ -91,7 +90,7 @@ class AiderDriver {
         return $response;
     }
 
-    private function checkAndSubtractFunds($Email, $Amount) {
+    function checkAndSubtractFunds($Email, $Amount) {
         $Aider = new Aider();
         $responseCustomerModal = $Aider->getUserModal()->getCustomerModal()->getCustomerInformationByEmail($Email, "Credit");
 
@@ -119,6 +118,25 @@ class AiderDriver {
                 }
 
 
+            }
+        }
+
+        return $response;
+    }
+
+    function checkFunds($Email, $Amount) {
+        $Aider = new Aider();
+        $responseCustomerModal = $Aider->getUserModal()->getCustomerModal()->getCustomerInformationByEmail($Email, "Credit");
+
+        if($responseCustomerModal['error']) {
+            $response['error'] = true;
+            $response['message'] = "There was an error wile trying to fetch your wallet.";
+        } else {
+            if($responseCustomerModal['data'] < $Amount) {
+                $response['error'] = true;
+                $response['message'] = "You've insufficient funds. Top up to continue." . " - " . $Amount;
+            } else {
+                $response['error'] = false;
             }
         }
 

@@ -16,6 +16,13 @@ class Dashboard {
         </div>";
     }
 
+    function getDashboardHeader() {
+        echo "<!-- Header -->
+            <div style=\"top: 0 !important;\">
+                <img src=\"../assets/images/aider-logo-alt.png\" class=\"d-block ml-auto mr-auto\" style=\"height: 100px; width: auto;\"/>
+            </div>";
+    }
+
     function getBottomNavigation($id) {
 
         $active[] = array();

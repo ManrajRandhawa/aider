@@ -101,10 +101,6 @@
                     <h5 class="font-weight-bold text-white mb-3">Finding you a nearby driver...</h5>
                     <h6 class="text-white">Give drivers some time to accept your booking.</h6>
                 </div>
-
-                <div class="col-12 text-center fixed-bottom mb-5" id="cancel-btn-layout">
-                    <i class="far fa-times-circle fa-3x text-white" id="btn-cancel-driver-ride"></i>
-                </div>
             </div>
         </div>
         <!-- END: Finding for Rider Layout -->
@@ -186,7 +182,7 @@
                             Continue
                         </button>
                         <button class="btn btn-light rounded w-100 bg-white shadow-lg" id="btn-deliver" style="display: none;">
-                            Deliver Now <h6 id="text-price">RM 0.00 <span id='text-distance'>(0 km)</span></h6>
+                            Book Now <h6 id="text-price">RM 0.00 <span id='text-distance'>(0 km)</span></h6>
                         </button>
                     </div>
                     <div class="col-1"></div>

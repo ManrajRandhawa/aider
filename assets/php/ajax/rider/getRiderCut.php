@@ -9,6 +9,6 @@
         if (!$response['error']) {
             echo $response['data'];
         } else {
-            echo $response['message'];
+            echo "ERROR";
         }
     }

@@ -30,6 +30,10 @@
 
     <body class="bg-white">
 
+        <?php
+            $Aider->getUI()->getDashboard()->getDashboardHeader();
+        ?>
+
         <div class="bg-light">
             <!-- Header -->
             <div class="container bg-light">
@@ -229,8 +233,19 @@
 
             <hr/>
 
+            <a class="text-decoration-none" href="mailto:info@aider.my">
+                <div class="row">
+                    <div class="col-12">
+                        <span class="h6" style="color: #000 !important;">Contact Support</span>
+                        <i class="fas fa-chevron-right text-black-50 float-right"></i>
+                    </div>
+                </div>
+            </a>
+
+            <hr/>
+
             <a class="text-decoration-none" id="logout">
-                <div class="row mt-5">
+                <div class="row">
                     <div class="col-12">
                         <span class="h6 text-danger">Logout</span>
                         <i class="fas fa-chevron-right text-black-50 float-right"></i>

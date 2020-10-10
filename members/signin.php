@@ -39,11 +39,9 @@
                     <div class="col-10"></div>
                 </div>
                 <div class="row">
-                    <div class="col-3"></div>
-                    <div class="col-6 mt-2">
-                        <img src="../assets/images/aider-logo.png" class="d-block ml-auto mr-auto mt-5 bg-primary rounded p-3" style="width: 150px; height: 150px;" />
+                    <div class="col-12">
+                        <img src="../assets/images/aider-d-logo.jpg" class="d-block ml-auto mr-auto p-3" style="width: auto; height: 180px;" />
                     </div>
-                    <div class="col-3"></div>
                 </div>
                 <h3 class="text-center font-weight-bold mt-5 text-primary" style="font-family: 'Barlow', sans-serif;">SIGN IN</h3>
 
@@ -59,7 +57,7 @@
                             <button name="btn-login" class="btn btn-outline-primary btn-block mt-5">Sign In</button>
                         </form>
 
-                        <h6 class="text-center mt-3">New to Aider? <a href="signup.php" class="text-primary">Create an account.</a></h6>
+                        <h6 class="text-center mt-3">New to myAider? <a href="signup.php" class="text-primary">Create an account.</a></h6>
                     </div>
                 </div>
             </div>

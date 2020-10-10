@@ -43,7 +43,7 @@ function getWaitingListDashboard() {
                 method: "POST",
                 cache: false,
                 data: {User_Email: emailApprove, V_Model: $('#v_model').val(), V_Plate_Num: $('#v_plate_num').val(), Rider_Type: $('#rider_type').val()},
-                success: function(data) {
+                success: function(dataMsg) {
                     $('#riderApproval').modal('toggle');
 
                     // Display Toast Message
@@ -51,7 +51,7 @@ function getWaitingListDashboard() {
                         url: "../assets/php/ajax/ui/sendToastMessage.php",
                         method: "POST",
                         cache: false,
-                        data: {Title: "Approval Status for " + emailApprove, Message: data},
+                        data: {Title: "Approval Status for " + emailApprove, Message: dataMsg},
                         success: function(dataToast){
                             $('.toast-container').html(dataToast);
                             $('.toast').toast('show');

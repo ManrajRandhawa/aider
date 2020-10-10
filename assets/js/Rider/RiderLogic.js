@@ -672,7 +672,7 @@ class RiderLogic {
                                         cache: false,
                                         data: {User_Email: window.localStorage.getItem("User_Email"), Trip_Type: orderType, Trip_ID: orderID},
                                         success: function (data) {
-                                            if(data !== "NO-ERROR") {
+                                            if(data !== "ERROR") {
                                                 $('#earned-amount').html(data);
                                             }
                                         }
@@ -754,6 +754,40 @@ class RiderLogic {
 
                                 $('#btn-arrived-destination').unbind().click(function() {
                                     RiderDataSet.setRiderMode(Mode.COMPLETED);
+
+                                    // Subtract Funds From Customer
+                                    $.ajax({
+                                        url: "../assets/php/ajax/rider/getOrderDetailsByID.php",
+                                        method: "POST",
+                                        cache: false,
+                                        data: {Order_Type: orderType, Order_ID: orderID, Order_Data: "Customer_ID"},
+                                        success: function (data) {
+                                            if(data !== "ERROR") {
+                                                // Get Price of Order
+                                                $.ajax({
+                                                    url: "../assets/php/ajax/rider/getOrderDetailsByID.php",
+                                                    method: "POST",
+                                                    cache: false,
+                                                    data: {Order_Type: orderType, Order_ID: orderID, Order_Data: "Price"},
+                                                    success: function (dataPrice) {
+                                                        if(dataPrice !== "ERROR") {
+                                                            // Subtract
+                                                            $.ajax({
+                                                                url: "../assets/php/ajax/rider/subtractFunds.php",
+                                                                method: "POST",
+                                                                cache: false,
+                                                                data: {Customer_ID: parseInt(data), Price_Amount: parseFloat(dataPrice)},
+                                                                success: function (dataSubtract) {
+                                                                    console.log(dataSubtract);
+                                                                }
+                                                            });
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+
                                     RiderLogic.getTeamOrderLogic(orderType, orderID);
                                 });
                             }

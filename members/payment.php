@@ -32,6 +32,9 @@
         ?>
 
         <div class="bg-light">
+            <?php
+            $Aider->getUI()->getDashboard()->getDashboardHeader();
+            ?>
             <!-- Header: 1st View -->
             <div class="container bg-light" id="payment-container-top-v1">
                 <div class="row">

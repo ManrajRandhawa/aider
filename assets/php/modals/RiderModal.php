@@ -1,5 +1,10 @@
 <?php
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+require $_SERVER['DOCUMENT_ROOT'] . "/aider/assets/phpmailer/vendor/autoload.php";
 
 class RiderModal {
 
@@ -578,25 +583,41 @@ class RiderModal {
 
 
         if($statement) {
-            $response['error'] = false;
-            $response['message'] = "The rider has been approved.";
-
             // Send Confirmation Email
-            $to = $email;
-            $subject = "Aider Rider | Confirmation Email for " . $first_name;
+            $mail = new PHPMailer(true);
 
-            $headers = "MIME-Version: 1.0" . "\r\n";
-            $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-            $headers .= 'From: Aider<info@aider.my>' . "\r\n";
+            $content = $Register->getRiderConfirmationEmailContent($name, $email, $pswd, "https://aider.my/", GOOGLE_PLAY_STORE_LINK, APPLE_APP_STORE_LINK);
 
-            $content = $Register->getCustomerConfirmationEmailContent($name, $email, $pswd, "aider.my/riders/", "", "");
+            try {
+                $mail->isSMTP();
+                $mail->Mailer = "smtp";
+                $mail->SMTPAuth   = TRUE;
+                $mail->SMTPSecure = "tls";
+                $mail->Port       = 587;
+                $mail->Host       = "smtp.gmail.com";
+                $mail->Username   = "aider.delivery@gmail.com";
+                $mail->Password   = "Aider@2020";
 
-            if(mail($to, $subject, $content, $headers)) {
-                $response['error'] = false;
-                $response['email'] = $email;
-            } else {
+                $mail->setFrom('aider.delivery@gmail.com', 'myAider');
+                $mail->addAddress($email);
+                $mail->addReplyTo('info@aider.my', 'myAider');
+
+                $mail->isHTML(true);
+                $mail->Subject = 'myAider | Welcome Email for ' . $first_name;
+                $mail->MsgHTML($content);
+                $mail->AltBody = 'Thank you for registering with us. You can log in with your email in the application with the following password: ' . $pswd;
+
+                if($mail->send()) {
+                    $response['error'] = false;
+                    $response['email'] = $email;
+                    $response['message'] = "The rider has been approved.";
+                } else {
+                    $response['error'] = true;
+                    $response['message'] = "Message could not be sent.";
+                }
+            } catch (Exception $e) {
                 $response['error'] = true;
-                $response['message'] = "You've been registered but there was an issue while sending your confirmation email.";
+                $response['message'] = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
             }
         } else {
             $response['error'] = true;

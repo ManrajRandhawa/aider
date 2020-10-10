@@ -276,6 +276,7 @@ function getAiderDriverDashboardJS() {
                     data: {Email: user_email, Pickup_Location: pickUpLocationVal, Dropoff_Location: dropOffLocationVal, Price: finalPrice},
                     success: function(data){
                         let title, message;
+
                         if(data !== "ERROR") {
                             rideID = parseInt(data);
 
@@ -287,7 +288,7 @@ function getAiderDriverDashboardJS() {
                                 $('#finding-rider-layout').html('<div class="row h-100">\n' +
                                     '                <div class="col-3"></div>\n' +
                                     '                <div class="col-6 text-center align-self-center mt-5" id="ripple-area">\n' +
-                                    '                    <i class="fas fa-map-pin fa-5x text-white"></i>\n' +
+                                    '                    <img src="../assets/images/aider-logo.png" style="height: 150px; width: auto;" class="d-block ml-auto mr-auto"/>\n' +
                                     '                    <div class="ripple mt-n1"></div>\n' +
                                     '                </div>\n' +
                                     '                <div class="col-3"></div>\n' +
@@ -297,10 +298,7 @@ function getAiderDriverDashboardJS() {
                                     '                    <h6 class="text-white">Give drivers some time to accept your booking.</h6>\n' +
                                     '                </div>\n' +
                                     '\n' +
-                                    '                <div class="col-12 text-center fixed-bottom mb-5" id="cancel-btn-layout">\n' +
-                                    '                    <i class="far fa-times-circle fa-3x text-white" id="btn-cancel-driver-ride"></i>\n' +
-                                    '                </div>\n' +
-                                    '            </div>');
+                                    '                ');
 
                                 $('#main-full-container').fadeOut("fast", function() {
                                     $('#main-full-container').addClass('d-none');
@@ -574,17 +572,11 @@ function getHomeDashboardJS() {
                                                                         carouselInner += "<div class=\"carousel-item active\">";
                                                                     }
 
-                                                                    if(result[2] === "PARCEL") {
-                                                                        oType = "Aider Parcel";
-                                                                    } else if(result[2] === "FOOD") {
-                                                                        oType = "Aider Food";
-                                                                    } else if(result[2] === "DRIVER") {
-                                                                        oType = "Aider Driver";
-                                                                    }
+
 
                                                                     time = dataTime;
 
-                                                                    carouselInner += "<h5 class=\"text-primary mt-2 font-weight-bold\" id=\"order-type\">" + oType + "</h5>\n" +
+                                                                    carouselInner += "\n" +
                                                                         "                                    <h6 class=\"text-black-50 mt-4\">Estimate time of arrival</h6>\n" +
                                                                         "                                    <h2 class=\"text-dark font-weight-bold\" id=\"eta\">" + dataTime + "</h2>\n" +
                                                                         "\n" +

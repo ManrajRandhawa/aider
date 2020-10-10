@@ -30,15 +30,18 @@
         <!-- Main Content -->
         <div class="row">
             <div class="col-12 bg-primary" style="height: 90vh;">
-                <img src="../assets/images/aider-logo.png" class="d-block ml-auto mr-auto bg-primary rounded p-3" style="width: 150px; height: 150px;" />
-                <h1 class=" text-center text-light text-uppercase" style="font-family: 'Barlow', sans-serif;"><?php echo SITE_NAME ?></h1>
+                <div class="row">
+                    <div class="col-12 bg-white">
+                        <img src="../assets/images/aider-d-logo.jpg" class="d-block ml-auto mr-auto bg-primary rounded" style="width: auto; height: 180px;" />
+                    </div>
+                </div>
 
                 <div class="row">
                     <div class="col-12 mt-5">
-                        <h3 class="text-center mt-5 font-weight-bold text-light" style="font-family: 'Barlow', sans-serif;">FOOD. PARCEL DELIVERY.</h3>
+                        <h3 class="text-center mt-5 font-weight-bold text-light" style="font-family: 'Barlow', sans-serif;">DRIVE YOU HOME SAFELY.</h3>
                         <h3 class="text-center font-weight-bold text-light" style="font-family: 'Barlow', sans-serif;">WE GOT IT!</h3>
 
-                        <h4 class="text-center mt-5 text-light" style="font-family: 'Barlow', sans-serif;">Join us now.</h4>
+                        <h4 class="text-center mt-5 text-light" style="font-family: 'Barlow', sans-serif;">Sign up now.</h4>
                     </div>
 
                 </div>
