@@ -22,10 +22,9 @@
 
     <body class="bg-light">
 
-        <!-- Header -->
-        <div class="bg-primary" style="top: 0 !important; height: 60px;">
-            <h4 class="pt-4 text-white text-uppercase text-center"><?php echo SITE_NAME; ?></h4>
-        </div>
+        <?php
+            $Aider->getUI()->getDashboard()->getDashboardHeader();
+        ?>
 
         <!-- Modal: First Time Login - Change Password -->
         <?php
@@ -35,7 +34,7 @@
         <!-- Main Content -->
         <div class="container">
             <div class="row">
-                <div class="col-6 mt-5">
+                <div class="col-6">
                     <span class="h3 text-black-50">Hi, <span class="h3 text-dark font-weight-bold" id="admin-home-hello-name"></span></span>
                 </div>
             </div>
@@ -57,11 +56,33 @@
                 </div>
 
                 <div class="col-12 mt-3">
-                    <a class="text-decoration-none" href="admins.php">
+                    <a class="text-decoration-none" href="cashout.php">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title"><i class="fas fa-user-shield mr-1"></i> Admins</h5>
-                                <p class="card-text">Manage your administrators.</p>
+                                <h5 class="card-title"><i class="fas fa-cash-register mr-1"></i> Cash Out Requests</h5>
+                                <p class="card-text">Manage your cash out requests.</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-12 mt-3">
+                    <a class="text-decoration-none" href="reports.php">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-chart-line mr-1"></i> Report</h5>
+                                <p class="card-text">View your daily statistics.</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-12 mt-3">
+                    <a class="text-decoration-none" href="finance.php">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-money-check-alt mr-1"></i> Finance</h5>
+                                <p class="card-text">View your financial statement.</p>
                             </div>
                         </div>
                     </a>

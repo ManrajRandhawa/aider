@@ -30,83 +30,31 @@
 
         <!-- Main Content -->
 
-        <!-- Change Email Modal -->
-        <div class='modal fade' id="change-email-modal" tabindex='-1' role='dialog' aria-labelledby='changeEmailModalLabel' aria-hidden='true'>
+        <!-- Cash Out Modal -->
+        <div class='modal fade' id="cashout-modal" tabindex='-1' role='dialog' aria-labelledby='cashOutModalLabel' aria-hidden='true'>
             <div class='modal-dialog modal-lg'>
                 <div class='modal-content'>
                     <div class='modal-header'>
-                        <h5 class='modal-title' id='changeEmailModalLabel'>Account > Change Email</h5>
+                        <h5 class='modal-title' id='cashOutModalLabel'>Earnings > Cash Out</h5>
                     </div>
                     <div class='modal-body'>
                         <form method='post'>
                             <div class='form-group'>
-                                <label for='chg-email' class='col-form-label'>New Email:</label>
-                                <input type='email' class='form-control' name='chg-email' id='chg-email'>
+                                <label for='bank' class='col-form-label'>Bank:</label>
+                                <input type='text' class='form-control' name='bank' id='bank' required>
+                            </div>
+                            <div class='form-group'>
+                                <label for='bank-acc' class='col-form-label'>Account Number (numbers only):</label>
+                                <input type='number' class='form-control' name='bank-acc' id='bank-acc' required>
+                            </div>
+                            <div class='form-group'>
+                                <label for='cashout-amt' class='col-form-label'>Amount (RM):</label>
+                                <input type='number' class='form-control' name='cashout-amt' id='cashout-amt' required>
                             </div>
                         </form>
                     </div>
                     <div class='modal-footer'>
-                        <button type='button' class='btn btn-primary' id='chg-email-btn'>Change Email</button>
-                    </div>
-                </div>
-
-                <!-- START: Toast Messages Area -->
-                <div class="toast-container-modal" style="z-index: 9999;">
-
-                </div>
-                <!-- END: Toast Messages Area -->
-            </div>
-        </div>
-
-        <!-- Change Password Modal -->
-        <div class='modal fade' id="change-pass-modal" tabindex='-1' role='dialog' aria-labelledby='changePasswordModalLabel' aria-hidden='true'>
-            <div class='modal-dialog modal-lg'>
-                <div class='modal-content'>
-                    <div class='modal-header'>
-                        <h5 class='modal-title' id='changePasswordModalLabel'>Account > Change Password</h5>
-                    </div>
-                    <div class='modal-body'>
-                        <form method='post'>
-                            <div class='form-group'>
-                                <label for='chg-pass' class='col-form-label'>New Password:</label>
-                                <input type='password' class='form-control' name='chg-pswd' id='chg-pass'>
-                            </div>
-                            <div class='form-group'>
-                                <label for='chg-confirm-pass' class='col-form-label'>Confirm New Password:</label>
-                                <input type='password' class='form-control' name='chg-confirm-pswd' id='chg-confirm-pass'>
-                            </div>
-                        </form>
-                    </div>
-                    <div class='modal-footer'>
-                        <button type='button' class='btn btn-primary' id='chg-pass-btn'>Change Password</button>
-                    </div>
-                </div>
-
-                <!-- START: Toast Messages Area -->
-                <div class="toast-container-modal" style="z-index: 9999;">
-
-                </div>
-                <!-- END: Toast Messages Area -->
-            </div>
-        </div>
-
-        <!-- Change Phone Number Modal -->
-        <div class='modal fade' id="change-num-modal" tabindex='-1' role='dialog' aria-labelledby='changeNumModalLabel' aria-hidden='true'>
-            <div class='modal-dialog modal-lg'>
-                <div class='modal-content'>
-                    <div class='modal-header'>
-                        <h5 class='modal-title' id='changeNumModalLabel'>Account > Change Phone Number</h5>
-                    </div>
-                    <div class='modal-body'>
-                        <form method='post'>
-                            <div class='form-group'>
-                                <label for='chg-num' class='col-form-label'>New Phone Number (e.g. 0122233445):</label>
-                                <input type='text' class='form-control' name='chg-num' id='chg-num'>
-                            </div>
-                        </form>
-                    </div>
-                    <div class='modal-footer'>
-                        <button type='button' class='btn btn-primary' id='chg-num-btn'>Change Phone Number</button>
+                        <button type='button' class='btn btn-primary' id='cashout-btn'>Cash Out</button>
                     </div>
                 </div>
 
@@ -220,7 +168,7 @@
 
 
         <!-- START: Toast Messages Area -->
-        <div class="toast-container">
+        <div class="toast-container shadow-lg">
 
         </div>
         <!-- END: Toast Messages Area -->

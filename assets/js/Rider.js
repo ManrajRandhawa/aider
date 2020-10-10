@@ -351,6 +351,118 @@ function getEarningsDashboardJS() {
             }
         });
         // END: Get Other Trips
+
+        // START: Max Value of Amount
+        $('#cashout-amt').on('input', function() {
+            $.ajax({
+                url: '../assets/php/ajax/rider/getRiderData.php',
+                method: 'POST',
+                cache: false,
+                data: {User_Email: user_email, User_Info: "Wallet_Balance"},
+                success: function(data) {
+                    if(parseFloat($('#cashout-amt').val()) > parseFloat(data)) {
+                        $('#cashout-amt').val(data);
+                    }
+                }
+            });
+
+        });
+
+        $('#top-up-wallet').click(function() {
+            $.ajax({
+                url: '../assets/php/ajax/rider/getRiderData.php',
+                method: 'POST',
+                cache: false,
+                data: {User_Email: user_email, User_Info: "Wallet_Balance"},
+                success: function(data) {
+                    $('#cashout-amt').val(data);
+                }
+            });
+
+
+            $('#cashout-modal').modal();
+        });
+        // START: Max Value of Amount
+
+        // START: Cash Out Button
+        $('#cashout-btn').click(function() {
+
+            if($('#bank').val().length < 3 || $('#bank-acc').val().length < 7 || $('#cashout-amt').val().length === 0) {
+                // Display Toast Message
+                $.ajax({
+                    url: "../assets/php/ajax/ui/sendToastMessage.php",
+                    method: "POST",
+                    cache: false,
+                    data: {Title: "Cash Out", Message: "Invalid entry. Please try again!"},
+                    success: function(dataToast){
+                        $('.toast-container-modal').html(dataToast);
+                        $('.toast').toast('show');
+
+                        setTimeout(function() {
+                            $('.toast-container-modal').html("");
+                        }, 5000);
+
+                        clearTimeout(this);
+                    }
+                });
+            } else {
+                $.ajax({
+                    url: '../assets/php/ajax/rider/updateRiderData.php',
+                    method: 'POST',
+                    cache: false,
+                    data: {User_Email: user_email, Key: "Bank", Value: $('#bank').val()},
+                    success: function(dataBank) {
+                        if(dataBank === "FALSE") {
+                            $.ajax({
+                                url: '../assets/php/ajax/rider/updateRiderData.php',
+                                method: 'POST',
+                                cache: false,
+                                data: {User_Email: user_email, Key: "Account_Number", Value: parseInt($('#bank-acc').val())},
+                                success: function(dataAcc) {
+                                    if(dataAcc === "FALSE") {
+                                        $.ajax({
+                                            url: '../assets/php/ajax/rider/updateRiderData.php',
+                                            method: 'POST',
+                                            cache: false,
+                                            data: {User_Email: user_email, Key: "Withdraw_Amount", Value: parseFloat($('#cashout-amt').val())},
+                                            success: function(dataAmt) {
+                                                if(dataAmt === "FALSE") {
+                                                    $('#cashout-modal').modal('toggle');
+
+                                                    setTimeout(function() {
+                                                        // Display Toast Message
+                                                        $.ajax({
+                                                            url: "../assets/php/ajax/ui/sendToastMessage.php",
+                                                            method: "POST",
+                                                            cache: false,
+                                                            data: {Title: "Cash Out", Message: "Your request is in process. We will contact you soon!"},
+                                                            success: function(dataToast){
+                                                                $('.toast-container').html(dataToast);
+                                                                $('.toast').toast('show');
+
+                                                                setTimeout(function() {
+                                                                    $('.toast-container').html("");
+                                                                }, 5000);
+
+                                                                clearTimeout(this);
+                                                            }
+                                                        });
+                                                    }, 300);
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+
+                        }
+
+                    }
+                });
+            }
+
+        });
+        // END: Cash Out Button
     }
 }
 

@@ -17,6 +17,46 @@ function getAdminHomeDashboard() {
     }
 }
 
+function getCashOutDashboard() {
+    if(window.localStorage.getItem("User_Email") === null) {
+        window.location.href = "../admins/index.php";
+    } else {
+        let user_email = window.localStorage.getItem("User_Email");
+
+        // Display Waiting List
+        $.ajax({
+            url: "../assets/php/ajax/admin/getCashOutRequests.php",
+            method: "POST",
+            cache: false,
+            success: function (data) {
+                $('#waiting-list-container').html(data);
+            }
+        });
+
+
+    }
+}
+
+function getReportDashboard() {
+    if(window.localStorage.getItem("User_Email") === null) {
+        window.location.href = "../admins/index.php";
+    } else {
+        let user_email = window.localStorage.getItem("User_Email");
+
+        // Display Waiting List
+        $.ajax({
+            url: "../assets/php/ajax/admin/getReports.php",
+            method: "POST",
+            cache: false,
+            success: function (data) {
+                $('#report-container').html(data);
+            }
+        });
+
+
+    }
+}
+
 function getWaitingListDashboard() {
     if(window.localStorage.getItem("User_Email") === null) {
         window.location.href = "../admins/index.php";
@@ -781,6 +821,96 @@ function denyButtonClick() {
             // Update Waiting List
             $.ajax({
                 url: "../assets/php/ajax/admin/getWaitingList.php",
+                method: "POST",
+                cache: false,
+                success: function(dataWL){
+                    $('#waiting-list-container').html(dataWL);
+                }
+            });
+        }
+    });
+}
+
+function approveCashOutClick() {
+    let emailApprove = $('.btn-approve').attr('id');
+
+    // Approve Rider & Display Toast Message
+    $.ajax({
+        url: "../assets/php/ajax/admin/approveCashOutRequest.php",
+        method: "POST",
+        cache: false,
+        data: {User_Email: emailApprove},
+        success: function(dataMsg) {
+            // Display Toast Message
+            let msg = "";
+            if(dataMsg === "ERROR") {
+                msg = "You can't approve this request at this moment.";
+            } else {
+                msg = "The cash out request was successful.";
+            }
+            $.ajax({
+                url: "../assets/php/ajax/ui/sendToastMessage.php",
+                method: "POST",
+                cache: false,
+                data: {Title: "Cash Out Approval Status for " + emailApprove, Message: msg},
+                success: function(dataToast){
+                    $('.toast-container').html(dataToast);
+                    $('.toast').toast('show');
+
+                    setTimeout(function() {
+                        $('.toast-container').html("");
+                    }, 5000);
+                }
+            });
+
+            // Update Waiting List
+            $.ajax({
+                url: "../assets/php/ajax/admin/getCashOutRequests.php",
+                method: "POST",
+                cache: false,
+                success: function(dataWL){
+                    $('#waiting-list-container').html(dataWL);
+                }
+            });
+        }
+    });
+}
+
+function denyCashOutClick() {
+    let emailApprove = $('.btn-approve').attr('id');
+
+    // Approve Rider & Display Toast Message
+    $.ajax({
+        url: "../assets/php/ajax/admin/denyCashOutRequest.php",
+        method: "POST",
+        cache: false,
+        data: {User_Email: emailApprove},
+        success: function(dataMsg) {
+            // Display Toast Message
+            let msg = "";
+            if(dataMsg === "ERROR") {
+                msg = "You can't deny this request at this moment.";
+            } else {
+                msg = "The cash out request was denied successfully.";
+            }
+            $.ajax({
+                url: "../assets/php/ajax/ui/sendToastMessage.php",
+                method: "POST",
+                cache: false,
+                data: {Title: "Cash Out Denial Status for " + emailApprove, Message: msg},
+                success: function(dataToast){
+                    $('.toast-container').html(dataToast);
+                    $('.toast').toast('show');
+
+                    setTimeout(function() {
+                        $('.toast-container').html("");
+                    }, 5000);
+                }
+            });
+
+            // Update Waiting List
+            $.ajax({
+                url: "../assets/php/ajax/admin/getCashOutRequests.php",
                 method: "POST",
                 cache: false,
                 success: function(dataWL){
