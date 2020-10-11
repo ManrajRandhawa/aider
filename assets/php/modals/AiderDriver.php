@@ -130,9 +130,9 @@ class AiderDriver {
 
         if($responseCustomerModal['error']) {
             $response['error'] = true;
-            $response['message'] = "There was an error wile trying to fetch your wallet.";
+            $response['message'] = "There was an error while trying to fetch your wallet.";
         } else {
-            if($responseCustomerModal['data'] < $Amount) {
+            if(doubleval($responseCustomerModal['data']) < doubleval($Amount)) {
                 $response['error'] = true;
                 $response['message'] = "You've insufficient funds. Top up to continue." . " - " . $Amount;
             } else {
