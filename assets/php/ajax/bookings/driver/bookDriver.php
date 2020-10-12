@@ -8,7 +8,7 @@
         $responseDeliver = $Aider->getUserModal()->getAiderDriverModal()->book($_POST['Email'], $_POST['Pickup_Location'],$_POST['Dropoff_Location'], $_POST['Price']);
 
         if($responseDeliver['error']) {
-            echo "ERROR";
+            echo "ERROR: " . $responseDeliver['message'];
         } else {
             echo $responseDeliver['message'];
         }

@@ -273,11 +273,11 @@ function getAiderDriverDashboardJS() {
                     url: "../assets/php/ajax/bookings/driver/bookDriver.php",
                     method: "POST",
                     cache: false,
-                    data: {Email: user_email, Pickup_Location: pickUpLocationVal, Dropoff_Location: dropOffLocationVal, Price: finalPrice},
+                    data: {Email: user_email, Pickup_Location: pickUpLocationVal, Dropoff_Location: dropOffLocationVal, Price: parseFloat(finalPrice)},
                     success: function(data){
                         let title, message;
 
-                        if(data !== "ERROR") {
+                        if(!data.includes('ERROR')) {
                             rideID = parseInt(data);
 
                             $('#container-details').hide();
@@ -288,7 +288,7 @@ function getAiderDriverDashboardJS() {
                                 $('#finding-rider-layout').html('<div class="row h-100">\n' +
                                     '                <div class="col-3"></div>\n' +
                                     '                <div class="col-6 text-center align-self-center mt-5" id="ripple-area">\n' +
-                                    '                    <img src="../assets/images/aider-logo.png" style="height: 150px; width: auto;" class="d-block ml-auto mr-auto"/>\n' +
+                                    '                    <i class="fas fa-map-pin fa-5x text-white"></i>\n' +
                                     '                    <div class="ripple mt-n1"></div>\n' +
                                     '                </div>\n' +
                                     '                <div class="col-3"></div>\n' +
@@ -345,7 +345,7 @@ function getAiderDriverDashboardJS() {
                             // END: Check if Driver/Rider is found
                         } else {
                             title = "Oops! Something went wrong.";
-                            message = data;
+                            message = data.split('ERROR: ')[1];
 
                             // Display Toast Message
                             $.ajax({

@@ -18,7 +18,7 @@ class AiderDriver {
             $responseCheckFunds = $this->checkFunds($customerEmail, doubleval($Price));
 
             if(!$responseCheckFunds['error']) {
-                $priceAmount = implode($Price);
+                $priceAmount = doubleval($Price);
 
                 $insert_id = null;
                 $t_type = "DRIVER";
@@ -39,7 +39,7 @@ class AiderDriver {
                     $insert_id = $connection->insert_id;
                 } else {
                     $response['error'] = true;
-                    $response['message'] = "There was an error while setting up the delivery.";
+                    $response['message'] = "There was an error while setting up the delivery: " . $statement->error;
                 }
                 $statement->close();
                 // [END] Add to Delivery Listing
@@ -134,7 +134,7 @@ class AiderDriver {
         } else {
             if(doubleval($responseCustomerModal['data']) < doubleval($Amount)) {
                 $response['error'] = true;
-                $response['message'] = "You've insufficient funds. Top up to continue." . " - " . $Amount;
+                $response['message'] = "You've insufficient funds. You currently have RM " . $responseCustomerModal['data'] . " and need another RM " . (doubleval($Amount) - doubleval($responseCustomerModal['data'])) . ". Top up to continue.";
             } else {
                 $response['error'] = false;
             }
