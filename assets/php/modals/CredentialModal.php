@@ -102,7 +102,7 @@ class CredentialModal {
             [
                 'reference_1_label' => "Bank Code",
                 'reference_1' => $bankCode,
-            ] // optional.
+            ]
         );
 
         $url = $responseBill->toArray()['url'];

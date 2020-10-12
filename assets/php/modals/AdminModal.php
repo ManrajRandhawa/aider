@@ -340,7 +340,7 @@ class AdminModal {
         return $response;
     }
 
-    function printFinanceStatement() {
+    function printFinanceStatement($startDate, $endDate) {
         $DatabaseHandler = new DatabaseHandler();
         $connection = $DatabaseHandler->getMySQLiConnection();
 
@@ -356,12 +356,17 @@ class AdminModal {
         // Write data to file
         $flag = false;
         while ($row = $statement->fetch_assoc()) {
-            if (!$flag) {
-                // display field/column names as first row
-                echo implode("\t", array_keys($row)) . "\r\n";
-                $flag = true;
+
+            $dateUnformatted = explode(' ', $row['Transaction_Datetime']);
+
+            if(((strtotime($dateUnformatted[0]) > strtotime($startDate)) && (strtotime($dateUnformatted[0]) < strtotime($endDate))) || (strtotime($dateUnformatted[0]) == strtotime($startDate) || strtotime($dateUnformatted[0]) == $endDate)) {
+                if (!$flag) {
+                    // display field/column names as first row
+                    echo implode("\t", array_keys($row)) . "\r\n";
+                    $flag = true;
+                }
+                echo implode("\t", array_values($row)) . "\r\n";
             }
-            echo implode("\t", array_values($row)) . "\r\n";
         }
         die();
     }

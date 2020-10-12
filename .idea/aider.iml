@@ -20,5 +20,7 @@
     <orderEntry type="library" name="jquery" level="application" />
     <orderEntry type="library" name="google_maps_api_v3" level="project" />
     <orderEntry type="library" name="jquery-ui" level="application" />
+    <orderEntry type="library" name="bootstrap-select" level="application" />
+    <orderEntry type="library" name="mdbootstrap" level="application" />
   </component>
 </module>

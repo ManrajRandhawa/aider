@@ -30,11 +30,12 @@
 
     <body class="bg-white">
 
-        <?php
-            $Aider->getUI()->getDashboard()->getDashboardHeader();
-        ?>
-
         <div class="bg-light">
+
+            <?php
+                $Aider->getUI()->getDashboard()->getDashboardHeader();
+            ?>
+
             <!-- Header -->
             <div class="container bg-light">
                 <div class="row">

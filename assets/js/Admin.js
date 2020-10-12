@@ -14,6 +14,35 @@ function getAdminHomeDashboard() {
                 $('#admin-home-hello-name').html(data.split(" ", 1));
             }
         });
+
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+        if(dd<10){
+            dd='0'+dd
+        }
+        if(mm<10){
+            mm='0'+mm
+        }
+
+        today = yyyy+'-'+mm+'-'+dd;
+        $('#Start_Date').prop('max', today);
+        $('#End_Date').prop('max', today);
+
+        let startInputDate = null;
+
+        $('#Start_Date').on('change', function() {
+            startInputDate = $('#Start_Date').val();
+            $('#End_Date').prop('min', startInputDate);
+        });
+
+        $('#End_Date').on('change', function() {
+            if(startInputDate !== null) {
+                console.log(startInputDate);
+
+            }
+        })
     }
 }
 
@@ -43,7 +72,7 @@ function getReportDashboard() {
     } else {
         let user_email = window.localStorage.getItem("User_Email");
 
-        // Display Waiting List
+        // Get Report
         $.ajax({
             url: "../assets/php/ajax/admin/getReports.php",
             method: "POST",
@@ -52,8 +81,6 @@ function getReportDashboard() {
                 $('#report-container').html(data);
             }
         });
-
-
     }
 }
 

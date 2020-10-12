@@ -622,6 +622,17 @@ class OrderModal {
                 } else {
                     $response['error'] = true;
                     $response['message'] = "No data found.";
+                    $response['data'] = "<div class='container mt-4 mb-5'>
+                            <div class='row'>
+                                <div class='col-1'></div>
+                                <div class='col-10 text-center mt-5'>
+                                    <i class='fas fa-scroll fa-4x' style='color: #DCDCDC;'></i>
+                                    <h6 class='font-weight-bold mt-4'>Nothing here yet!</h6>
+                                    <h6 class='text-black-50'>Any rides completed will appear here.</h6>
+                                </div>
+                                <div class='col-1'></div>
+                            </div>
+                        </div>";
                 }
             }
 

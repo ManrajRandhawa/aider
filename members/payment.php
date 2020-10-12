@@ -33,7 +33,7 @@
 
         <div class="bg-light">
             <?php
-            $Aider->getUI()->getDashboard()->getDashboardHeader();
+                $Aider->getUI()->getDashboard()->getDashboardHeader();
             ?>
             <!-- Header: 1st View -->
             <div class="container bg-light" id="payment-container-top-v1">
@@ -70,7 +70,7 @@
                             <div class="card-body">
                                 <h5 class="card-title text-primary font-weight-bold">Enter a top-up value (RM)</h5>
                                 <div class="input-group input-group-lg mb-3">
-                                    <input type="number" class="form-control" placeholder="Enter an amount (RM)" id="transaction-amount">
+                                    <input type="number" class="form-control" placeholder="Enter an amount (RM)" id="transaction-amount" />
                                 </div>
 
                                 <select title="Select a bank" class="selectpicker w-100" id="bank-code">
@@ -119,6 +119,7 @@
         ?>
         <script src="../assets/js/Dashboard.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous"></script>
         <script>
             $(document).ready(function() {
                 getDashboardJS();

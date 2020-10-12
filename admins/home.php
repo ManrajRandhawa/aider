@@ -31,6 +31,39 @@
             $Aider->getUI()->getDashboard()->getFirstTimePasswordChangeModal();
         ?>
 
+        <!-- Change Email Modal -->
+        <div class='modal fade' id="finance-modal" tabindex='-1' role='dialog' aria-labelledby='changeFinanceModalLabel' aria-hidden='true'>
+            <div class='modal-dialog modal-lg'>
+                <div class='modal-content'>
+                    <div class='modal-header'>
+                        <h5 class='modal-title' id='changeFinanceModalLabel'>Finance > Select Date Range</h5>
+                    </div>
+                    <form method='post' action="finance.php">
+                        <div class='modal-body'>
+                            <div class='form-group'>
+                                <label for='Start_Date' class='col-form-label'>From:</label>
+                                <input type='date' class='form-control' name='Start_Date' id='Start_Date'>
+                            </div>
+                            <div class='form-group'>
+                                <label for='End_Date' class='col-form-label'>To:</label>
+                                <input type='date' class='form-control' name='End_Date' id='End_Date'>
+                            </div>
+                        </div>
+                        <div class='modal-footer'>
+                            <button type='submit' class='btn btn-primary' id='download-finance-btn'>Download Financial Statement</button>
+                        </div>
+                    </form>
+
+                </div>
+
+                <!-- START: Toast Messages Area -->
+                <div class="toast-container-modal" style="z-index: 9999;">
+
+                </div>
+                <!-- END: Toast Messages Area -->
+            </div>
+        </div>
+
         <!-- Main Content -->
         <div class="container">
             <div class="row">
@@ -78,7 +111,7 @@
                 </div>
 
                 <div class="col-12 mt-3">
-                    <a class="text-decoration-none" href="finance.php">
+                    <a class="text-decoration-none" href="#" data-toggle="modal" data-target="#finance-modal">
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title"><i class="fas fa-money-check-alt mr-1"></i> Finance</h5>
