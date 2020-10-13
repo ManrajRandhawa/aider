@@ -198,4 +198,50 @@ class CustomerModal {
         return $response;
     }
 
+    function addMoneyToWallet($userEmail, $billRef, $amount, $timestamp) {
+        $Aider = new Aider();
+
+        $responseUserID = $Aider->getUserModal()->getCustomerModal()->getCustomerInformationByEmail($userEmail, 'ID');
+        $responseUserCredit = $Aider->getUserModal()->getCustomerModal()->getCustomerInformationByEmail($userEmail, 'Credit');
+
+        if(!$responseUserID['error'] && !$responseUserCredit['error']) {
+            $userID = intval($responseUserID['data']);
+
+            $DatabaseHandler = new DatabaseHandler();
+            $connection = $DatabaseHandler->getMySQLiConnection();
+
+            $sql = "INSERT INTO aider_bill_payment(Bill_Reference, User_ID, Bill_Amount, Bill_Timestamp) VALUES (?,?,?,?)";
+
+            $statement = $connection->prepare($sql);
+
+            $statement->bind_param("sids",$billRef, $userID, $amount, $timestamp);
+
+            if($statement->execute()) {
+                $response['error'] = false;
+
+                $newCredit = doubleval($responseUserCredit['data']) + doubleval($amount);
+
+                $responseUpdateWallet = $Aider->getUserModal()->getCustomerModal()->updateCustomerInformationByEmail($userEmail, 'Credit', doubleval($newCredit));
+
+                if($responseUpdateWallet['error']) {
+                    $response['error'] = true;
+                    $response['message'] = $responseUpdateWallet['message'];
+                } else {
+                    $response['error'] = false;
+                }
+            } else {
+                $response['error'] = true;
+                $response['message'] = "There was an issue in updating your wallet.";
+            }
+
+            $statement->close();
+            $connection->close();
+        } else {
+            $response['error'] = true;
+            $response['message'] = $responseUserID['message'];
+        }
+
+        return $response;
+    }
+
 }

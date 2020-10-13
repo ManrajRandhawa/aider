@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="JavaScriptLibraryMappings">
-    <file url="PROJECT" libraries="{bootstrap-select, google_maps_api_v3, jQuery 3.5.1, mdbootstrap}" />
+    <file url="PROJECT" libraries="{bootstrap, bootstrap-select, font-awesome, google_maps_api_v3, jQuery 3.5.1, jquery, jquery.mask, jqueryui, mdbootstrap, popper.js}" />
   </component>
 </project>

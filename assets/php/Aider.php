@@ -16,6 +16,7 @@ include_once $_SERVER['DOCUMENT_ROOT'] . ROOT_DIR . '/assets/php/modals/ParcelMo
 include_once $_SERVER['DOCUMENT_ROOT'] . ROOT_DIR . '/assets/php/modals/OrderModal.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . ROOT_DIR . '/assets/php/modals/UserModal.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . ROOT_DIR . '/assets/php/modals/AiderDriver.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . ROOT_DIR . '/assets/php/modals/BillModal.php';
 
 // UI
 include_once $_SERVER['DOCUMENT_ROOT'] . ROOT_DIR . '/assets/php/ui/Alerts.php';

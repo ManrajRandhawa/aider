@@ -7,6 +7,7 @@
     $credentialsModal = new CredentialModal();
 
 
+
 ?>
 
 <!DOCTYPE html>
@@ -22,6 +23,125 @@
         <?php
             echo $Aider->getUI()->getBootstrapHead();
         ?>
+
+        <style>
+            .circle-loader {
+                margin-bottom: 1rem;
+                border: 2px solid rgba(0, 0, 0, 0.2);
+                animation: loader-spin 0.87s infinite linear;
+                position: relative;
+                display: inline-block;
+                vertical-align: top;
+                border-radius: 50%;
+                width: 80px;
+                height: 80px;
+            }
+            .circle-loader.success {
+                border-left-color: #007bff;
+            }
+            .circle-loader.danger {
+                border-left-color: #dc3545;
+            }
+            .load-complete {
+                -webkit-animation: none;
+                animation: none;
+                transition: border 500ms ease-out;
+            }
+            .load-complete.success {
+                border-color: #007bff;
+            }
+            .load-complete.danger {
+                border-color: #dc3545;
+            }
+            .checkmark {
+                display: none;
+            }
+            .checkmark.draw:after {
+                animation-duration: 800ms;
+                animation-timing-function: ease;
+                animation-name: checkmark;
+                transform: scaleX(-1) rotate(135deg);
+            }
+            .checkmark.draw-2:after {
+                animation-duration: 800ms;
+                animation-timing-function: ease;
+                animation-name: checkmark;
+                transform: scaleX(-1) rotate(45deg);
+            }
+            .checkmark.draw-3:after {
+                animation-duration: 800ms;
+                animation-timing-function: ease;
+                animation-name: checkmark;
+                transform: scaleX(-1) rotate(135deg);
+            }
+            .checkmark.draw:after {
+                opacity: 1;
+                height: 40px;
+                width: 20px;
+                transform-origin: left top;
+                content: '';
+                left: 18px;
+                top: 40px;
+                position: absolute;
+            }
+            .checkmark.draw-2:after {
+                opacity: 1;
+                height: 40px;
+                width: 20px;
+                transform-origin: left top;
+                content: '';
+                left: 38px;
+                top: 11px;
+                position: absolute;
+            }
+            .checkmark.draw-3:after {
+                opacity: 1;
+                height: 40px;
+                width: 20px;
+                transform-origin: left top;
+                content: '';
+                left: 11px;
+                top: 40px;
+                position: absolute;
+            }
+            .checkmark.success-mark:after {
+                border-right: 3px solid #007bff;
+                border-top: 3px solid #007bff;
+            }
+            .checkmark.danger-mark:after {
+                border-right: 3px solid #dc3545;
+            }
+            @keyframes loader-spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+            @keyframes checkmark {
+                0% {
+                    height: 0;
+                    width: 0;
+                    opacity: 1;
+                }
+                20% {
+                    height: 0;
+                    width: 20px;
+                    opacity: 1;
+                }
+                40% {
+                    height: 40px;
+                    width: 20px;
+                    opacity: 1;
+                }
+                100% {
+                    height: 40px;
+                    width: 20px;
+                    opacity: 1;
+                }
+            }
+        </style>
     </head>
 
     <body class="bg-white">
@@ -84,6 +204,98 @@
                     </div>
                 </div>
             </div>
+
+            <!-- START: 3rd View - Payment Completed -->
+            <div class="container-fluid vw-100 vh-100 bg-light d-none" id="payment-completed-layout" style="z-index: 99999;">
+                <div class="row h-100">
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-3"></div>
+                            <div class="col-6 text-center align-self-center">
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <div class="circle-loader success">
+                                    <div class="checkmark draw success-mark"></div>
+                                </div>
+                            </div>
+                            <div class="col-3"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <div class="d-none" id="payment-complete-text">
+                                    <h5 class="font-weight-bold text-primary mb-3">You've successfully topped-up</h5>
+                                    <h6 class="font-weight-bold text-primary mb-3">RM <span id="payment-complete-rm" class="h3 font-weight-bold"></span></h6>
+                                    <h6 class="text-primary mb-5"><i>Reference Code: <span id="payment-complete-ref" class="font-weight-bold"></span></i></h6>
+
+                                    <i class="fal fa-times-circle fa-3x text-primary mt-5" id="payment-refresh"></i>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END: 3rd View - Payment Completed -->
+
+            <!-- START: 4th View - Payment Failed -->
+            <div class="container-fluid vw-100 vh-100 bg-light d-none" id="payment-failed-layout" style="z-index: 99999;">
+                <div class="row h-100">
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-3"></div>
+                            <div class="col-6 text-center align-self-center ">
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <div class="circle-loader danger">
+                                    <div class="checkmark draw-2 danger-mark"></div>
+                                    <div class="checkmark draw-3 danger-mark"></div>
+                                </div>
+                            </div>
+                            <div class="col-3"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <div class="d-none" id="payment-fail-text">
+                                    <h5 class="font-weight-bold text-danger">Oops, top-up wasn't successful.</h5>
+                                    <h5 class="font-weight-bold text-danger mb-4">Please try again.</h5>
+                                    <h6 class="text-danger mb-5"><i>Reference Code: <span id="payment-fail-ref" class="font-weight-bold"></span></i></h6>
+
+                                    <i class="fal fa-times-circle fa-3x text-danger mt-5" id="payment-refresh-2"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END: 4th View - Payment Failed -->
         </div>
 
         <!-- Main Content: 1st View -->

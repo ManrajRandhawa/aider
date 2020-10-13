@@ -31,4 +31,8 @@ class UserModal {
         return new AiderDriver();
     }
 
+    function getBillModal() {
+        return new BillModal();
+    }
+
 }

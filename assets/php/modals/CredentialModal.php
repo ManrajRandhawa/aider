@@ -8,7 +8,16 @@ class CredentialModal {
     private $billplz;
 
     function __construct() {
-        $this->billplz = Client::make('27943969-b70a-47a6-8ac4-5e384ff1758a', 'S-j9dORLJfY4UIjFyY-3HZ8g');
+        $this->billplz = Client::make('3aef9a90-43f0-476e-a75b-963f21473e4a', 'S-th5me89FBSK-4oaTsN6Kxg');
+        $this->billplz->useSandbox();
+    }
+
+    /**
+     * @return Client
+     */
+    public function getBillplz(): Client
+    {
+        return $this->billplz;
     }
 
     function getBanks() {
@@ -92,16 +101,17 @@ class CredentialModal {
         $bill = $this->billplz->bill();
 
         $responseBill = $bill->create(
-            'wb4bpddw',
+            'aht500nz', //wb4bpddw
             $userEmail,
             null,
             $userName,
             \Duit\MYR::given(doubleval($amount) * 100),
-            'http://google.com',
+            'http://42.190.106.101/aider/members/webhook.php',
             'Thank you for supporting us!',
             [
                 'reference_1_label' => "Bank Code",
                 'reference_1' => $bankCode,
+                'redirect_url' => 'http://42.190.106.101/aider/members/payment.php'
             ]
         );
 

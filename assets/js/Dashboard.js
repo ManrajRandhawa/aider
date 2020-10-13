@@ -667,11 +667,137 @@ function getHomeDashboardJS() {
     }
 }
 
+let checkError = false;
+function getAmount(user_email, params) {
+    // Fetch Amount from Database
+    $.ajax({
+        url: '../assets/php/ajax/user/payment/getCompletedPaymentAmount.php',
+        method: 'POST',
+        cache: false,
+        data: {User_Email: user_email, Ref: params['billplz[id]'][0]},
+        success: function(data) {
+            $('#payment-complete-rm').html(data);
+
+            if(data === "ERROR") {
+                getAmount(user_email, params);
+            } else {
+                // Completion Spinner
+                $('.circle-loader').toggleClass('load-complete');
+                $('.checkmark').toggle();
+
+                $('#payment-complete-text').removeClass('d-none');
+            }
+        }
+    });
+}
+
 function getPaymentDashboardJS() {
     if(window.localStorage.getItem("User_Email") === null) {
         window.location.href = "../members/index.php";
     } else {
         let user_email = window.localStorage.getItem("User_Email");
+
+        // Check GET Request
+        if(window.location.href.includes('?')) {
+            let params = "";
+            params = parseURLParams(window.location.href);
+
+            if(params['billplz[paid]'][0] === 'true') {
+                // Display Payment Completion Layout
+                $('#payment-complete-ref').html(params['billplz[id]'][0]);
+
+                // START: Set Proper Layouts
+                if(!$('#payment-container-top-v1').hasClass('d-none')) {
+                    $('#payment-container-top-v1').addClass('d-none');
+                }
+
+                if(!$('#payment-container-bottom-v1').hasClass('d-none')) {
+                    $('#payment-container-bottom-v1').addClass('d-none');
+                }
+
+                if(!$('#payment-container-top-v2').hasClass('d-none')) {
+                    $('#payment-container-top-v2').addClass('d-none');
+                }
+
+                if(!$('#payment-failed-layout').hasClass('d-none')) {
+                    $('#payment-failed-layout').addClass('d-none');
+                }
+
+                if(!$('#bottom-nav').hasClass('d-none')) {
+                    $('#bottom-nav').addClass('d-none');
+                }
+
+                if(!$('#aider-header').hasClass('d-none')) {
+                    $('#aider-header').addClass('d-none');
+                }
+
+                if($('#payment-completed-layout').hasClass('d-none')) {
+                    $('#payment-completed-layout').removeClass('d-none');
+                }
+                // END: Set Proper Layouts
+
+                getAmount(user_email, params);
+
+            } else {
+                // Display Payment Failure Layout
+
+                // Display Payment Completion Layout
+                $('#payment-fail-ref').html(params['billplz[id]'][0]);
+
+                // START: Set Proper Layouts
+                if(!$('#payment-container-top-v1').hasClass('d-none')) {
+                    $('#payment-container-top-v1').addClass('d-none');
+                }
+
+                if(!$('#payment-container-bottom-v1').hasClass('d-none')) {
+                    $('#payment-container-bottom-v1').addClass('d-none');
+                }
+
+                if(!$('#payment-container-top-v2').hasClass('d-none')) {
+                    $('#payment-container-top-v2').addClass('d-none');
+                }
+
+                if(!$('#payment-completed-layout').hasClass('d-none')) {
+                    $('#payment-completed-layout').addClass('d-none');
+                }
+
+                if(!$('#bottom-nav').hasClass('d-none')) {
+                    $('#bottom-nav').addClass('d-none');
+                }
+
+                if(!$('#aider-header').hasClass('d-none')) {
+                    $('#aider-header').addClass('d-none');
+                }
+
+                if($('#payment-failed-layout').hasClass('d-none')) {
+                    $('#payment-failed-layout').removeClass('d-none');
+                }
+                // END: Set Proper Layouts
+
+                setTimeout(function() {
+                    // Completion Spinner
+                    $('.circle-loader').toggleClass('load-complete');
+                    $('.checkmark').toggle();
+
+                    $('#payment-fail-text').removeClass('d-none');
+                }, 1000);
+            }
+
+            console.log(params);
+
+            console.log(params['billplz[id]'][0]);
+            console.log(params['billplz[paid]'][0]);
+            console.log(params['billplz[paid_at]'][0]);
+            console.log(params['billplz[x_signature]'][0]);
+        }
+
+        // Refresh Page on 'X' Button Click
+        $('#payment-refresh').click(function() {
+            window.open('payment.php');
+        });
+        $('#payment-refresh-2').click(function() {
+            window.open('payment.php');
+        });
 
         $.ajax({
             url: '../assets/php/ajax/user/getUserData.php',
@@ -971,4 +1097,24 @@ function getAccountDashboardJS() {
         });
         // END: Logout
     }
+}
+
+function parseURLParams(url) {
+    var queryStart = url.indexOf("?") + 1,
+        queryEnd   = url.indexOf("#") + 1 || url.length + 1,
+        query = url.slice(queryStart, queryEnd - 1),
+        pairs = query.replace(/\+/g, " ").split("&"),
+        parms = {}, i, n, v, nv;
+
+    if (query === url || query === "") return;
+
+    for (i = 0; i < pairs.length; i++) {
+        nv = pairs[i].split("=", 2);
+        n = decodeURIComponent(nv[0]);
+        v = decodeURIComponent(nv[1]);
+
+        if (!parms.hasOwnProperty(n)) parms[n] = [];
+        parms[n].push(nv.length === 2 ? v : null);
+    }
+    return parms;
 }

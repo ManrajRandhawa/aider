@@ -18,7 +18,7 @@ class Dashboard {
 
     function getDashboardHeader() {
         echo "<!-- Header -->
-            <div style=\"top: 0 !important;\">
+            <div style=\"top: 0 !important;\" id='aider-header'>
                 <img src=\"../assets/images/aider-logo-alt.png\" class=\"d-block ml-auto mr-auto\" style=\"height: 100px; width: auto;\"/>
             </div>";
     }
@@ -31,7 +31,7 @@ class Dashboard {
         $active[3] = "text-black-50";
         $active[$id] = "";
 
-        echo "<div class='bg-white w-100 fixed-bottom rounded border-top' style='border-color: rgba(0, 0, 0, 0.5);'>
+        echo "<div class='bg-white w-100 fixed-bottom rounded border-top' id='bottom-nav' style='border-color: rgba(0, 0, 0, 0.5);'>
         <div class=\"container bg-white pt-1\">
             <div class=\"row\">
                 <div class=\"col-4 text-center\">
