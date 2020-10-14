@@ -200,8 +200,8 @@ class RiderModal {
                                             Option
                                         </button>
                                         <div class=\"dropdown-menu\" aria-labelledby=\"dropdownMenuButton\">
-                                            <a class=\"dropdown-item btn-approve\" id='" . $row["Email_Address"] . "' onclick='approveButtonClick();'>Approve</a>
-                                            <a class=\"dropdown-item btn-deny\" id='" . $row["Email_Address"] . "' onclick='denyButtonClick();'>Deny</a>
+                                            <a class=\"dropdown-item btn-approve\" id='" . $row["Email_Address"] . "' onclick='approveButtonClick(this);'>Approve</a>
+                                            <a class=\"dropdown-item btn-deny\" id='" . $row["Email_Address"] . "' onclick='denyButtonClick(this);'>Deny</a>
                                         </div>
                                     </div>
                                 </td>

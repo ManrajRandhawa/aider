@@ -101,8 +101,8 @@ function getWaitingListDashboard() {
         });
 
         // Approve Rider from Waiting List
-        $('#approve-btn').click(function() {
-            let emailApprove = $('.btn-approve').attr('id');
+        $('#approve-btn').unbind().click(function() {
+            let emailApprove = $('#approve_email').html();
 
             // Approve Rider & Display Toast Message
             $.ajax({
@@ -812,15 +812,15 @@ function refreshSelectList() {
     // Display Select Items
 }
 
-function approveButtonClick() {
-    let emailApprove = $('.btn-approve').attr('id');
+function approveButtonClick(obj) {
+    let emailApprove = obj.id;
     $('#approve_email').text(emailApprove);
 
     $('#riderApproval').modal();
 }
 
-function denyButtonClick() {
-    let emailApprove = $('.btn-deny').attr('id');
+function denyButtonClick(obj) {
+    let emailApprove = obj.id;
 
     // Approve Rider & Display Toast Message
     $.ajax({
