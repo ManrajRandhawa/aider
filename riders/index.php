@@ -31,8 +31,8 @@
         <div class="row">
             <div class="col-12 bg-primary" style="height: 90vh;">
                 <div class="row">
-                    <div class="col-12 bg-white">
-                        <img src="../assets/images/aider-r-logo.jpg" class="d-block ml-auto mr-auto bg-primary rounded" style="width: auto; height: 180px;" />
+                    <div class="col-12 bg-light">
+                        <img src="../assets/images/aider-r-logo.png" class="d-block ml-auto mr-auto bg-light rounded" style="width: auto; height: 180px;" />
                     </div>
                 </div>
 

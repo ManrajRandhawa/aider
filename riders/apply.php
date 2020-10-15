@@ -38,7 +38,7 @@
                 </div>
                 <div class="row">
                     <div class="col-12">
-                        <img src="../assets/images/aider-r-logo.jpg" class="d-block ml-auto mr-auto p-3" style="width: auto; height: 180px;" />
+                        <img src="../assets/images/aider-r-logo.png" class="d-block ml-auto mr-auto p-3" style="width: auto; height: 180px;" />
                     </div>
                 </div>
                 <h3 class="text-center font-weight-bold mt-5 text-primary" style="font-family: 'Barlow', sans-serif;">APPLY NOW</h3>

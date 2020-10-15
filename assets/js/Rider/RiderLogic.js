@@ -1288,11 +1288,16 @@ class Rider {
                                                                                                             RiderDataSet.setOrderContainerDisplayed(true);
                                                                                                             $('#order-container').removeClass('d-none');
 
+                                                                                                            navigator.vibrate([500, 150, 500, 150]);
+
+                                                                                                            var audio = new Audio('https://aider.my/aider/assets/audio/ting.mp3');
+                                                                                                            audio.play();
+
                                                                                                             if(RiderDataSet.getOrderLogicCalled() === false) {
                                                                                                                 RiderLogic.getTeamOrderLogic(orderType, orderID);
                                                                                                             }
                                                                                                             RiderDataSet.setOrderLogicCalled(true);
-
+                                                                                                            
                                                                                                             $.ajax({
                                                                                                                 url: "../assets/php/ajax/rider/getRiderData.php",
                                                                                                                 method: "POST",
