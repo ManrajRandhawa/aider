@@ -318,7 +318,7 @@ a[x-apple-data-detectors] {
                   <td width=\"560\" valign=\"top\" align=\"center\" style=\"padding:0;Margin:0;\"> 
                    <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" role=\"presentation\" style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;\"> 
                      <tr style=\"border-collapse:collapse;\"> 
-                      <td esdev-links-color=\"#999999\" align=\"center\" style=\"padding:0;Margin:0;\"><p style=\"Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:helvetica, 'helvetica neue', arial, verdana, sans-serif;line-height:21px;color:#FFFFFF;\">You are receiving this email to confirm your registration with us at Aider</p></td> 
+                      <td esdev-links-color=\"#999999\" align=\"center\" style=\"padding:0;Margin:0;\"><p style=\"Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:helvetica, 'helvetica neue', arial, verdana, sans-serif;line-height:21px;color:#FFFFFF;\">You are receiving this email to confirm your registration with us at myAider</p></td> 
                      </tr> 
                      <tr style=\"border-collapse:collapse;\"> 
                       <td align=\"center\" class=\"es-m-txt-c\" style=\"Margin:0;padding-top:5px;padding-bottom:5px;padding-left:20px;padding-right:20px;font-size:0;\"> 
@@ -539,7 +539,7 @@ a[x-apple-data-detectors] {
                   <td width=\"560\" valign=\"top\" align=\"center\" style=\"padding:0;Margin:0;\"> 
                    <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" role=\"presentation\" style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;\"> 
                      <tr style=\"border-collapse:collapse;\"> 
-                      <td esdev-links-color=\"#999999\" align=\"center\" style=\"padding:0;Margin:0;\"><p style=\"Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:helvetica, 'helvetica neue', arial, verdana, sans-serif;line-height:21px;color:#FFFFFF;\">You are receiving this email to confirm your registration with us at Aider</p></td> 
+                      <td esdev-links-color=\"#999999\" align=\"center\" style=\"padding:0;Margin:0;\"><p style=\"Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:helvetica, 'helvetica neue', arial, verdana, sans-serif;line-height:21px;color:#FFFFFF;\">You are receiving this email to confirm your registration with us at myAider</p></td> 
                      </tr> 
                      <tr style=\"border-collapse:collapse;\"> 
                       <td align=\"center\" class=\"es-m-txt-c\" style=\"Margin:0;padding-top:5px;padding-bottom:5px;padding-left:20px;padding-right:20px;font-size:0;\"> 

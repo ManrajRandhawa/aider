@@ -4,7 +4,6 @@
 
     $Aider = new Aider();
 
-
 ?>
 
 <!DOCTYPE html>
@@ -110,7 +109,10 @@
             <div class="container-fluid fixed-top mt-4">
                 <div class="row">
                     <div class="col-2">
-                        <i class="fas fa-chevron-circle-left fa-2x text-muted float-right shadow-lg rounded-circle" id="btn-back"></i>
+                        <a href="home.php" class="text-decoration-none">
+                            <i class="fas fa-chevron-circle-left fa-2x text-muted float-right shadow-lg rounded-circle" id="btn-back"></i>
+                        </a>
+
                     </div>
                     <div class="col-10 bg-transparent"></div>
                 </div>

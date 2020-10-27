@@ -32,7 +32,7 @@
             <div class="col-12 bg-primary" style="height: 90vh;">
                 <div class="row">
                     <div class="col-12 bg-light">
-                        <img src="../assets/images/aider-d-logo.png" class="d-block ml-auto mr-auto bg-light rounded" style="width: auto; height: 180px;" />
+                        <img src="../assets/images/aider-logo-alt.png" class="d-block ml-auto mr-auto bg-light rounded" style="width: auto; height: 180px;" />
                     </div>
                 </div>
 

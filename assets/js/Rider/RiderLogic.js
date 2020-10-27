@@ -1297,7 +1297,7 @@ class Rider {
                                                                                                                 RiderLogic.getTeamOrderLogic(orderType, orderID);
                                                                                                             }
                                                                                                             RiderDataSet.setOrderLogicCalled(true);
-                                                                                                            
+
                                                                                                             $.ajax({
                                                                                                                 url: "../assets/php/ajax/rider/getRiderData.php",
                                                                                                                 method: "POST",

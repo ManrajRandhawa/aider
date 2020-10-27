@@ -35,4 +35,8 @@ class UserModal {
         return new BillModal();
     }
 
+    function getPromoModal() {
+        return new PromoModal();
+    }
+
 }

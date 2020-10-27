@@ -31,7 +31,7 @@
             $Aider->getUI()->getDashboard()->getFirstTimePasswordChangeModal();
         ?>
 
-        <!-- Change Email Modal -->
+        <!-- Finance Modal -->
         <div class='modal fade' id="finance-modal" tabindex='-1' role='dialog' aria-labelledby='changeFinanceModalLabel' aria-hidden='true'>
             <div class='modal-dialog modal-lg'>
                 <div class='modal-content'>
@@ -116,6 +116,17 @@
                             <div class="card-body">
                                 <h5 class="card-title"><i class="fas fa-money-check-alt mr-1"></i> Finance</h5>
                                 <p class="card-text">View your financial statement.</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-12 mt-3">
+                    <a class="text-decoration-none" href="promotions.php">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-ad mr-1"></i> Promotions</h5>
+                                <p class="card-text">Manage your promotions.</p>
                             </div>
                         </div>
                     </a>

@@ -44,6 +44,10 @@
             .carousel-control-next-icon {
                 background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23007bff' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E") !important;
             }
+            
+            i {
+                cursor: pointer;
+            }
         </style>
     </head>
 
@@ -121,21 +125,12 @@
                         <h6 class="text-center mb-3">Promotions</h6>
                     </div>
 
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title text-center p-0 m-0">Promotion 1</h5>
-                            </div>
-                        </div>
+
+                    <div id="promotion-container">
+                        <!-- Placeholder for Promotions -->
                     </div>
 
-                    <div class="col-12 mt-2">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title text-center p-0 m-0">Promotion 2</h5>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
 
@@ -182,7 +177,9 @@
 
                         <div class="row mb-3 mt-4">
                             <div class="col-2">
-                                <i class="fas fa-chevron-circle-left fa-2x text-dark text-center" id="close-ongoing-order"></i>
+                                <a href='#' class='text-decoration-none' id="close-ongoing-order">
+                                    <i class="fas fa-chevron-circle-left fa-2x text-dark text-center"></i>
+                                </a>
                             </div>
                             <div class="col-10 text-right p-0">
                                 <img src='../assets/images/aider-logo-alt.png' style='height: 130px; width: auto;' class="mt-n5" id="order-type" />
@@ -205,9 +202,6 @@
                                 <span class="sr-only">Next</span>
                             </a>
                         </div>
-
-
-
                     </div>
                 </div>
             </div>

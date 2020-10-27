@@ -7,6 +7,11 @@
     if(isset($_POST['paid_amount'])) {
         if($_POST['paid'] === 'true') {
             $amount = ($_POST['paid_amount'] / 100);
-            $Aider->getUserModal()->getCustomerModal()->addMoneyToWallet($_POST['email'], $_POST['id'], $amount, $_POST['paid_at']);
+
+            $timestamp = explode(" ", $_POST['paid_at']);
+            $timestampO = $timestamp[0] . " " . $timestamp[1];
+
+            $Aider->getUserModal()->getCustomerModal()->addMoneyToWallet($_POST['email'], $_POST['id'], $amount, $timestampO);
+
         }
     }

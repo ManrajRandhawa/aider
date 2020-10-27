@@ -403,6 +403,15 @@ function getHomeDashboardJS() {
             }
         });
 
+        $.ajax({
+            url: '../assets/php/ajax/user/getPromos.php',
+            method: 'POST',
+            cache: false,
+            success: function(data) {
+                $('#promotion-container').html(data);
+            }
+        });
+
         // START: Get Ongoing Order and Set Data
         $.ajax({
             url: '../assets/php/ajax/user/getOngoingOrder.php',
@@ -676,11 +685,11 @@ function getAmount(user_email, params) {
         cache: false,
         data: {User_Email: user_email, Ref: params['billplz[id]'][0]},
         success: function(data) {
-            $('#payment-complete-rm').html(data);
-
             if(data === "ERROR") {
                 getAmount(user_email, params);
             } else {
+                $('#payment-complete-rm').html(data);
+                
                 // Completion Spinner
                 $('.circle-loader').toggleClass('load-complete');
                 $('.checkmark').toggle();
@@ -791,14 +800,6 @@ function getPaymentDashboardJS() {
             console.log(params['billplz[x_signature]'][0]);
         }
 
-        // Refresh Page on 'X' Button Click
-        $('#payment-refresh').click(function() {
-            window.open('payment.php');
-        });
-        $('#payment-refresh-2').click(function() {
-            window.open('payment.php');
-        });
-
         $.ajax({
             url: '../assets/php/ajax/user/getUserData.php',
             method: 'POST',
@@ -841,17 +842,9 @@ function getPaymentDashboardJS() {
 
         });
 
-        $('#btn-back').click(function() {
-            $('#payment-container-top-v2').fadeOut('fast', function() {
-                setTimeout(function() {
-                    $('#payment-container-top-v1').fadeIn('fast');
-                    $('#payment-container-bottom-v1').fadeIn('fast');
-                }, 133);
-            });
-        });
-
         // Create bill and perform transaction
-        $('#confirm-transaction-btn').click(function() {
+        $('#confirm-transaction-btn').unbind().on('click', function() {
+
             let select = document.getElementById('bank-code');
             let bankCode = select.options[select.selectedIndex].value;
 
@@ -869,7 +862,7 @@ function getPaymentDashboardJS() {
                         cache: false,
                         data: {User_Email: user_email, User_Name: data, Bank_Code: bankCode, Amount: amount},
                         success: function(transactionData) {
-                            window.open(transactionData);
+                            window.location.href = transactionData;
                         }
                     });
                 }

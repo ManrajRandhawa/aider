@@ -106,12 +106,12 @@ class CredentialModal {
             null,
             $userName,
             \Duit\MYR::given(doubleval($amount) * 100),
-            'http://42.190.106.101/aider/members/webhook.php',
+            'https://aider.my/aider/members/webhook.php',
             'Thank you for supporting us!',
             [
                 'reference_1_label' => "Bank Code",
                 'reference_1' => $bankCode,
-                'redirect_url' => 'http://42.190.106.101/aider/members/payment.php'
+                'redirect_url' => 'https://aider.my/aider/members/payment.php'
             ]
         );
 

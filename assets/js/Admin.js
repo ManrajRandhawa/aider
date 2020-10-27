@@ -240,6 +240,25 @@ function getTeamsDashboard() {
     }
 }
 
+function getPromoDashboard() {
+    if(window.localStorage.getItem("User_Email") === null) {
+        window.location.href = "../admins/index.php";
+    } else {
+        let user_email = window.localStorage.getItem("User_Email");
+
+        // Display Promotions
+        $.ajax({
+            url: "../assets/php/ajax/admin/getPromotionList.php",
+            method: "POST",
+            cache: false,
+            success: function(dataWL){
+                $('#promo-container').html(dataWL);
+            }
+        });
+
+    }
+}
+
 function getSettingsDashboard() {
     if(window.localStorage.getItem("User_Email") === null) {
         window.location.href = "../admins/index.php";
@@ -778,6 +797,60 @@ function deleteTeam(team_id) {
             });
         });
     }
+}
+
+function deletePromo(promo_id) {
+    $.ajax({
+        url: "../assets/php/ajax/admin/deletePromotion.php",
+        method: "POST",
+        cache: false,
+        data: {Promo_ID: promo_id},
+        success: function (data) {
+            if (data !== "ERROR") {
+                // Display Toast Message
+                $.ajax({
+                    url: "../assets/php/ajax/ui/sendToastMessage.php",
+                    method: "POST",
+                    cache: false,
+                    data: {Title: "Success!", Message: "The promotion has been deleted."},
+                    success: function(dataToast){
+                        $('.toast-container').html(dataToast);
+                        $('.toast').toast('show');
+
+                        setTimeout(function() {
+                            $('.toast-container').html("");
+                        }, 5000);
+                    }
+                });
+            } else {
+                // Display Toast Message
+                $.ajax({
+                    url: "../assets/php/ajax/ui/sendToastMessage.php",
+                    method: "POST",
+                    cache: false,
+                    data: {Title: "Oops!", Message: "There was an issue while deleting the promotion."},
+                    success: function(dataToast){
+                        $('.toast-container').html(dataToast);
+                        $('.toast').toast('show');
+
+                        setTimeout(function() {
+                            $('.toast-container').html("");
+                        }, 5000);
+                    }
+                });
+            }
+
+            // Update Promotions
+            $.ajax({
+                url: "../assets/php/ajax/admin/getPromotionList.php",
+                method: "POST",
+                cache: false,
+                success: function(dataWL){
+                    $('#promo-container').html(dataWL);
+                }
+            });
+        }
+    });
 }
 
 function refreshSelectList() {
