@@ -103,6 +103,31 @@ class RiderModal {
         return $response;
     }
 
+    function getRiderInformationForOngoing($id) {
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        $sql = "SELECT * FROM aider_user_rider WHERE ID=$id";
+        $statement = $connection->query($sql);
+
+        if($statement->num_rows > 0) {
+            $response['error'] = false;
+            while($row = $statement->fetch_assoc()) {
+                $response['data'] = array(
+                    $row['Name'],
+                    $row['Phone_Number'],
+                    $row['Vehicle_Model'],
+                    $row['Vehicle_Plate_Number']
+                );
+            }
+        } else {
+            $response['error'] = true;
+            $response['message'] = "There was an error while trying to connect to the database.";
+        }
+
+        return $response;
+    }
+
     function getRiderInformationByEmail($email, $info) {
         $DatabaseHandler = new DatabaseHandler();
         $connection = $DatabaseHandler->getMySQLiConnection();

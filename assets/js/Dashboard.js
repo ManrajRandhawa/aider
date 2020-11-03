@@ -444,6 +444,8 @@ function getHomeDashboardJS() {
                             success: function (dataOrder) {
                                 let orderDetailsData = JSON.parse(dataOrder);
 
+                                console.log(orderDetailsData);
+
                                 let pickUp = orderDetailsData[1];
                                 let dropOff = orderDetailsData[2];
 
@@ -568,67 +570,107 @@ function getHomeDashboardJS() {
                                                             }
 
                                                             $.ajax({
-                                                                url: '../assets/php/ajax/user/getTime.php',
+                                                                url: '../assets/php/ajax/user/getRiderDataArray.php',
                                                                 method: 'POST',
                                                                 cache: false,
-                                                                data: {riderLat: lat, riderLng: lng, addressTwo: addTwo},
-                                                                success: function (dataTime) {
-                                                                    if(!(i === 0)) {
-                                                                        carouselIndicators += "<li data-target=\"#carouselOrders\" data-slide-to='" + i + "'></li>";
-                                                                        carouselInner += "<div class=\"carousel-item\">";
-                                                                    } else {
-                                                                        carouselIndicators += "<li data-target=\"#carouselOrders\" data-slide-to=\"0\" class=\"active\"></li>";
-                                                                        carouselInner += "<div class=\"carousel-item active\">";
-                                                                    }
+                                                                data: {Rider_ID: parseInt(riderID)},
+                                                                success: function (dataRiderArray) {
+                                                                    dataRiderArray = JSON.parse(dataRiderArray);
 
+                                                                    $.ajax({
+                                                                        url: '../assets/php/ajax/user/getTime.php',
+                                                                        method: 'POST',
+                                                                        cache: false,
+                                                                        data: {riderLat: lat, riderLng: lng, addressTwo: addTwo},
+                                                                        success: function (dataTime) {
+                                                                            if(!(i === 0)) {
+                                                                                carouselIndicators += "<li data-target=\"#carouselOrders\" data-slide-to='" + i + "'></li>";
+                                                                                carouselInner += "<div class=\"carousel-item\">";
+                                                                            } else {
+                                                                                carouselIndicators += "<li data-target=\"#carouselOrders\" data-slide-to=\"0\" class=\"active\"></li>";
+                                                                                carouselInner += "<div class=\"carousel-item active\">";
+                                                                            }
 
+                                                                            time = dataTime;
 
-                                                                    time = dataTime;
+                                                                            carouselInner += "\n" +
+                                                                                "                                    <h6 class=\"text-black-50 mt-4\">Estimate time of arrival</h6>\n" +
+                                                                                "                                    <h2 class=\"text-dark font-weight-bold\" id=\"eta\">" + dataTime + "</h2>\n" +
+                                                                                "\n" +
+                                                                                "                                    <img src=\"../assets/images/ongoing-1.png\" style=\"width: 90%\" />\n" +
+                                                                                "\n" +
+                                                                                "                                    <div class=\"mt-3\"></div>\n" +
+                                                                                "\n" +
+                                                                                "                                    <div class=\"row text-center\">\n" +
+                                                                                "                                        <div class=\"col-5 text-primary text-center\" id=\"add-pickup\">" + pickUpStriped + "</div>\n" +
+                                                                                "                                        <div class=\"col-2 p-0\">\n" +
+                                                                                "                                            <i class=\"fas fa-angle-right fa-lg text-primary\"></i>\n" +
+                                                                                "                                        </div>\n" +
+                                                                                "                                        <div class=\"col-5 text-primary text-center\" id=\"add-dropoff\">" + dropOffStriped + "</div>\n" +
+                                                                                "                                    </div>\n" +
+                                                                                "\n" +
+                                                                                "                                    <div class=\"mt-3\"></div>\n" +
+                                                                                "\n" +
+                                                                                "                                    <div class=\"row\">\n" +
+                                                                                "                                        <div class=\"col-1\"></div>\n" +
+                                                                                "                                        <div class=\"col-10\">\n" +
+                                                                                "                                            <div class=\"row\">\n" +
+                                                                                progressBar +
+                                                                                "                                            </div>\n" +
+                                                                                "\n" +
+                                                                                "                                            <h6 class=\"mt-3 text-muted\">" + description + "</h6>\n" +
+                                                                                "                                        </div>\n" +
+                                                                                "                                        <div class=\"col-1\"></div>\n" +
+                                                                                "                                    </div>\n" +
+                                                                                "                           <hr class='mt-3'/>\n" +
+                                                                                "                            <div class='row m-2'>\n" +
+                                                                                "                                <div class='col-12 mt-2 mb-3'>\n" +
+                                                                                "                                    <i class=\"far fa-id-card fa-2x text-primary\"></i>\n" +
+                                                                                "                                </div>\n" +
+                                                                                "                                <div class='col-6 text-left'>\n" +
+                                                                                "                                    <a class='text-muted'>Name</a><br/>\n" +
+                                                                                "                                    <a class='text-muted'>Phone Number</a>\n" +
+                                                                                "                                </div>\n" +
+                                                                                "                                <div class='col-6 text-right'>\n" +
+                                                                                "                                    <a class='text-dark'>" + dataRiderArray[0] + "</a><br/>\n" +
+                                                                                "                                    <a class='text-decoration-none' href='tel:" + dataRiderArray[1] + "'>" + dataRiderArray[1] + "</a>\n" +
+                                                                                "                                </div>\n" +
+                                                                                "                            </div>\n" +
+                                                                                "                            <hr class='mt-3'/>\n" +
+                                                                                "                            <div class='row m-2'>\n" +
+                                                                                "                                <div class='col-12 mt-2 mb-3'>\n" +
+                                                                                "                                    <i class=\"fas fa-car fa-2x text-primary\"></i>\n" +
+                                                                                "                                </div>\n" +
+                                                                                "                                <div class='col-6 text-left'>\n" +
+                                                                                "                                    <a class='text-muted'>Vehicle Model</a><br/>\n" +
+                                                                                "                                    <a class='text-muted'>Number Plate</a>\n" +
+                                                                                "                                </div>\n" +
+                                                                                "                                <div class='col-6 text-right'>\n" +
+                                                                                "                                    <a class='text-dark'>" + dataRiderArray[2] + "</a><br/>\n" +
+                                                                                "                                    <a class='text-dark'>" + dataRiderArray[3] + "</a>\n" +
+                                                                                "                                </div>\n" +
+                                                                                "                            </div>\n" +
+                                                                                "                            <br/>\n" +
+                                                                                "                            <br/>" +
+                                                                                "\n" +
+                                                                                "                                    <br/>\n" +
+                                                                                "                                </div></div>";
 
-                                                                    carouselInner += "\n" +
-                                                                        "                                    <h6 class=\"text-black-50 mt-4\">Estimate time of arrival</h6>\n" +
-                                                                        "                                    <h2 class=\"text-dark font-weight-bold\" id=\"eta\">" + dataTime + "</h2>\n" +
-                                                                        "\n" +
-                                                                        "                                    <img src=\"../assets/images/ongoing-1.png\" style=\"width: 90%\" />\n" +
-                                                                        "\n" +
-                                                                        "                                    <div class=\"mt-3\"></div>\n" +
-                                                                        "\n" +
-                                                                        "                                    <div class=\"row text-center\">\n" +
-                                                                        "                                        <div class=\"col-5 text-primary text-center\" id=\"add-pickup\">" + pickUpStriped + "</div>\n" +
-                                                                        "                                        <div class=\"col-2 p-0\">\n" +
-                                                                        "                                            <i class=\"fas fa-angle-right fa-lg text-primary\"></i>\n" +
-                                                                        "                                        </div>\n" +
-                                                                        "                                        <div class=\"col-5 text-primary text-center\" id=\"add-dropoff\">" + dropOffStriped + "</div>\n" +
-                                                                        "                                    </div>\n" +
-                                                                        "\n" +
-                                                                        "                                    <div class=\"mt-3\"></div>\n" +
-                                                                        "\n" +
-                                                                        "                                    <div class=\"row\">\n" +
-                                                                        "                                        <div class=\"col-1\"></div>\n" +
-                                                                        "                                        <div class=\"col-10\">\n" +
-                                                                        "                                            <div class=\"row\">\n" +
-                                                                        progressBar +
-                                                                        "                                            </div>\n" +
-                                                                        "\n" +
-                                                                        "                                            <h6 class=\"mt-3 text-muted\">" + description + "</h6>\n" +
-                                                                        "                                        </div>\n" +
-                                                                        "                                        <div class=\"col-1\"></div>\n" +
-                                                                        "                                    </div>\n" +
-                                                                        "\n" +
-                                                                        "                                    <br/>\n" +
-                                                                        "                                </div></div>";
-                                                                }, complete: function(dataTime) {
-                                                                    $('#loc-add').html(addStriped);
-                                                                    $('#prog-bar').html(progressBar);
-                                                                    $('#desc').html(description);
-                                                                    $('#time-order').html(time);
+                                                                        }, complete: function(dataTime) {
+                                                                            $('#loc-add').html(addStriped);
+                                                                            $('#prog-bar').html(progressBar);
+                                                                            $('#desc').html(description);
+                                                                            $('#time-order').html(time);
 
-                                                                    if($('#ongoing-order-small-container').hasClass('d-none')) {
-                                                                        $('#ongoing-order-small-container').fadeIn('fast').removeClass('d-none');
-                                                                    }
+                                                                            if($('#ongoing-order-small-container').hasClass('d-none')) {
+                                                                                $('#ongoing-order-small-container').fadeIn('fast').removeClass('d-none');
+                                                                            }
 
-                                                                    $('#ca-ind').html(carouselIndicators);
-                                                                    $('#ca-inn').html(carouselInner);
+                                                                            $('#ca-ind').html(carouselIndicators);
+                                                                            $('#ca-inn').html(carouselInner);
+                                                                        }
+                                                                    });
+
                                                                 }
                                                             });
 

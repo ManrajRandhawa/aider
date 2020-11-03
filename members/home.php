@@ -46,6 +46,10 @@
             i {
                 cursor: pointer;
             }
+
+            #car-prev, #car-next {
+                height: 60%;
+            }
         </style>
     </head>
 
@@ -167,8 +171,8 @@
             ?>
         </div>
 
+        <!-- Ongoing Order Large Container -->
         <div class="d-none" id="main-order-container-home">
-            <!-- Ongoing Order Large Container -->
             <div class="container vh-100 vw-100" style="z-index: 9999;">
                 <div class="row">
                     <div class="col-12 text-center">
@@ -191,11 +195,11 @@
                             <div class="carousel-inner" id="ca-inn">
 
                             </div>
-                            <a class="carousel-control-prev" href="#carouselOrders" role="button" data-slide="prev">
+                            <a class="carousel-control-prev" href="#carouselOrders" role="button" data-slide="prev" id="car-prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                 <span class="sr-only">Previous</span>
                             </a>
-                            <a class="carousel-control-next" href="#carouselOrders" role="button" data-slide="next">
+                            <a class="carousel-control-next" href="#carouselOrders" role="button" data-slide="next" id="car-next">
                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                 <span class="sr-only">Next</span>
                             </a>
