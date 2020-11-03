@@ -142,6 +142,19 @@ class RiderDataSet {
 }
 
 class RiderLayout {
+    static iOS() {
+        return [
+                'iPad Simulator',
+                'iPhone Simulator',
+                'iPod Simulator',
+                'iPad',
+                'iPhone',
+                'iPod'
+            ].includes(navigator.platform)
+            // iPad on iOS 13 detection
+            || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+    }
+
     /* [START]
         STEP 1: Show Order
      */
@@ -196,8 +209,11 @@ class RiderLayout {
     }
     // [END]
 
-    static createPickUpLocationContent(pickUpLoc) {
+    static createPickUpLocationContent(pickUpLoc, custName, custHP) {
         let pickUpLocPrimary, pickUpLocSecondary;
+
+        $('#cust-info-heading-to-pickup').html('<a class="text-success">' + custName + '</a></br>\n' +
+            '<a class="text-success" href="tel:' + custHP + '">' + custHP + '</a>');
 
         pickUpLocPrimary = pickUpLoc.split(",", 1);
         pickUpLocSecondary = pickUpLoc.replace(pickUpLocPrimary, '');
@@ -207,19 +223,20 @@ class RiderLayout {
         $('#riding-1-content-loc-2').text(pickUpLocSecondary);
 
         let url = "geo:0,0";
-        /*
-        if (device.platform.toLowerCase() === "ios") {
-            url = "maps://"
+        if (this.iOS()) {
+            url = "maps:0,0";
         }
-         */
 
         $('#riding-1-content-loc-btn').html("<a href='" + url + "?q=" + pickUpLoc + "'>\n" +
             "                                        <i class=\"mt-2 mr-3 fas fa-location-arrow fa-lg text-success\"></i>\n" +
             "                                    </a>");
     }
 
-    static createDropOffLocationContent(dropOffLoc) {
+    static createDropOffLocationContent(dropOffLoc, custName, custHP) {
         let dropOffLocPrimary, dropOffLocSecondary;
+
+        $('#cust-info-heading-to-destination').html('<a class="text-success">' + custName + '</a></br>\n' +
+            '<a class="text-success" href="tel:' + custHP + '">' + custHP + '</a>');
 
         dropOffLocPrimary = dropOffLoc.split(",", 1);
         dropOffLocSecondary = dropOffLoc.replace(dropOffLocPrimary, '');
@@ -229,11 +246,9 @@ class RiderLayout {
         $('#riding-2-content-loc-2').text(dropOffLocSecondary);
 
         let url = "geo:0,0";
-        /*
-        if (device.platform.toLowerCase() === "ios") {
-            url = "maps://"
+        if (this.iOS()) {
+            url = "maps:0,0";
         }
-         */
 
         $('#riding-2-content-loc-btn').html("<a href='" + url + "?q=" + dropOffLoc + "'>\n" +
             "                                        <i class=\"mt-2 mr-3 fas fa-location-arrow fa-lg text-success\"></i>\n" +
@@ -1006,8 +1021,24 @@ class RiderLogic {
                                                 if(dataOrderD !== "ERROR") {
                                                     let dataDP = JSON.parse(dataOrderD);
 
-                                                    RiderLayout.createPickUpLocationContent(dataDP[1]);
-                                                    RiderLayout.createDropOffLocationContent(dataDP[2]);
+                                                    $.ajax({
+                                                        url: "../assets/php/ajax/user/getUserDataByID.php",
+                                                        method: "POST",
+                                                        cache: false,
+                                                        data: {User_ID: dataDP[0], User_Info: "Name"},
+                                                        success: function (custName) {
+                                                            $.ajax({
+                                                                url: "../assets/php/ajax/user/getUserDataByID.php",
+                                                                method: "POST",
+                                                                cache: false,
+                                                                data: {User_ID: dataDP[0], User_Info: "Phone_Number"},
+                                                                success: function (custHP) {
+                                                                    RiderLayout.createPickUpLocationContent(dataDP[1], custName, custHP);
+                                                                    RiderLayout.createDropOffLocationContent(dataDP[2], custName, custHP);
+                                                                }
+                                                            });
+                                                        }
+                                                    });
                                                 } else {
                                                     // [ERROR] Not able to get Order Details
                                                 }
@@ -1288,7 +1319,9 @@ class Rider {
                                                                                                             RiderDataSet.setOrderContainerDisplayed(true);
                                                                                                             $('#order-container').removeClass('d-none');
 
+                                                                                                            /*
                                                                                                             navigator.vibrate([500, 150, 500, 150]);
+                                                                                                             */
 
                                                                                                             var audio = new Audio('https://aider.my/aider/assets/audio/ting.mp3');
                                                                                                             audio.play();
@@ -1325,8 +1358,24 @@ class Rider {
                                                                                                                 }
                                                                                                             });
 
-                                                                                                            RiderLayout.createPickUpLocationContent(dataDetails[1]);
-                                                                                                            RiderLayout.createDropOffLocationContent(dataDetails[2]);
+                                                                                                            $.ajax({
+                                                                                                                url: "../assets/php/ajax/user/getUserDataByID.php",
+                                                                                                                method: "POST",
+                                                                                                                cache: false,
+                                                                                                                data: {User_ID: dataDetails[0], User_Info: "Name"},
+                                                                                                                success: function (custName) {
+                                                                                                                    $.ajax({
+                                                                                                                        url: "../assets/php/ajax/user/getUserDataByID.php",
+                                                                                                                        method: "POST",
+                                                                                                                        cache: false,
+                                                                                                                        data: {User_ID: dataDetails[0], User_Info: "Phone_Number"},
+                                                                                                                        success: function (custHP) {
+                                                                                                                            RiderLayout.createPickUpLocationContent(dataDetails[1], custName, custHP);
+                                                                                                                            RiderLayout.createDropOffLocationContent(dataDetails[2], custName, custHP);
+                                                                                                                        }
+                                                                                                                    });
+                                                                                                                }
+                                                                                                            });
                                                                                                         } else {
                                                                                                             // Add Rider to Denied List as range is too far
                                                                                                             RiderAJAX.addTeamToDenialList(orderType, orderID, teamID);

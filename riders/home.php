@@ -227,6 +227,27 @@
                     <div class="row rounded bg-white pt-3 pb-2">
                         <div class="col-12 text-break">
                             <div class="row">
+                                <div class="col-12">
+                                    <div class="row">
+                                        <div class="col-12 text-center">
+                                            <i class="far fa-id-card fa-lg text-success"></i>
+                                            <span class="ml-2 text-success">Customer's Information</span>
+                                        </div>
+                                    </div>
+                                    <hr/>
+                                    <div class="row">
+                                        <div class="col-6 text-left">
+                                            <a class="text-muted">Name</a><br/>
+                                            <a class="text-muted">Phone Number</a>
+                                        </div>
+                                        <div class="col-6 text-right" id="cust-info-heading-to-pickup">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr/>
+                            <div class="row">
                                 <div class="col-10">
                                     <div class="row">
                                         <div class="col-12">
@@ -258,6 +279,27 @@
                 <div class="col-12 ml-2" style="max-width: 96vw;">
                     <div class="row rounded bg-white pt-3 pb-2">
                         <div class="col-12 text-break">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="row">
+                                        <div class="col-12 text-center">
+                                            <i class="far fa-id-card fa-lg text-success"></i>
+                                            <span class="ml-2 text-success">Customer's Information</span>
+                                        </div>
+                                    </div>
+                                    <hr/>
+                                    <div class="row">
+                                        <div class="col-6 text-left">
+                                            <a class="text-muted">Name</a><br/>
+                                            <a class="text-muted">Phone Number</a>
+                                        </div>
+                                        <div class="col-6 text-right" id="cust-info-heading-to-destination">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr/>
                             <div class="row">
                                 <div class="col-10">
                                     <div class="row">

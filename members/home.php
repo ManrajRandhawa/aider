@@ -3,8 +3,6 @@
     include $_SERVER['DOCUMENT_ROOT'] . "/aider/assets/php/Aider.php";
 
     $Aider = new Aider();
-
-
 ?>
 
 <!DOCTYPE html>

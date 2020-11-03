@@ -8,8 +8,7 @@ class CredentialModal {
     private $billplz;
 
     function __construct() {
-        $this->billplz = Client::make('3aef9a90-43f0-476e-a75b-963f21473e4a', 'S-th5me89FBSK-4oaTsN6Kxg');
-        $this->billplz->useSandbox();
+        $this->billplz = Client::make('25fdf06a-4d5a-4c79-a3b1-45ca0bf09f9c', 's-riZ1XA_ey7S4BEolrFzuCw');
     }
 
     /**
@@ -101,7 +100,7 @@ class CredentialModal {
         $bill = $this->billplz->bill();
 
         $responseBill = $bill->create(
-            'aht500nz', //wb4bpddw
+            'ty9rl5fy',
             $userEmail,
             null,
             $userName,
