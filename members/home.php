@@ -50,6 +50,43 @@
             #car-prev, #car-next {
                 height: 60%;
             }
+
+            .rating {
+                display: flex;
+                flex-direction: row-reverse;
+                justify-content: center
+            }
+
+            .rating>input {
+                display: none
+            }
+
+            .rating>label {
+                position: relative;
+                width: 1em;
+                font-size: 32pt;
+                color: #87ceeb;
+                cursor: pointer
+            }
+
+            .rating>label::before {
+                content: "\2605";
+                position: absolute;
+                opacity: 0
+            }
+
+            .rating>label:hover:before,
+            .rating>label:hover~label:before {
+                opacity: 1 !important
+            }
+
+            .rating>input:checked~label:before {
+                opacity: 1
+            }
+
+            .rating:hover>input:checked~label:before {
+                opacity: 0.4
+            }
         </style>
     </head>
 

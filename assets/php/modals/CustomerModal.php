@@ -519,9 +519,7 @@ a[x-apple-data-detectors] {
             $DatabaseHandler = new DatabaseHandler();
             $connection = $DatabaseHandler->getMySQLiConnection();
 
-            $sqlSortingSelect = "SELECT * FROM aider_transaction_sorting WHERE 
-                                              (Transaction_Status!='FINDING-RIDER' AND Transaction_Status!='COMPLETED'
-                                                  AND Transaction_Status!='CANCELLED_BY_CUSTOMER') AND Customer_ID=$userID";
+            $sqlSortingSelect = "SELECT * FROM aider_transaction_sorting WHERE Transaction_Status!='FINDING-RIDER' AND Transaction_Status!='COMPLETED_RATED' AND Transaction_Status!='CANCELLED_BY_CUSTOMER' AND Customer_ID=$userID";
 
             $resultsSortingSelect = $connection->query($sqlSortingSelect);
             if($resultsSortingSelect->num_rows > 0) {

@@ -484,13 +484,11 @@ function getHomeDashboardJS() {
                                                     let lat = riderLoc[0];
                                                     let lng = riderLoc[1];
 
-                                                    console.log(riderLoc);
-
                                                     $.ajax({
-                                                        url: '../assets/php/ajax/user/getRiderData.php',
+                                                        url: '../assets/php/ajax/user/getOrderDetailByID.php',
                                                         method: 'POST',
                                                         cache: false,
-                                                        data: {Rider_ID: parseInt(riderID), Data: "Status"},
+                                                        data: {Order_Type: result[2], Order_ID: parseInt(result[1]), Data: "Status"},
                                                         success: function (dataRiderStatus) {
                                                             let addTwo = "";
                                                             let progressBar = "";
@@ -567,7 +565,43 @@ function getHomeDashboardJS() {
                                                                     "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 0;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"100\"></div>\n" +
                                                                     "                                                    </div>\n" +
                                                                     "                                                </div>";
+                                                            } else if(dataRiderStatus === "COMPLETED") {
+                                                                addTwo = dropOff;
+
+                                                                addStriped = addTwo.split(",");
+                                                                addStriped = addStriped[0] + ", " + addStriped[1];
+
+                                                                if(result[2] === "DRIVER") {
+                                                                    description = "This ride has been completed.";
+                                                                } else if(result[2] === "PARCEL") {
+                                                                    description = "This delivery has been completed.";
+                                                                } else if(result[2] === "FOOD") {
+                                                                    description = "Your rider has picked up the food.";
+                                                                }
+
+                                                                progressBar = "<div class=\"col-3 pad-1\">\n" +
+                                                                    "                                                    <div class=\"progress\">\n" +
+                                                                    "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 100%;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"0\"></div>\n" +
+                                                                    "                                                    </div>\n" +
+                                                                    "                                                </div>\n" +
+                                                                    "                                                <div class=\"col-3 pad-1\">\n" +
+                                                                    "                                                    <div class=\"progress\">\n" +
+                                                                    "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 100%;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"75\"></div>\n" +
+                                                                    "                                                    </div>\n" +
+                                                                    "                                                </div>\n" +
+                                                                    "                                                <div class=\"col-3 pad-1\">\n" +
+                                                                    "                                                    <div class=\"progress\">\n" +
+                                                                    "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 100%;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"100\"></div>\n" +
+                                                                    "                                                    </div>\n" +
+                                                                    "                                                </div>\n" +
+                                                                    "                                                <div class=\"col-3 pad-1\">\n" +
+                                                                    "                                                    <div class=\"progress\">\n" +
+                                                                    "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 100%;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"100\"></div>\n" +
+                                                                    "                                                    </div>\n" +
+                                                                    "                                                </div>";
                                                             }
+
+                                                            console.log(dataRiderStatus);
 
                                                             $.ajax({
                                                                 url: '../assets/php/ajax/user/getRiderDataArray.php',
@@ -593,9 +627,44 @@ function getHomeDashboardJS() {
 
                                                                             time = dataTime;
 
+                                                                            let timingData = "";
+                                                                            let ratingData = "";
+
+                                                                            if(dataRiderStatus === "COMPLETED") {
+                                                                                timingData = "<i class=\"far fa-check-circle fa-3x text-center text-primary\"></i>";
+
+                                                                                ratingData = "                            <hr class='mt-3'/>\n" +
+                                                                                    "                            <div class='row m-2'>\n" +
+                                                                                    "                                <div class='col-12 mt-2 mb-3'>\n" +
+                                                                                    "<div class=\"rating\">\n" +
+                                                                                    "                <input type=\"radio\" name=\"rating\" value=\"5\" id='5-" + result[1] + "'>\n" +
+                                                                                    "                <label for='5-" + result[1] + "'>☆</label>\n" +
+                                                                                    "                <input type=\"radio\" name=\"rating\" value=\"4\" id='4-" + result[1] + "'>\n" +
+                                                                                    "                <label for='4-" + result[1] + "'>☆</label>\n" +
+                                                                                    "                <input type=\"radio\" name=\"rating\" value=\"3\" id='3-" + result[1] + "'>\n" +
+                                                                                    "                <label for='3-" + result[1] + "'>☆</label>\n" +
+                                                                                    "                <input type=\"radio\" name=\"rating\" value=\"2\" id='2-" + result[1] + "'>\n" +
+                                                                                    "                <label for='2-" + result[1] + "'>☆</label>\n" +
+                                                                                    "                <input type=\"radio\" name=\"rating\" value=\"1\" id='1-" + result[1] + "'>\n" +
+                                                                                    "                <label for='1-" + result[1] + "'>☆</label>\n" +
+                                                                                    "            </div>" +
+                                                                                    "<button class='btn btn-outline-primary' id='" + result[2] + "-" + result[1] + "' onclick='rateRide(this.id);'>Rate</button>" +
+                                                                                    "                                </div>\n" +
+                                                                                    "                                <div class='col-12 text-center'>\n" +
+                                                                                    "                            </div>\n";
+                                                                            } else {
+                                                                                timingData = "<h6 class=\"text-black-50 mt-4\">Estimate time of arrival</h6>\n<h2 class=\"text-dark font-weight-bold\" id=\"eta\">" + dataTime + "</h2>\n";
+                                                                                ratingData = "";
+                                                                            }
+
+                                                                            let currentRating = parseFloat(parseFloat(dataRiderArray[4]) / parseFloat(dataRiderArray[5])).toFixed(1);
+
+                                                                            if(currentRating === "NaN") {
+                                                                                currentRating = 0.0;
+                                                                            }
+
                                                                             carouselInner += "\n" +
-                                                                                "                                    <h6 class=\"text-black-50 mt-4\">Estimate time of arrival</h6>\n" +
-                                                                                "                                    <h2 class=\"text-dark font-weight-bold\" id=\"eta\">" + dataTime + "</h2>\n" +
+                                                                                timingData +
                                                                                 "\n" +
                                                                                 "                                    <img src=\"../assets/images/ongoing-1.png\" style=\"width: 90%\" />\n" +
                                                                                 "\n" +
@@ -629,11 +698,13 @@ function getHomeDashboardJS() {
                                                                                 "                                </div>\n" +
                                                                                 "                                <div class='col-6 text-left'>\n" +
                                                                                 "                                    <a class='text-muted'>Name</a><br/>\n" +
-                                                                                "                                    <a class='text-muted'>Phone Number</a>\n" +
+                                                                                "                                    <a class='text-muted'>Phone Number</a><br/>\n" +
+                                                                                "                                    <a class='text-muted'>Rating</a>\n" +
                                                                                 "                                </div>\n" +
                                                                                 "                                <div class='col-6 text-right'>\n" +
                                                                                 "                                    <a class='text-dark'>" + dataRiderArray[0] + "</a><br/>\n" +
-                                                                                "                                    <a class='text-decoration-none' href='tel:" + dataRiderArray[1] + "'>" + dataRiderArray[1] + "</a>\n" +
+                                                                                "                                    <a class='text-decoration-none' href='tel:" + dataRiderArray[1] + "'>" + dataRiderArray[1] + "</a><br/>\n" +
+                                                                                "                                    <a class='text-dark'>" + currentRating + "<i class=\"far fa-star text-primary ml-1\"></i></a>\n" +
                                                                                 "                                </div>\n" +
                                                                                 "                            </div>\n" +
                                                                                 "                            <hr class='mt-3'/>\n" +
@@ -650,6 +721,7 @@ function getHomeDashboardJS() {
                                                                                 "                                    <a class='text-dark'>" + dataRiderArray[3] + "</a>\n" +
                                                                                 "                                </div>\n" +
                                                                                 "                            </div>\n" +
+                                                                                ratingData +
                                                                                 "                            <br/>\n" +
                                                                                 "                            <br/>" +
                                                                                 "\n" +
@@ -660,7 +732,12 @@ function getHomeDashboardJS() {
                                                                             $('#loc-add').html(addStriped);
                                                                             $('#prog-bar').html(progressBar);
                                                                             $('#desc').html(description);
-                                                                            $('#time-order').html(time);
+
+                                                                            if(dataRiderStatus !== 'COMPLETED') {
+                                                                                $('#time-order').html(time);
+                                                                            } else {
+                                                                                $('#time-order').html("");
+                                                                            }
 
                                                                             if($('#ongoing-order-small-container').hasClass('d-none')) {
                                                                                 $('#ongoing-order-small-container').fadeIn('fast').removeClass('d-none');
@@ -717,6 +794,97 @@ function getHomeDashboardJS() {
         // END: Close Ongoing Order
     }
 }
+
+function rateRide(order) {
+    let orderType = order.split("-")[0];
+    let orderID = order.split("-")[1];
+
+    let rating = 0;
+
+    if($('#1-' + orderID).is(':checked')) {
+        rating = 1;
+    }
+    if($('#2-' + orderID).is(':checked')) {
+        rating = 2;
+    }
+    if($('#3-' + orderID).is(':checked')) {
+        rating = 3;
+    }
+    if($('#4-' + orderID).is(':checked')) {
+        rating = 4;
+    }
+    if($('#5-' + orderID).is(':checked')) {
+        rating = 5;
+    }
+
+    $.ajax({
+        url: '../assets/php/ajax/user/addRating.php',
+        method: 'POST',
+        cache: false,
+        data: {Order_Type: orderType, Order_ID: orderID, Rating: rating},
+        success: function(data) {
+            if(data === "NO-ERROR") {
+                $.ajax({
+                    url: "../assets/php/ajax/rider/setOrderStatus.php",
+                    method: "POST",
+                    cache: false,
+                    data: {Order_Type: orderType, Order_ID: orderID, Status: 'COMPLETED_RATED'},
+                    success: function (data) {
+                        if(data !== "TRUE") {
+                            $.ajax({
+                                url: "../assets/php/ajax/ui/sendToastMessage.php",
+                                method: "POST",
+                                cache: false,
+                                data: {Title: "Rating", Message: "Thank you for rating!"},
+                                success: function(dataToast){
+                                    $('.toast-container-modal').html(dataToast);
+                                    $('.toast').toast('show');
+
+                                    setTimeout(function() {
+                                        $('.toast-container-modal').html("");
+                                    }, 5000);
+
+                                    window.location.href = 'home.php';
+                                }
+                            });
+                        } else {
+                            $.ajax({
+                                url: "../assets/php/ajax/ui/sendToastMessage.php",
+                                method: "POST",
+                                cache: false,
+                                data: {Title: "Rating", Message: "There was an issue while rating. Please try again."},
+                                success: function(dataToast){
+                                    $('.toast-container-modal').html(dataToast);
+                                    $('.toast').toast('show');
+
+                                    setTimeout(function() {
+                                        $('.toast-container-modal').html("");
+                                    }, 5000);
+                                }
+                            });
+                        }
+                    }
+                });
+            } else {
+                $.ajax({
+                    url: "../assets/php/ajax/ui/sendToastMessage.php",
+                    method: "POST",
+                    cache: false,
+                    data: {Title: "Rating", Message: "There was an issue while rating. Please try again."},
+                    success: function(dataToast){
+                        $('.toast-container-modal').html(dataToast);
+                        $('.toast').toast('show');
+
+                        setTimeout(function() {
+                            $('.toast-container-modal').html("");
+                        }, 5000);
+                    }
+                });
+            }
+        }
+    });
+}
+
 
 let checkError = false;
 function getAmount(user_email, params) {

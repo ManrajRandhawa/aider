@@ -313,6 +313,78 @@ class OrderModal {
         return $response;
     }
 
+    function addRatingToOrder($OrderType, $OrderID, $Rating) {
+        if($OrderType === "DRIVER") {
+            $riderDataType = "Team_ID";
+        } else {
+            $riderDataType = "Rider_ID";
+        }
+
+        /*
+         * $responseGetRiderID would return the Team ID if the Order Type is "DRIVER"
+         * Otherwise, $responseGetRiderID would return the Rider ID
+         */
+        $responseGetRiderID = $this->getOrderDetailsByID($OrderType, $OrderID, $riderDataType);
+
+        if($responseGetRiderID['error']) {
+            $response['error'] = true;
+            $response['message'] = $responseGetRiderID['message'];
+        } else {
+            if($OrderType === "DRIVER") {
+                $RiderModal = new RiderModal();
+                $responseGetTeamMembers = $RiderModal->getTeamInformationByID($responseGetRiderID['data'], 'Team_Members');
+
+                if($responseGetTeamMembers['error']) {
+                    $response['error'] = true;
+                    $response['message'] = $responseGetTeamMembers['message'];
+                } else {
+                    $teamMembers = explode(",", $responseGetTeamMembers['data']);
+
+                    $response['error'] = false;
+
+                    $DatabaseHandler = new DatabaseHandler();
+                    $connection = $DatabaseHandler->getMySQLiConnection();
+
+                    for($i = 0; $i < 2; $i++) {
+                        $sql = "UPDATE aider_user_rider SET Rating=Rating+" . intval($Rating) . ", Rating_Counter=Rating_Counter+1 WHERE ID=" . intval($teamMembers[$i]);
+
+                        $statement = $connection->query($sql);
+
+                        if($statement) {
+                            // Prevent data change during looping
+                            if(!$response['error']) {
+                                $response['error'] = false;
+                            } else {
+                                $response['error'] = true;
+                                $response['message'] = "There was an issue while rating the rider(s)/driver(s).";
+                            }
+                        } else {
+                            $response['error'] = true;
+                            $response['message'] = "There was an issue while rating the rider(s)/driver(s).";
+                        }
+                    }
+                    $connection->close();
+                }
+            } else {
+                $DatabaseHandler = new DatabaseHandler();
+                $connection = $DatabaseHandler->getMySQLiConnection();
+
+                $sql = "UPDATE aider_user_rider SET Rating=Rating+" . intval($Rating) . ", Rating_Counter=Rating_Counter+1 WHERE ID=" . intval($responseGetRiderID['data']);
+
+                $statement = $connection->query($sql);
+
+                if($statement) {
+                    $response['error'] = false;
+                } else {
+                    $response['error'] = true;
+                    $response['message'] = "There was an issue while rating the rider(s)/driver(s).";
+                }
+            }
+        }
+
+        return $response;
+    }
+
     function addRiderToSortingDeniedList($OrderType, $OrderID, $RiderID) {
         $DatabaseHandler = new DatabaseHandler();
         $connection = $DatabaseHandler->getMySQLiConnection();

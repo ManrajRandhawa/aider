@@ -117,7 +117,9 @@ class RiderModal {
                     $row['Name'],
                     $row['Phone_Number'],
                     $row['Vehicle_Model'],
-                    $row['Vehicle_Plate_Number']
+                    $row['Vehicle_Plate_Number'],
+                    $row['Rating'],
+                    $row['Rating_Counter']
                 );
             }
         } else {
