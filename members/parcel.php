@@ -117,8 +117,11 @@
                                 <div class="col-2 mt-3 text-center">
                                     <i class="far fa-dot-circle fa-lg text-primary"></i>
                                 </div>
-                                <div class="col-10">
+                                <div class="col-8">
                                     <input id="pickUpSearch" type="text" class="form-control mt-2 border-0 shadow-none" placeholder="Pick Up Location" required/>
+                                </div>
+                                <div class="col-2 p-0">
+                                    <button class="btn btn-outline-dark rounded-circle mt-2" id="btn-pinpoint-loc"><i class="fas fa-map-marker-alt"></i></button>
                                 </div>
                             </div>
 
@@ -126,17 +129,17 @@
                                 <div class="col-2 text-center mt-1">
                                     <i class="fas fa-ellipsis-v text-black-50 fa-sm"></i>
                                 </div>
-                                <div class="col-9"><hr/></div>
-                                <div class="col-1"></div>
+                                <div class="col-10"><hr/></div>
                             </div>
 
                             <div class="row mt-n1">
                                 <div class="col-2 mt-2 text-center">
                                     <i class="fas fa-map-marker-alt fa-lg text-danger"></i>
                                 </div>
-                                <div class="col-10">
+                                <div class="col-8">
                                     <input id="dropOffSearch" type="text" class="form-control mb-2 border-0 shadow-none" placeholder="Drop Off Location" required/>
                                 </div>
+                                <div class="col-2"></div>
                             </div>
                         </div>
                     </div>
@@ -265,26 +268,30 @@
                                     var distanceNum = distance.replace(' km','');
 
                                     price = basefare + (priceperkm * distanceNum);
-                                    price = parseFloat(price);
 
-                                    let pickUpLocationVal = $('#pickUpSearch').val();
-                                    let dropOffLocationVal = $('#dropOffSearch').val();
+                                    if(!Number.isNaN(price)) {
+                                        price = parseFloat(price);
 
-                                    if(pickUpLocationVal && dropOffLocationVal) {
-                                        $('#text-price').html("RM " + price.toFixed(2) + " <span id='text-distance'></span>");
-                                        $('#text-distance').text("(" + distance + ")");
+                                        let pickUpLocationVal = $('#pickUpSearch').val();
+                                        let dropOffLocationVal = $('#dropOffSearch').val();
 
-                                        $('#container-location').removeClass('mb-5').addClass('mb-6', 100);
-                                        $('#container-btn-deliver').slideDown('fast');
+                                        if(pickUpLocationVal && dropOffLocationVal) {
+                                            $('#text-price').html("RM " + price.toFixed(2) + " <span id='text-distance'></span>");
+                                            $('#text-distance').text("(" + distance + ")");
 
-                                        $('#container-btn-deliver').click(function() {
-                                            $('#btn-continue').hide();
-                                            $('#btn-deliver').show();
-                                            $('#container-details').slideDown();
+                                            $('#container-location').removeClass('mb-5').addClass('mb-6', 100);
+                                            $('#container-btn-deliver').slideDown('fast');
 
-                                        });
+                                            $('#container-btn-deliver').click(function() {
+                                                $('#btn-continue').hide();
+                                                $('#btn-deliver').show();
+                                                $('#container-details').slideDown();
 
+                                            });
+
+                                        }
                                     }
+
                                 }
                             });
                         // END: Find Distance and Set Price (Origin Click)
@@ -346,30 +353,165 @@
                                     var distanceNum = distance.replace(' km','');
 
                                     price = basefare + (priceperkm * distanceNum);
-                                    price = parseFloat(price);
 
-                                    let pickUpLocationVal = $('#pickUpSearch').val();
-                                    let dropOffLocationVal = $('#dropOffSearch').val();
+                                    if(!Number.isNaN(price)) {
+                                        price = parseFloat(price);
 
-                                    if(pickUpLocationVal && dropOffLocationVal) {
-                                        $('#text-price').html("RM " + price.toFixed(2) + " <span id='text-distance'></span>");
-                                        $('#text-distance').text("(" + distance + ")");
+                                        let pickUpLocationVal = $('#pickUpSearch').val();
+                                        let dropOffLocationVal = $('#dropOffSearch').val();
 
-                                        $('#container-location').removeClass('mb-5').addClass('mb-6', 100);
-                                        $('#container-btn-deliver').slideDown('fast');
+                                        if(pickUpLocationVal && dropOffLocationVal) {
+                                            $('#text-price').html("RM " + price.toFixed(2) + " <span id='text-distance'></span>");
+                                            $('#text-distance').text("(" + distance + ")");
 
-                                        $('#container-btn-deliver').click(function() {
-                                            $('#btn-continue').hide();
-                                            $('#btn-deliver').show();
-                                            $('#container-details').slideDown();
+                                            $('#container-location').removeClass('mb-5').addClass('mb-6', 100);
+                                            $('#container-btn-deliver').slideDown('fast');
 
-                                        });
+                                            $('#container-btn-deliver').click(function() {
+                                                $('#btn-continue').hide();
+                                                $('#btn-deliver').show();
+                                                $('#container-details').slideDown();
 
+                                            });
+
+                                        }
                                     }
                                 }
                             });
                         // END: Find Distance and Set Price (Destination Click)
                     }
+                });
+
+                $('#btn-pinpoint-loc').click(function() {
+                    if(navigator.geolocation) {
+
+                        let add = "";
+
+                        navigator.geolocation.getCurrentPosition(function(position) {
+                            const latlng = {
+                                lat: parseFloat(position.coords.latitude),
+                                lng: parseFloat(position.coords.longitude),
+                            };
+
+                            let geocoder = new google.maps.Geocoder();
+
+                            geocoder.geocode({ location: latlng }, (results, status) => {
+                                if (status === "OK") {
+                                    if (results[0]) {
+                                        add = results[0].formatted_address;
+                                        $('#pickUpSearch').val(add);
+
+                                        latOri = position.coords.latitude;
+                                        lngOri = position.coords.longitude;
+
+                                        coordsOri = {lat: latOri, lng: lngOri};
+
+                                        if($('#dropOffSearch').val() !== "") {
+                                            $.ajax({
+                                                url: '../assets/php/ajax/bookings/driver/getCoordinates.php',
+                                                method: 'POST',
+                                                cache: false,
+                                                data: {Address: $('#dropOffSearch').val() + ""},
+                                                success: function(data) {
+                                                    latDest = data.split(",")[0];
+                                                    lngDest = data.split(",")[1];
+
+                                                    if(latDest !== -999 && lngDest !== -999) {
+
+                                                        // START: Setup Directions (Origin Click)
+                                                        if(directionsRenderer != null) {
+                                                            directionsRenderer.set('directions', null); // Reset directions
+                                                        }
+
+                                                        directionsService = new google.maps.DirectionsService();
+                                                        directionsRenderer = new google.maps.DirectionsRenderer();
+
+                                                        gOri = new google.maps.LatLng(latOri, lngOri);
+                                                        gDest = new google.maps.LatLng(latDest, lngDest);
+                                                        directionsRenderer.setMap(map);
+
+                                                        var request = {
+                                                            origin: gOri,
+                                                            destination: gDest,
+                                                            travelMode: google.maps.TravelMode.DRIVING
+                                                        };
+                                                        directionsService.route(request, function(response, status) {
+                                                            if(status == 'OK') {
+                                                                directionsRenderer.setDirections(response);
+                                                            }
+                                                        });
+                                                        // END: Setup Directions (Origin Click)
+
+                                                        // START: Find Distance and Set Price (Origin Click)
+                                                        var distanceService = new google.maps.DistanceMatrixService();
+                                                        distanceService.getDistanceMatrix({
+                                                                origins: [latOri + "," + lngOri],
+                                                                destinations: [latDest + "," + lngDest],
+                                                                travelMode: google.maps.TravelMode.DRIVING,
+                                                                unitSystem: google.maps.UnitSystem.METRIC,
+                                                                durationInTraffic: true,
+                                                                avoidHighways: false,
+                                                                avoidTolls: false
+                                                            },
+                                                            function (response, status) {
+                                                                if (status !== google.maps.DistanceMatrixStatus.OK) {
+                                                                    console.log('Error:', status);
+                                                                } else {
+                                                                    distance = response.rows[0].elements[0].distance.text;
+                                                                    duration = response.rows[0].elements[0].duration.text;
+
+                                                                    var distanceNum = distance.replace(' km','');
+
+                                                                    price = basefare + (priceperkm * distanceNum);
+
+                                                                    if(!Number.isNaN(price)) {
+                                                                        price = parseFloat(price);
+
+                                                                        let pickUpLocationVal = $('#pickUpSearch').val();
+                                                                        let dropOffLocationVal = $('#dropOffSearch').val();
+
+                                                                        if(pickUpLocationVal && dropOffLocationVal) {
+                                                                            $('#text-price').html("RM " + price.toFixed(2) + " <span id='text-distance'></span>");
+                                                                            $('#text-distance').text("(" + distance + ")");
+
+                                                                            $('#container-location').removeClass('mb-5').addClass('mb-6', 100);
+                                                                            $('#container-btn-deliver').slideDown('fast');
+
+                                                                            $('#container-btn-deliver').click(function() {
+                                                                                $('#btn-continue').hide();
+                                                                                $('#btn-deliver').show();
+                                                                            });
+
+                                                                        }
+                                                                    }
+
+                                                                }
+                                                            });
+                                                        // END: Find Distance and Set Price (Origin Click)
+                                                    }
+                                                }
+                                            });
+                                        }
+
+                                    } else {
+                                        window.alert("No results found");
+                                    }
+                                } else {
+                                    window.alert("Geocoder failed due to: " + status);
+                                }
+                            });
+
+                        }, function() {
+                            // Display Toast Message on Location Permission not given
+                        }, {
+                            enableHighAccuracy: true
+                        });
+                    } else {
+                        // Display Toast Message on the error that occurred
+                        alert("Oops!");
+                    }
+
+
                 });
             }
 

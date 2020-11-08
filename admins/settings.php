@@ -106,7 +106,6 @@
                     </div>
                 </div>
 
-                <!--
                 <div class="col-12 mt-3">
                     <div class="border border-dark rounded pt-3 pr-3 pl-3 pb-5">
                         <h5 class="font-weight-bold mb-3">Aider Parcel</h5>
@@ -121,6 +120,7 @@
                     </div>
                 </div>
 
+                <!--
                 <div class="col-12 mt-3">
                     <div class="border border-dark rounded pt-3 pr-3 pl-3 pb-5">
                         <h5 class="font-weight-bold mb-3">Aider Food</h5>

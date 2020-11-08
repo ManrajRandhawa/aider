@@ -121,7 +121,7 @@
 
             <div class="container">
                 <div class="row">
-                    <div class="col-12 mt-3 d-none">
+                    <div class="col-12 mt-3">
                         <a class="text-decoration-none" href="parcel.php">
                             <div class="card">
                                 <div class="card-body">
@@ -164,12 +164,11 @@
                         <h6 class="text-center mb-3">Promotions</h6>
                     </div>
 
-
-                    <div id="promotion-container">
-                        <!-- Placeholder for Promotions -->
+                    <div class="col-12">
+                        <div id="promotion-container">
+                            <!-- Placeholder for Promotions -->
+                        </div>
                     </div>
-
-
                 </div>
             </div>
 

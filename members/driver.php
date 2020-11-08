@@ -303,23 +303,26 @@
                                                 var distanceNum = distance.replace(' km','');
 
                                                 price = basefare + (priceperkm * distanceNum);
-                                                price = parseFloat(price);
 
-                                                let pickUpLocationVal = $('#pickUpSearch').val();
-                                                let dropOffLocationVal = $('#dropOffSearch').val();
+                                                if(!Number.isNaN(price)) {
+                                                    price = parseFloat(price);
 
-                                                if(pickUpLocationVal && dropOffLocationVal) {
-                                                    $('#text-price').html("RM " + price.toFixed(2) + " <span id='text-distance'></span>");
-                                                    $('#text-distance').text("(" + distance + ")");
+                                                    let pickUpLocationVal = $('#pickUpSearch').val();
+                                                    let dropOffLocationVal = $('#dropOffSearch').val();
 
-                                                    $('#container-location').removeClass('mb-5').addClass('mb-6', 100);
-                                                    $('#container-btn-deliver').slideDown('fast');
+                                                    if(pickUpLocationVal && dropOffLocationVal) {
+                                                        $('#text-price').html("RM " + price.toFixed(2) + " <span id='text-distance'></span>");
+                                                        $('#text-distance').text("(" + distance + ")");
 
-                                                    $('#container-btn-deliver').click(function() {
-                                                        $('#btn-continue').hide();
-                                                        $('#btn-deliver').show();
-                                                    });
+                                                        $('#container-location').removeClass('mb-5').addClass('mb-6', 100);
+                                                        $('#container-btn-deliver').slideDown('fast');
 
+                                                        $('#container-btn-deliver').click(function() {
+                                                            $('#btn-continue').hide();
+                                                            $('#btn-deliver').show();
+                                                        });
+
+                                                    }
                                                 }
                                             }
                                         });
@@ -385,23 +388,25 @@
                                     var distanceNum = distance.replace(' km','');
 
                                     price = basefare + (priceperkm * distanceNum);
-                                    price = parseFloat(price);
 
-                                    let pickUpLocationVal = $('#pickUpSearch').val();
-                                    let dropOffLocationVal = $('#dropOffSearch').val();
+                                    if(!Number.isNaN(price)) {
+                                        price = parseFloat(price);
 
-                                    if(pickUpLocationVal && dropOffLocationVal) {
-                                        $('#text-price').html("RM " + price.toFixed(2) + " <span id='text-distance'></span>");
-                                        $('#text-distance').text("(" + distance + ")");
+                                        let pickUpLocationVal = $('#pickUpSearch').val();
+                                        let dropOffLocationVal = $('#dropOffSearch').val();
 
-                                        $('#container-location').removeClass('mb-5').addClass('mb-6', 100);
-                                        $('#container-btn-deliver').slideDown('fast');
+                                        if(pickUpLocationVal && dropOffLocationVal) {
+                                            $('#text-price').html("RM " + price.toFixed(2) + " <span id='text-distance'></span>");
+                                            $('#text-distance').text("(" + distance + ")");
 
-                                        $('#container-btn-deliver').click(function() {
-                                            $('#btn-continue').hide();
-                                            $('#btn-deliver').show();
-                                        });
+                                            $('#container-location').removeClass('mb-5').addClass('mb-6', 100);
+                                            $('#container-btn-deliver').slideDown('fast');
 
+                                            $('#container-btn-deliver').click(function() {
+                                                $('#btn-continue').hide();
+                                                $('#btn-deliver').show();
+                                            });
+                                        }
                                     }
                                 }
                             });
@@ -471,23 +476,25 @@
                                                 var distanceNum = distance.replace(' km','');
 
                                                 price = basefare + (priceperkm * distanceNum);
-                                                price = parseFloat(price);
 
-                                                let pickUpLocationVal = $('#pickUpSearch').val();
-                                                let dropOffLocationVal = $('#dropOffSearch').val();
+                                                if(!Number.isNaN(price)) {
+                                                    price = parseFloat(price);
 
-                                                if(pickUpLocationVal && dropOffLocationVal) {
-                                                    $('#text-price').html("RM " + price.toFixed(2) + " <span id='text-distance'></span>");
-                                                    $('#text-distance').text("(" + distance + ")");
+                                                    let pickUpLocationVal = $('#pickUpSearch').val();
+                                                    let dropOffLocationVal = $('#dropOffSearch').val();
 
-                                                    $('#container-location').removeClass('mb-5').addClass('mb-6', 100);
-                                                    $('#container-btn-deliver').slideDown('fast');
+                                                    if(pickUpLocationVal && dropOffLocationVal) {
+                                                        $('#text-price').html("RM " + price.toFixed(2) + " <span id='text-distance'></span>");
+                                                        $('#text-distance').text("(" + distance + ")");
 
-                                                    $('#container-btn-deliver').click(function() {
-                                                        $('#btn-continue').hide();
-                                                        $('#btn-deliver').show();
-                                                    });
+                                                        $('#container-location').removeClass('mb-5').addClass('mb-6', 100);
+                                                        $('#container-btn-deliver').slideDown('fast');
 
+                                                        $('#container-btn-deliver').click(function() {
+                                                            $('#btn-continue').hide();
+                                                            $('#btn-deliver').show();
+                                                        });
+                                                    }
                                                 }
                                             }
                                         });
@@ -580,23 +587,26 @@
                                                                     var distanceNum = distance.replace(' km','');
 
                                                                     price = basefare + (priceperkm * distanceNum);
-                                                                    price = parseFloat(price);
 
-                                                                    let pickUpLocationVal = $('#pickUpSearch').val();
-                                                                    let dropOffLocationVal = $('#dropOffSearch').val();
+                                                                    if(!Number.isNaN(price)) {
+                                                                        price = parseFloat(price);
 
-                                                                    if(pickUpLocationVal && dropOffLocationVal) {
-                                                                        $('#text-price').html("RM " + price.toFixed(2) + " <span id='text-distance'></span>");
-                                                                        $('#text-distance').text("(" + distance + ")");
+                                                                        let pickUpLocationVal = $('#pickUpSearch').val();
+                                                                        let dropOffLocationVal = $('#dropOffSearch').val();
 
-                                                                        $('#container-location').removeClass('mb-5').addClass('mb-6', 100);
-                                                                        $('#container-btn-deliver').slideDown('fast');
+                                                                        if(pickUpLocationVal && dropOffLocationVal) {
+                                                                            $('#text-price').html("RM " + price.toFixed(2) + " <span id='text-distance'></span>");
+                                                                            $('#text-distance').text("(" + distance + ")");
 
-                                                                        $('#container-btn-deliver').click(function() {
-                                                                            $('#btn-continue').hide();
-                                                                            $('#btn-deliver').show();
-                                                                        });
+                                                                            $('#container-location').removeClass('mb-5').addClass('mb-6', 100);
+                                                                            $('#container-btn-deliver').slideDown('fast');
 
+                                                                            $('#container-btn-deliver').click(function() {
+                                                                                $('#btn-continue').hide();
+                                                                                $('#btn-deliver').show();
+                                                                            });
+
+                                                                        }
                                                                     }
                                                                 }
                                                             });

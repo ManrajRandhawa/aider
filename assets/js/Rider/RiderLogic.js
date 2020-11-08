@@ -949,9 +949,23 @@ class RiderLogic {
                                             success: function (dataOrderD) {
                                                 if(dataOrderD !== "ERROR") {
                                                     let dataDP = JSON.parse(dataOrderD);
+                                                    let pickUpName = "Not Provided", pickUpHP = "Not Provided", dropOffName = "Not Provided", dropOffHP = "Not Provided";
 
-                                                    RiderLayout.createPickUpLocationContent(dataDP[1]);
-                                                    RiderLayout.createDropOffLocationContent(dataDP[2]);
+                                                    if(dataDP[3] !== "") {
+                                                        pickUpName = dataDP[3];
+                                                    }
+                                                    if(dataDP[4] !== "") {
+                                                        pickUpHP = dataDP[4];
+                                                    }
+                                                    if(dataDP[5] !== "") {
+                                                        dropOffName = dataDP[5];
+                                                    }
+                                                    if(dataDP[6] !== "") {
+                                                        dropOffHP = dataDP[6];
+                                                    }
+
+                                                    RiderLayout.createPickUpLocationContent(dataDP[1], pickUpName, pickUpHP);
+                                                    RiderLayout.createDropOffLocationContent(dataDP[2], dropOffName, dropOffHP);
                                                 } else {
                                                     // [ERROR] Not able to get Order Details
                                                 }
@@ -1146,6 +1160,9 @@ class Rider {
                                                                                         RiderDataSet.setOrderContainerDisplayed(true);
                                                                                         $('#order-container').removeClass('d-none');
 
+                                                                                        var audio = new Audio('https://aider.my/aider/assets/audio/ting.mp3');
+                                                                                        audio.play();
+
                                                                                         if(RiderDataSet.getOrderLogicCalled() === false) {
                                                                                             RiderLogic.getOrderLogic(orderType, orderID);
                                                                                         }
@@ -1175,8 +1192,36 @@ class Rider {
                                                                                                 "Paid");
                                                                                         }
 
-                                                                                        RiderLayout.createPickUpLocationContent(dataDetails[1]);
-                                                                                        RiderLayout.createDropOffLocationContent(dataDetails[2]);
+                                                                                        $.ajax({
+                                                                                            url: "../assets/php/ajax/rider/getOrderDetails.php",
+                                                                                            method: "POST",
+                                                                                            cache: false,
+                                                                                            data: {Order_Type: orderType, Order_ID: orderID},
+                                                                                            success: function (dataOrderD) {
+                                                                                                if(dataOrderD !== "ERROR") {
+                                                                                                    let dataDP = JSON.parse(dataOrderD);
+                                                                                                    let pickUpName = "Not Provided", pickUpHP = "Not Provided", dropOffName = "Not Provided", dropOffHP = "Not Provided";
+
+                                                                                                    if(dataDP[3] !== "") {
+                                                                                                        pickUpName = dataDP[3];
+                                                                                                    }
+                                                                                                    if(dataDP[4] !== "") {
+                                                                                                        pickUpHP = dataDP[4];
+                                                                                                    }
+                                                                                                    if(dataDP[5] !== "") {
+                                                                                                        dropOffName = dataDP[5];
+                                                                                                    }
+                                                                                                    if(dataDP[6] !== "") {
+                                                                                                        dropOffHP = dataDP[6];
+                                                                                                    }
+
+                                                                                                    RiderLayout.createPickUpLocationContent(dataDP[1], pickUpName, pickUpHP);
+                                                                                                    RiderLayout.createDropOffLocationContent(dataDP[2], dropOffName, dropOffHP);
+                                                                                                } else {
+                                                                                                    // [ERROR] Not able to get Order Details
+                                                                                                }
+                                                                                            }
+                                                                                        });
                                                                                     } else {
                                                                                         // Add Rider to Denied List as range is too far
                                                                                         RiderAJAX.addRiderToDenialList(orderType, orderID, riID);

@@ -337,16 +337,14 @@
 
                             <hr/>
                             <div class="row">
-                                <!--
                                 <div class="col-6">
                                     <button class="btn btn-outline-dark w-100" id="btn-others">
-                                        <span>Parcel & Food</span>
+                                        <span>Parcel</span>
                                     </button>
                                 </div>
-                                -->
-                                <div class="col-12">
+                                <div class="col-6">
                                     <button class="btn btn-outline-primary w-100" id="btn-driver">
-                                        <span>Aider Driver</span>
+                                        <span>myAider Driver</span>
                                     </button>
                                 </div>
                             </div>
