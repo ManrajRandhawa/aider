@@ -275,16 +275,6 @@ function getSettingsDashboard() {
                 $('#base-fare-price').val(data);
             }
         });
-
-        $.ajax({
-            url: "../assets/php/ajax/admin/getSettingsInformation.php",
-            method: "POST",
-            cache: false,
-            data: {Settings_Info: "Price_Per_KM"},
-            success: function(data){
-                $('#per-km-price').val(data);
-            }
-        });
         // END: Display Pricing Settings
 
         // START: Display Rider Details
@@ -300,6 +290,16 @@ function getSettingsDashboard() {
         // END: Display Rider Details
 
         // START: Display Aider Driver Module Settings
+        $.ajax({
+            url: "../assets/php/ajax/admin/getSettingsInformation.php",
+            method: "POST",
+            cache: false,
+            data: {Settings_Info: "Price_Per_KM_Driver"},
+            success: function(data){
+                $('#per-km-price-driver').val(data);
+            }
+        });
+
         $.ajax({
             url: "../assets/php/ajax/admin/getSettingsInformation.php",
             method: "POST",
@@ -322,6 +322,16 @@ function getSettingsDashboard() {
         // END: Display Aider Driver Module Settings
 
         // START: Display Aider Parcel Module Settings
+        $.ajax({
+            url: "../assets/php/ajax/admin/getSettingsInformation.php",
+            method: "POST",
+            cache: false,
+            data: {Settings_Info: "Price_Per_KM_Parcel"},
+            success: function(data){
+                $('#per-km-price-parcel').val(data);
+            }
+        });
+
         $.ajax({
             url: "../assets/php/ajax/admin/getSettingsInformation.php",
             method: "POST",
@@ -363,20 +373,7 @@ function getSettingsDashboard() {
                 }
             });
 
-            // STEP 2: Update Price per KM
-            $.ajax({
-                url: "../assets/php/ajax/admin/updateSettingsInformation.php",
-                method: "POST",
-                cache: false,
-                data: {Settings_Info: "Price_Per_KM", Settings_Value: $('#per-km-price').val(), isNumber: true},
-                success: function(data){
-                    if(data === "YES") {
-                        error = true;
-                    }
-                }
-            });
-
-            // STEP 3: Display Toast Message
+            // STEP 2: Display Toast Message
             let pricingToastTitle, pricingToastMessage;
             if(error) {
                 pricingToastTitle = "An error occurred!";
@@ -454,7 +451,20 @@ function getSettingsDashboard() {
         $('#save-aider-driver').click(function() {
             let error = false;
 
-            // STEP 1: Update Primary Percentage
+            // STEP 1: Update Price per KM
+            $.ajax({
+                url: "../assets/php/ajax/admin/updateSettingsInformation.php",
+                method: "POST",
+                cache: false,
+                data: {Settings_Info: "Price_Per_KM_Driver", Settings_Value: $('#per-km-price-driver').val(), isNumber: true},
+                success: function(data){
+                    if(data === "YES") {
+                        error = true;
+                    }
+                }
+            });
+
+            // STEP 2: Update Primary Percentage
             $.ajax({
                 url: "../assets/php/ajax/admin/updateSettingsInformation.php",
                 method: "POST",
@@ -467,7 +477,7 @@ function getSettingsDashboard() {
                 }
             });
 
-            // STEP 2: Update Secondary Percentage
+            // STEP 3: Update Secondary Percentage
             $.ajax({
                 url: "../assets/php/ajax/admin/updateSettingsInformation.php",
                 method: "POST",
@@ -480,7 +490,7 @@ function getSettingsDashboard() {
                 }
             });
 
-            // STEP 3: Display Toast Message
+            // STEP 4: Display Toast Message
             let pricingToastTitle, pricingToastMessage;
             if(error) {
                 pricingToastTitle = "An error occurred!";
@@ -512,7 +522,20 @@ function getSettingsDashboard() {
         $('#save-aider-parcel').click(function() {
             let error = false;
 
-            // STEP 1: Update Primary Percentage
+            // STEP 1: Update Price per KM
+            $.ajax({
+                url: "../assets/php/ajax/admin/updateSettingsInformation.php",
+                method: "POST",
+                cache: false,
+                data: {Settings_Info: "Price_Per_KM_Parcel", Settings_Value: $('#per-km-price-parcel').val(), isNumber: true},
+                success: function(data){
+                    if(data === "YES") {
+                        error = true;
+                    }
+                }
+            });
+
+            // STEP 2: Update Primary Percentage
             $.ajax({
                 url: "../assets/php/ajax/admin/updateSettingsInformation.php",
                 method: "POST",
@@ -525,7 +548,7 @@ function getSettingsDashboard() {
                 }
             });
 
-            // STEP 2: Display Toast Message
+            // STEP 3: Display Toast Message
             let pricingToastTitle, pricingToastMessage;
             if(error) {
                 pricingToastTitle = "An error occurred!";

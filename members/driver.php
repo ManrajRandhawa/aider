@@ -654,7 +654,7 @@
                     url: "../assets/php/ajax/admin/getSettingsInformation.php",
                     method: "POST",
                     cache: false,
-                    data: {Settings_Info: "Price_Per_KM"},
+                    data: {Settings_Info: "Price_Per_KM_Driver"},
                     success: function(data){
                         priceperkm = parseFloat(data);
                     }
