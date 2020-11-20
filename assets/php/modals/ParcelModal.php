@@ -17,8 +17,7 @@ class ParcelModal {
 
             $priceAmount = implode($Price);
 
-            // Subtract Funds
-            $responseFunds = $this->checkAndSubtractFunds($customerEmail, $priceAmount);
+            $responseFunds = $this->checkFunds($customerEmail, $priceAmount);
 
             if($responseFunds['error']) {
                 $response['error'] = true;
@@ -99,6 +98,25 @@ class ParcelModal {
                 }
 
 
+            }
+        }
+
+        return $response;
+    }
+
+    function checkFunds($Email, $Amount) {
+        $Aider = new Aider();
+        $responseCustomerModal = $Aider->getUserModal()->getCustomerModal()->getCustomerInformationByEmail($Email, "Credit");
+
+        if($responseCustomerModal['error']) {
+            $response['error'] = true;
+            $response['message'] = "There was an error while trying to fetch your wallet.";
+        } else {
+            if(doubleval($responseCustomerModal['data']) < doubleval($Amount)) {
+                $response['error'] = true;
+                $response['message'] = "You've insufficient funds. You currently have RM " . $responseCustomerModal['data'] . " and need another RM " . (doubleval($Amount) - doubleval($responseCustomerModal['data'])) . ". Top up to continue.";
+            } else {
+                $response['error'] = false;
             }
         }
 

@@ -451,7 +451,7 @@
         <script src="../assets/js/Rider.js"></script>
         <script src="../assets/js/Rider/RiderLogic.js"></script>
 
-        <script async defer src="https://maps.googleapis.com/maps/api/js?key=<?php echo MAP_API_KEY; ?>&libraries=places&callback=initMap"></script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=<?php echo MAP_API_KEY; ?>&region=MY&language=en&libraries=places&callback=initMap"></script>
 
         <script>
             function initMap() {
