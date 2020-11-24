@@ -224,10 +224,12 @@ class RiderLayout {
 
         let url = "geo:0,0";
         if (this.iOS()) {
-            url = "maps:0,0";
+            url = "http://maps.apple.com/";
         }
 
-        $('#riding-1-content-loc-btn').html("<a href='" + url + "?q=" + pickUpLoc + "'>\n" +
+        let fullUrl = encodeURI(url + "?q=" + pickUpLoc);
+
+        $('#riding-1-content-loc-btn').html("<a href='" + fullUrl + "'>\n" +
             "                                        <i class=\"mt-2 mr-3 fas fa-location-arrow fa-lg text-success\"></i>\n" +
             "                                    </a>");
     }
@@ -247,10 +249,12 @@ class RiderLayout {
 
         let url = "geo:0,0";
         if (this.iOS()) {
-            url = "maps:0,0";
+            url = "http://maps.apple.com/";
         }
 
-        $('#riding-2-content-loc-btn').html("<a href='" + url + "?q=" + dropOffLoc + "'>\n" +
+        let fullUrl = encodeURI(url + "?q=" + dropOffLoc);
+
+        $('#riding-2-content-loc-btn').html("<a href='" + fullUrl + "'>\n" +
             "                                        <i class=\"mt-2 mr-3 fas fa-location-arrow fa-lg text-success\"></i>\n" +
             "                                    </a>");
     }
