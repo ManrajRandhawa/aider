@@ -132,7 +132,21 @@
                     </a>
                 </div>
 
+                <div class="col-12 mt-3">
+                    <a class="text-decoration-none" href="rides.php">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="far fa-times-circle mr-1"></i> Cancel Rides</h5>
+                                <p class="card-text">Cancel ongoing rides.</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
             </div>
+
+            <br/>
+            <br/>
+            <br/>
         </div>
 
         <br/>

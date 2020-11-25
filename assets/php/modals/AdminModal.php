@@ -370,4 +370,234 @@ class AdminModal {
         }
         die();
     }
+
+    function getCancellableRides($searchArgs) {
+        $Aider = new Aider();
+
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        // Customer Name/Email Search
+        $sqlSearchCustomer = "SELECT * FROM aider_user_customer WHERE (Name LIKE '%" . $searchArgs . "%') OR (Email_Address LIKE '%" . $searchArgs . "%') LIMIT 1";
+        $statementSearchCustomer = $connection->query($sqlSearchCustomer);
+
+        if($statementSearchCustomer->num_rows > 0) {
+            while($rowCustomer = $statementSearchCustomer->fetch_assoc()) {
+                $sql = "SELECT * FROM aider_transaction_sorting WHERE Customer_ID = " . $rowCustomer['ID'] . " AND Transaction_Status!='COMPLETED' AND Transaction_Status!='COMPLETED_RATED' AND Transaction_Status!='CANCELLED' ORDER BY ID DESC LIMIT 3";
+
+                $statement = $connection->query($sql);
+
+                if($statement->num_rows > 0) {
+                    $num = 0;
+
+                    $response['error'] = false;
+
+                    $response['data'] = "<table class='table table-responsive mt-3'><thead class=\"text-center\">
+                            <tr>
+                                <th scope=\"col\">ID</th>
+                                <th scope=\"col\">Type</th>
+                                <th scope=\"col\">Customer</th>
+                                <th scope=\"col\">Partner</th>
+                                <th scope=\"col\">Pickup</th>
+                                <th scope=\"col\">Dropoff</th>
+                                <th scope=\"col\">Time</th>
+                                <th scope=\"col\">Price</th>
+                                <th scope=\"col\">Status</th>
+                                <th scope=\"col\">Option</th>
+                            </tr>
+                            </thead>
+
+                            <tbody class=\"text-center\">";
+
+                    while($row = $statement->fetch_assoc()) {
+                        $num++;
+                        $partner = "";
+
+                        $responseGetCustomerName = $Aider->getUserModal()->getCustomerModal()->getCustomerInformationByID(intval($row['Customer_ID']), 'Name');
+                        $responseGetOrderDetails = $Aider->getUserModal()->getOrderModal()->getOrderDetails($row['Transaction_Type'], intval($row['Transaction_ID']));
+
+                        if(!is_null($row['RT_ID'])) {
+
+                            if($row['Transaction_Type'] === "DRIVER") {
+                                $responseGetTeamMembers = $Aider->getUserModal()->getRiderModal()->getTeamInformationByID(intval($row['RT_ID']), 'Team_Members');
+
+                                if(!$responseGetTeamMembers['error']) {
+                                    $tm = explode(",", $responseGetTeamMembers['data']);
+
+                                    $tmOne = $Aider->getUserModal()->getRiderModal()->getRiderInformationByID(intval($tm[0]), 'Name');
+                                    $tmTwo = $Aider->getUserModal()->getRiderModal()->getRiderInformationByID(intval($tm[1]), 'Name');
+
+                                    if(!$tmOne['error'] && !$tmTwo['error']) {
+                                        $partner = $tmOne['data'] . "," . $tmTwo['data'];
+                                    }
+                                }
+                            } else {
+                                $responseGetPartnerName = $Aider->getUserModal()->getRiderModal()->getRiderInformationByID(intval($row['RT_ID']), 'Name');
+
+                                if(!$responseGetPartnerName['error']) {
+                                    $partner = $responseGetPartnerName['data'];
+                                }
+                            }
+                        } else {
+                            $responseGetPartnerName['error'] = false;
+                            $responseGetPartnerName['data'] = "NULL";
+                        }
+
+                        if(!$responseGetCustomerName['error'] && !$responseGetOrderDetails['error']) {
+
+                            $pickUpLoc = "";
+                            $dropOffLoc = "";
+                            $time = "";
+                            $price = "";
+
+                            if($row['Transaction_Type'] === "PARCEL") {
+                                $pickUpLoc = $responseGetOrderDetails['data'][1];
+                                $dropOffLoc = $responseGetOrderDetails['data'][2];
+                                $time = $responseGetOrderDetails['data'][9];
+                                $price = $responseGetOrderDetails['data'][8];
+                            } elseif($row['Transaction_Type'] === "DRIVER") {
+                                $pickUpLoc = $responseGetOrderDetails['data'][1];
+                                $dropOffLoc = $responseGetOrderDetails['data'][2];
+                                $time = $responseGetOrderDetails['data'][4];
+                                $price = $responseGetOrderDetails['data'][3];
+                            }
+
+                            if($row['Transaction_Status'] === "FINDING-RIDER") {
+                                $status = "Finding a Rider";
+                            } elseif($row['Transaction_Status'] === "HEADING_TO_PICKUP") {
+                                $status = "Heading to Pickup";
+                            } elseif($row['Transaction_Status'] === "HEADING_TO_DESTINATION") {
+                                $status = "Heading to Destination";
+                            } else {
+                                $status = "Unknown";
+                            }
+
+                            $response['data'] .= "<tr>
+                                    <td scope=\"row\">" . $num . "</td>
+                                    <td>" . $row['Transaction_Type'] . "</td>
+                                    <td>" . $responseGetCustomerName['data'] . "</td>
+                                    <td>" . $partner . "</td>
+                                    <td>" . $pickUpLoc . "</td>
+                                    <td>" . $dropOffLoc . "</td>
+                                    <td>" . $time . "</td>
+                                    <td>" . $price . "</td>
+                                    <td>" . $status . "</td>
+                                    <td>
+                                        <div class=\"dropdown\">
+                                            <button class=\"btn btn-sm btn-primary dropdown-toggle\" type=\"button\" id=\"dropdownMenuButton\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">
+                                            Option
+                                            </button>
+                                            <div class=\"dropdown-menu\" aria-labelledby=\"dropdownMenuButton\">
+                                                <a class=\"dropdown-item btn-cancel\" id='" . $row['Transaction_Type'] . "-" . $row['Transaction_ID'] . "' onclick='cancelRide();'>Cancel Ride</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>";
+                        }
+                    }
+
+                    $response['data'] .= "</tbody></table>";
+                } else {
+                    $response['error'] = true;
+                    $response['data'] = "<div class=\"col-12 text-center mt-5\">
+                        <i class=\"fas fa-scroll fa-4x\" style=\"color: #DCDCDC;\"></i>
+                        <h6 class=\"font-weight-bold mt-4\">Nothing here yet!</h6>
+                        <h6 class=\"text-black-50\">Any cancellable rides would appear here.</h6>
+                    </div>";
+                }
+            }
+        } else {
+            $response['error'] = true;
+            $response['data'] = "<div class=\"col-12 text-center mt-5\">
+                        <i class=\"fas fa-scroll fa-4x\" style=\"color: #DCDCDC;\"></i>
+                        <h6 class=\"font-weight-bold mt-4\">Nothing here yet!</h6>
+                        <h6 class=\"text-black-50\">Refine your search (Customer Names/Emails) for better results.</h6>
+                    </div>";
+        }
+
+        return $response;
+    }
+
+    function cancelRide($rideType, $rideTypeID) {
+        // SET STATUS TO -> CANCELLED
+
+        $Aider = new Aider();
+
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        if($rideType === "PARCEL") {
+            $riderTable = "Rider_ID";
+        } elseif($rideType === "DRIVER") {
+            $riderTable = "Team_ID";
+        }
+        $responseGetRider = $Aider->getUserModal()->getOrderModal()->getOrderDetailsByID($rideType, $rideTypeID, $riderTable);
+
+
+        if(!$responseGetRider['error']) {
+            // Set all statuses
+            $sqlUpdateSorting = "UPDATE aider_transaction_sorting SET Transaction_Status = 'CANCELLED' WHERE Transaction_ID = " . intval($rideTypeID) . " AND Transaction_Type = '" . $rideType . "'";
+
+            $statement = $connection->query($sqlUpdateSorting);
+
+            if($statement) {
+                $response['error'] = false;
+            } else {
+                $response['error'] = true;
+            }
+
+            $connection->close();
+
+            if(!$response['error']) {
+                $responseRideTypeStatusUpdate = $Aider->getUserModal()->getOrderModal()->setOrderStatus($rideType, $rideTypeID, 'CANCELLED');
+
+                if(!is_null($responseGetRider['data'])) {
+                    if($rideType === "PARCEL") {
+                        $responseRiderStatusUpdate = $Aider->getUserModal()->getRiderModal()->updateRiderStatusByID('ACTIVE', '', 0, intval($responseGetRider['data']));
+                    } elseif($rideType === "DRIVER") {
+                        $responseTeamStatusUpdate = $Aider->getUserModal()->getRiderModal()->setTeamStatus(intval($responseGetRider['data']), 'ACTIVE');
+                        $responseGetTeamMembers = $Aider->getUserModal()->getRiderModal()->getTeamInformationByID(intval($responseGetRider['data']), 'Team_Members');
+
+                        if(!$responseTeamStatusUpdate['error'] && !$responseGetTeamMembers['error']) {
+                            $teamMembers = explode(",", $responseGetTeamMembers['data']);
+
+                            $responseRiderStatusUpdateMOne = $Aider->getUserModal()->getRiderModal()->updateRiderStatusByID('ACTIVE', '', 0, intval($teamMembers[0]));
+                            $responseRiderStatusUpdateMTwo = $Aider->getUserModal()->getRiderModal()->updateRiderStatusByID('ACTIVE', '', 0, intval($teamMembers[1]));
+
+                            if(!$responseRiderStatusUpdateMOne['error'] && !$responseRiderStatusUpdateMTwo['error']) {
+                                $responseRiderStatusUpdate['error'] = false;
+                            } else {
+                                $responseRiderStatusUpdate['error'] = true;
+                            }
+                        } else {
+                            if($responseTeamStatusUpdate['error']) {
+                                $response['message'] .= "0</br>";
+                            }
+
+                            if($responseGetTeamMembers['error']) {
+                                $response['message'] .= "1-" . $responseGetRider['data'] . "-" . $riderTable;
+                            }
+                        }
+                    }
+                } else {
+                    $responseRiderStatusUpdate['error'] = false;
+                }
+
+                if(!$responseRideTypeStatusUpdate['error'] && !$responseRiderStatusUpdate['error']) {
+                    $response['error'] = false;
+                } else {
+                    $response['error'] = true;
+                    $response['message'] = "There was an issue in updating the rider(s) information.";
+                }
+            } else {
+                $response['error'] = true;
+                $response['message'] = "Could not update the database.";
+            }
+        } else {
+            $response['error'] = true;
+            $response['message'] = "There was an issue in getting the rider information.";
+        }
+
+        return $response;
+    }
 }

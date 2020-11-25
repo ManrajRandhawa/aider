@@ -259,6 +259,63 @@ function getPromoDashboard() {
     }
 }
 
+function getCancelRidesDashboard() {
+    if(window.localStorage.getItem("User_Email") === null) {
+        window.location.href = "../admins/index.php";
+    } else {
+        let user_email = window.localStorage.getItem("User_Email");
+
+        // Display Cancellable Rides
+        $.ajax({
+            url: "../assets/php/ajax/admin/getCancellableRidesList.php",
+            method: "POST",
+            cache: false,
+            data: {User_Search: "Null"},
+            success: function(data){
+                $('#rides-container').html(data);
+            }
+        });
+
+        $('#user-search').on('input', function() {
+            if($('#user-search').val().length < 3) {
+                // Display Cancellable Rides
+                $.ajax({
+                    url: "../assets/php/ajax/admin/getCancellableRidesList.php",
+                    method: "POST",
+                    cache: false,
+                    data: {User_Search: "Null"},
+                    success: function(data){
+                        $('#rides-container').html(data);
+                    }
+                });
+            } else {
+                $('#rides-container').html("<div class=\"col-12 text-center mt-5\">\n" +
+                    "                <i class=\"fas fa-search fa-4x\" style=\"color: #DCDCDC;\"></i>\n" +
+                    "                <h6 class=\"font-weight-bold mt-4\">Searching for Cancellable Rides...</h6>\n" +
+                    "                <h6 class=\"text-black-50\">This may take a moment.</h6>\n" +
+                    "            </div>");
+
+                setTimeout(function(){
+                    // Display Cancellable Rides
+                    $.ajax({
+                        url: "../assets/php/ajax/admin/getCancellableRidesList.php",
+                        method: "POST",
+                        cache: false,
+                        data: {User_Search: $('#user-search').val()},
+                        success: function(data){
+                            $('#rides-container').html(data);
+                        }
+                    });
+                }, 1000);
+            }
+
+        });
+
+
+
+    }
+}
+
 function getSettingsDashboard() {
     if(window.localStorage.getItem("User_Email") === null) {
         window.location.href = "../admins/index.php";
@@ -1040,6 +1097,62 @@ function denyCashOutClick() {
                     $('#waiting-list-container').html(dataWL);
                 }
             });
+        }
+    });
+}
+
+function cancelRide() {
+    let rideInfo = $('.btn-cancel').attr('id');
+
+    let rideDetails = rideInfo.split("-");
+
+    // Approve Rider & Display Toast Message
+    $.ajax({
+        url: "../assets/php/ajax/admin/cancelRide.php",
+        method: "POST",
+        cache: false,
+        data: {Ride_Type: rideDetails[0], Ride_ID: rideDetails[1]},
+        success: function(dataMsg) {
+            // Display Toast Message
+            let msg = "";
+            if(dataMsg === "ERROR") {
+                msg = "There was an issue cancelling this ride.";
+            } else {
+                msg = "The ride has been cancelled.";
+            }
+            $.ajax({
+                url: "../assets/php/ajax/ui/sendToastMessage.php",
+                method: "POST",
+                cache: false,
+                data: {Title: "Ride Cancelled", Message: msg},
+                success: function(dataToast){
+                    $('.toast-container').html(dataToast);
+                    $('.toast').toast('show');
+
+                    setTimeout(function() {
+                        $('.toast-container').html("");
+                    }, 5000);
+                }
+            });
+
+            $('#rides-container').html("<div class=\"col-12 text-center mt-5\">\n" +
+                "                <i class=\"fas fa-search fa-4x\" style=\"color: #DCDCDC;\"></i>\n" +
+                "                <h6 class=\"font-weight-bold mt-4\">Searching for Cancellable Rides...</h6>\n" +
+                "                <h6 class=\"text-black-50\">This may take a moment.</h6>\n" +
+                "            </div>");
+
+            setTimeout(function(){
+                // Display Cancellable Rides
+                $.ajax({
+                    url: "../assets/php/ajax/admin/getCancellableRidesList.php",
+                    method: "POST",
+                    cache: false,
+                    data: {User_Search: $('#user-search').val()},
+                    success: function(data){
+                        $('#rides-container').html(data);
+                    }
+                });
+            }, 1000);
         }
     });
 }

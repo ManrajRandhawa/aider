@@ -156,16 +156,10 @@
         <!-- Main Content -->
         <div class="container">
             <div class="row">
-                <div class="col-12 mt-4">
+                <div class="col-9 mt-4">
                     <h3 class="font-weight-bold mb-4">Teams</h3>
                 </div>
-            </div>
-
-            <div class="row">
-                <div class="col-9">
-                    <input type="text" class="form-control form-control-lg" placeholder="Search" aria-label="Search">
-                </div>
-                <div class="col-3">
+                <div class="col-3 mt-3">
                     <a class="float-right btn btn-outline-primary btn-lg text-primary" onclick="addTeam();"><i class="fas fa-plus"></i></a>
                 </div>
             </div>

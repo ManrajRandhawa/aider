@@ -1,7 +1,3 @@
-// Define Enums for Rider - Active or Inactive Mode
-// const Mode = Object.freeze({"INACTIVE": 0, "ACTIVE": 1});
-// let riderMode = Mode.INACTIVE;
-
 let rID;
 let watchID;
 
@@ -307,6 +303,32 @@ function getHomeJS() {
         // Completion Spinner
         $('.circle-loader').toggleClass('load-complete');
         $('.checkmark').toggle();
+
+        // keep startup url (in case your app is an SPA with html5 url routing)
+        var initialHref = window.location.href;
+
+        function restartApplication() {
+            // Reload original app url (ie your index.html file)
+            window.location = initialHref;
+        }
+
+
+        // Check if ride is cancelled - Interval
+        setInterval(function() {
+            if(RiderDataSet.getRiderMode() === Mode.HEADING_TO_PICKUP || RiderDataSet.getRiderMode() === Mode.HEADING_TO_DESTINATION) {
+                $.ajax({
+                    url: '../assets/php/ajax/rider/getRiderData.php',
+                    method: 'POST',
+                    cache: false,
+                    data: {User_Email: user_email, User_Info: "Transaction_ID"},
+                    success: function(data) {
+                        if(parseInt(data) === 0) {
+                            restartApplication();
+                        }
+                    }
+                });
+            }
+        }, 1000);
     }
 }
 
