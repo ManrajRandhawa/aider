@@ -43,10 +43,10 @@
                         <img src="../assets/images/aider-r-logo.png" class="d-block ml-auto mr-auto p-3" style="width: auto; height: 180px;" />
                     </div>
                 </div>
-                <h3 class="text-center font-weight-bold mt-5 text-primary" style="font-family: 'Barlow', sans-serif;">SIGN IN</h3>
 
-                <div class="row">
+                <div class="row" id="view-1">
                     <div class="col-12">
+                        <h3 class="text-center font-weight-bold mt-5 text-primary" style="font-family: 'Barlow', sans-serif;">SIGN IN</h3>
                         <form method="post">
                             <div class="input-group mt-3">
                                 <input type="email" class="form-control" name="user-email" placeholder="Email Address" required />
@@ -58,6 +58,34 @@
                         </form>
 
                         <h6 class="text-center mt-3">Want to become a myAider Rider? <a href="apply.php" class="text-primary">Apply now.</a></h6>
+
+                        <div class="fixed-bottom mb-2">
+                            <div class="w-75 d-block ml-auto mr-auto">
+                                <button class="btn btn-outline-primary w-100" id="forgot-password-btn-bottom"><i class="fas fa-lock mr-2"></i> Forgot your password?</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-none" id="view-2">
+                    <h3 class="text-center font-weight-bold mt-5 mb-5 text-primary" style="font-family: 'Barlow', sans-serif;">RESET PASSWORD</h3>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <form method="post">
+                                <div class="input-group mt-3">
+                                    <input type="email" class="form-control" name="user-email-reset" placeholder="Email Address" required />
+                                </div>
+                                <button name="btn-reset" class="btn btn-outline-primary btn-block mt-3">Reset Password</button>
+                            </form>
+
+                            <div class="fixed-bottom mb-2">
+                                <div class="w-75 d-block ml-auto mr-auto">
+                                    <button class="btn btn-outline-primary w-100" id="sign-in-btn-bottom"><i class="fas fa-sign-in-alt mr-2"></i> Sign In</button>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -82,6 +110,18 @@
                         echo $Aider->getAlerts()->sendToastCredentials("Oops! Something went wrong.", $response['message']);
                     }
                 }
+
+                if(isset($_POST['btn-reset'])) {
+                    $email = $_POST['user-email-reset'];
+
+                    $responseReset = $Aider->getUserModal()->getRiderModal()->resetPassword($email);
+
+                    if($responseReset['error']) {
+                        echo $Aider->getAlerts()->sendToastCredentials('Oops! Something went wrong.', $responseReset['message']);
+                    } else {
+                        echo $Aider->getAlerts()->sendToastCredentials('Reset successful.', 'If the email given is associated with any account, an email would be sent with the new password.');
+                    }
+                }
             ?>
         </div>
 
@@ -103,6 +143,20 @@
                 setTimeout(function() {
                     $('.toast-container').html("");
                 }, 5000);
+
+                $('#forgot-password-btn-bottom').on('click', function() {
+                    if(!$('#view-1').hasClass('d-none')) {
+                        $('#view-1').addClass('d-none');
+                        $('#view-2').removeClass('d-none');
+                    }
+                });
+
+                $('#sign-in-btn-bottom').on('click', function() {
+                    if(!$('#view-2').hasClass('d-none')) {
+                        $('#view-2').addClass('d-none');
+                        $('#view-1').removeClass('d-none');
+                    }
+                });
             });
         </script>
     </body>
