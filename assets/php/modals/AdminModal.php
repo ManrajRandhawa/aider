@@ -518,6 +518,66 @@ class AdminModal {
         return $response;
     }
 
+    function getAddMoneyList($searchArgs) {
+        $Aider = new Aider();
+
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        // Customer Name/Email Search
+        $sqlSearchCustomer = "SELECT * FROM aider_user_customer WHERE (Name LIKE '%" . $searchArgs . "%') OR (Email_Address LIKE '%" . $searchArgs . "%') LIMIT 1";
+        $statementSearchCustomer = $connection->query($sqlSearchCustomer);
+
+        if($statementSearchCustomer->num_rows > 0) {
+            $response['error'] = false;
+
+            while($rowCustomer = $statementSearchCustomer->fetch_assoc()) {
+                $num = 0;
+
+                $response['data'] = "<table class='table table-responsive mt-3'><thead class=\"text-center\">
+                            <tr>
+                                <th scope=\"col\">ID</th>
+                                <th scope=\"col\">Type</th>
+                                <th scope=\"col\">Name</th>
+                                <th scope=\"col\">Email</th>
+                                <th scope=\"col\">Amount</th>
+                                <th scope=\"col\">Option</th>
+                            </tr>
+                            </thead>
+
+                            <tbody class=\"text-center\">";
+
+                $response['data'] .= "<tr>
+                                    <td scope=\"row\">" . $num . "</td>
+                                    <td>Customer</td>
+                                    <td>" . $rowCustomer['Name'] . "</td>
+                                    <td>" . $rowCustomer['Email_Address'] . "</td>
+                                    <td>" . $rowCustomer['Credit'] . "</td>
+                                    <td>
+                                        <div class=\"dropdown\">
+                                            <button class=\"btn btn-sm btn-primary dropdown-toggle\" type=\"button\" id=\"dropdownMenuButton\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">
+                                            Option
+                                            </button>
+                                            <div class=\"dropdown-menu\" aria-labelledby=\"dropdownMenuButton\">
+                                                <a class=\"dropdown-item btn-cancel\" id='CUSTOMER" . "-" . $rowCustomer['ID'] . "' onclick='addMoney();'>Update Wallet</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>";
+
+                }
+            } else {
+                $response['error'] = true;
+                $response['data'] = "<div class=\"col-12 text-center mt-5\">
+                            <i class=\"fas fa-scroll fa-4x\" style=\"color: #DCDCDC;\"></i>
+                            <h6 class=\"font-weight-bold mt-4\">Nothing here yet!</h6>
+                            <h6 class=\"text-black-50\">Refine your search (Customer Names/Emails) for better results.</h6>
+                        </div>";
+            }
+
+        return $response;
+    }
+
     function cancelRide($rideType, $rideTypeID) {
         // SET STATUS TO -> CANCELLED
 

@@ -142,6 +142,17 @@
                         </div>
                     </a>
                 </div>
+
+                <div class="col-12 mt-3">
+                    <a class="text-decoration-none" href="wallet.php">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-money-check-alt mr-1"></i> Update Wallet</h5>
+                                <p class="card-text">Update the wallet amount for users.</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
             </div>
 
             <br/>

@@ -13,7 +13,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, shrink-to-fit=no, user-scalable=no">
 
-        <title><?php echo SITE_NAME; ?> Admin | Rides</title>
+        <title><?php echo SITE_NAME; ?> Admin | Wallet</title>
 
         <?php
             echo $Aider->getUI()->getBootstrapHead();
@@ -28,21 +28,19 @@
             $Aider->getUI()->getDashboard()->getFirstTimePasswordChangeModal();
         ?>
 
-        <!-- Modal: Cancel Ride -->
-        <div class='modal fade' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' id="cancelRide" aria-hidden='true'>
+        <!-- Modal: Add Money -->
+        <div class='modal fade' tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' id="addMoney" aria-hidden='true'>
             <div class='modal-dialog modal-lg'>
                 <div class='modal-content'>
                     <div class='modal-header'>
-                        <h5 class='modal-title' id='approveModalLabel'>Cancel Ride - <span class="text-danger" id="ride_details_header"></span></h5>
+                        <h5 class='modal-title' id='approveModalLabel'>Update Wallet</h5>
                     </div>
                     <div class='modal-body'>
-                        <h6>You are about to cancel the following ride.</h6>
-                        <h6><span class="text-danger" id="ride_details_body"></span></h6>
-                        <h6 class="font-weight-bold">Are you sure?</h6>
+                        <input type="number" class="form-control" id="wallet-amt" placeholder="Enter an amount">
                     </div>
                     <div class='modal-footer'>
-                        <button type='button' class='btn btn-primary' id='cancel-ride-btn-confirm'>Cancel Ride</button>
-                        <button type='button' class='btn btn-outline-primary' data-dismiss="modal" id='cancel-ride-btn-cancel'>Cancel</button>
+                        <button type='button' class='btn btn-primary' id='user-btn-confirm' onclick="updateMoney();">Update</button>
+                        <button type='button' class='btn btn-outline-primary' data-dismiss="modal" id='user-btn-cancel'>Cancel</button>
                     </div>
                 </div>
                 <!-- START: Toast Messages Area -->
@@ -58,7 +56,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-12 mt-4">
-                    <h3 class="font-weight-bold mb-4">Rides</h3>
+                    <h3 class="font-weight-bold mb-4">Update Wallet</h3>
                 </div>
             </div>
 
@@ -72,7 +70,7 @@
         <div class="container mb-5">
             <div class="row">
                 <div class="col-12 mt-3">
-                    <div class="row" id="rides-container">
+                    <div class="row" id="wallet-container">
 
                     </div>
                 </div>
@@ -101,7 +99,7 @@
         <script>
 
             $(document).ready(function() {
-                getCancelRidesDashboard();
+                getAddMoneyDashboard();
             });
 
         </script>

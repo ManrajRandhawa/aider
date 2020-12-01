@@ -73,6 +73,32 @@ class CustomerModal {
         return $response;
     }
 
+    function updateCustomerInformationByID($id, $key, $value, $isNum) {
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        $sql = "";
+
+        if($isNum) {
+            $sql = "UPDATE aider_user_customer SET $key = " . floatval($value) . " WHERE ID=" . intval($id);
+        } else {
+            $sql = "UPDATE aider_user_customer SET $key = '$value' WHERE ID=" . intval($id);
+        }
+
+        $statement = $connection->query($sql);
+
+        if($statement) {
+            $response['error'] = false;
+        } else {
+            $response['error'] = true;
+            $response['message'] = "There was an error while trying to update the database.";
+        }
+
+        $connection->close();
+
+        return $response;
+    }
+
     function updatePassword($pswd, $cpswd, $email) {
 
         $checkPassResponse = $this->crosscheckPassword($pswd, $cpswd);

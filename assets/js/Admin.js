@@ -316,6 +316,65 @@ function getCancelRidesDashboard() {
     }
 }
 
+let addMoneyId;
+
+function getAddMoneyDashboard() {
+    if(window.localStorage.getItem("User_Email") === null) {
+        window.location.href = "../admins/index.php";
+    } else {
+        let user_email = window.localStorage.getItem("User_Email");
+
+        // Display Cancellable Rides
+        $.ajax({
+            url: "../assets/php/ajax/admin/getAddMoneyList.php",
+            method: "POST",
+            cache: false,
+            data: {User_Search: "Null"},
+            success: function(data){
+                $('#wallet-container').html(data);
+            }
+        });
+
+        $('#user-search').on('input', function() {
+            if($('#user-search').val().length < 3) {
+                // Display Cancellable Rides
+                $.ajax({
+                    url: "../assets/php/ajax/admin/getAddMoneyList.php",
+                    method: "POST",
+                    cache: false,
+                    data: {User_Search: "Null"},
+                    success: function(data){
+                        $('#wallet-container').html(data);
+                    }
+                });
+            } else {
+                $('#wallet-container').html("<div class=\"col-12 text-center mt-5\">\n" +
+                    "                <i class=\"fas fa-search fa-4x\" style=\"color: #DCDCDC;\"></i>\n" +
+                    "                <h6 class=\"font-weight-bold mt-4\">Searching for Customers...</h6>\n" +
+                    "                <h6 class=\"text-black-50\">This may take a moment.</h6>\n" +
+                    "            </div>");
+
+                setTimeout(function(){
+                    // Display Cancellable Rides
+                    $.ajax({
+                        url: "../assets/php/ajax/admin/getAddMoneyList.php",
+                        method: "POST",
+                        cache: false,
+                        data: {User_Search: $('#user-search').val()},
+                        success: function(data){
+                            $('#wallet-container').html(data);
+                        }
+                    });
+                }, 1000);
+            }
+
+        });
+
+
+
+    }
+}
+
 function getSettingsDashboard() {
     if(window.localStorage.getItem("User_Email") === null) {
         window.location.href = "../admins/index.php";
@@ -1150,6 +1209,70 @@ function cancelRide() {
                     data: {User_Search: $('#user-search').val()},
                     success: function(data){
                         $('#rides-container').html(data);
+                    }
+                });
+            }, 1000);
+        }
+    });
+}
+
+function addMoney() {
+    let userInfo = $('.btn-cancel').attr('id');
+
+    let userDetails = userInfo.split("-");
+
+    addMoneyId = userDetails[1];
+
+    $('#addMoney').modal();
+}
+
+function updateMoney() {
+    // Update Wallet & Display Toast Message
+    $.ajax({
+        url: "../assets/php/ajax/user/updateUserDataByID.php",
+        method: "POST",
+        cache: false,
+        data: {ID: addMoneyId, Key: "Credit", Value: $('#wallet-amt').val()},
+        success: function(dataMsg) {
+            $('#addMoney').modal('toggle');
+
+            // Display Toast Message
+            let msg = "";
+            if(dataMsg === "ERROR") {
+                msg = "There was an issue updating the wallet.";
+            } else {
+                msg = "The wallet has been updated.";
+            }
+            $.ajax({
+                url: "../assets/php/ajax/ui/sendToastMessage.php",
+                method: "POST",
+                cache: false,
+                data: {Title: "Wallet", Message: msg},
+                success: function(dataToast){
+                    $('.toast-container').html(dataToast);
+                    $('.toast').toast('show');
+
+                    setTimeout(function() {
+                        $('.toast-container').html("");
+                    }, 5000);
+                }
+            });
+
+            $('#rides-container').html("<div class=\"col-12 text-center mt-5\">\n" +
+                "                <i class=\"fas fa-search fa-4x\" style=\"color: #DCDCDC;\"></i>\n" +
+                "                <h6 class=\"font-weight-bold mt-4\">Searching for Customers...</h6>\n" +
+                "                <h6 class=\"text-black-50\">This may take a moment.</h6>\n" +
+                "            </div>");
+
+            setTimeout(function(){
+                // Display Cancellable Rides
+                $.ajax({
+                    url: "../assets/php/ajax/admin/getAddMoneyList.php",
+                    method: "POST",
+                    cache: false,
+                    data: {User_Search: $('#user-search').val()},
+                    success: function(data){
+                        $('#wallet-container').html(data);
                     }
                 });
             }, 1000);
