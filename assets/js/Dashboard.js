@@ -148,12 +148,15 @@ function getParcelDashboardJS() {
 
                                 setTimeout(function() {
                                     $('.toast-container').html("");
+                                    window.location.href = 'home.php';
                                 }, 5000);
 
                                 $('#container-details').hide();
 
                                 $('#btn-deliver').hide();
                                 $('#btn-continue').show();
+
+
                             }
                         });
                     }
@@ -333,6 +336,7 @@ function getAiderDriverDashboardJS() {
                                                         clearTimeout(timeOut);
                                                     });
 
+                                                    window.location.href = 'home.php';
 
                                                 }, 1500);
 
@@ -719,6 +723,22 @@ function getHomeDashboardJS() {
                                                                                 "                                <div class='col-6 text-right'>\n" +
                                                                                 "                                    <a class='text-dark'>" + dataRiderArray[2] + "</a><br/>\n" +
                                                                                 "                                    <a class='text-dark'>" + dataRiderArray[3] + "</a>\n" +
+                                                                                "                                </div>\n" +
+                                                                                "                            </div>\n" +
+                                                                                "                            <hr class='mt-3'/>\n" +
+                                                                                "                            <div class='row m-2'>\n" +
+                                                                                "                                <div class='col-12 mt-2 mb-3'>\n" +
+                                                                                "                                    <h5 class='text-primary'>Customer Service</h5>\n" +
+                                                                                "                                </div>\n" +
+                                                                                "                                <div class='col-6 text-left'>\n" +
+                                                                                "                                    <a class='text-muted'>Steven</a><br/>\n" +
+                                                                                "                                    <a class='text-muted'>Tony</a><br/>\n" +
+                                                                                "                                    <a class='text-muted'>Ahyan</a>\n" +
+                                                                                "                                </div>\n" +
+                                                                                "                                <div class='col-6 text-right'>\n" +
+                                                                                "                                    <a href='tel:0102070866' class='text-primary'>010 207 0866</a><br/>\n" +
+                                                                                "                                    <a href='tel:0187612888' class='text-primary'>018 761 2888</a><br/>\n" +
+                                                                                "                                    <a href='tel:0176551171' class='text-primary'>017 655 1171</a>\n" +
                                                                                 "                                </div>\n" +
                                                                                 "                            </div>\n" +
                                                                                 ratingData +

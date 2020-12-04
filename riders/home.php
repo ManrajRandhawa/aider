@@ -396,7 +396,7 @@
                     <div class="row rounded bg-white pt-2 pb-2 d-none" id="rider-navigation-riding-1">
                         <div class="col-12 text-center">
                             <!-- Arrived at Pickup Location Button -->
-                            <button class="btn btn-success w-100" id="btn-arrived-pickup" disabled>
+                            <button class="btn btn-success w-100" id="btn-arrived-pickup">
                                 <span>I have arrived at the Pickup Location</span>
                             </button>
                         </div>
@@ -404,7 +404,7 @@
                     <div class="row rounded bg-white pt-2 pb-2 d-none" id="rider-navigation-riding-2">
                         <div class="col-12 text-center">
                             <!-- Arrived at Pickup Location Button -->
-                            <button class="btn btn-success w-100" id="btn-arrived-destination" disabled>
+                            <button class="btn btn-success w-100" id="btn-arrived-destination">
                                 <span>I have arrived at the Destination Location</span>
                             </button>
                         </div>

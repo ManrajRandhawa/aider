@@ -80,7 +80,7 @@ function getHomeJS() {
     } else {
         let user_email = window.localStorage.getItem("User_Email");
 
-        watchID = Rider.saveRiderLocation();
+	    watchID = Rider.saveRiderLocation();
 
         RiderLogic.getOngoingOrders();
         RiderLogic.getTeamOngoingOrders();
@@ -114,6 +114,8 @@ function getHomeJS() {
 
             RiderDataSet.setRiderMode(1);
 
+            watchID = Rider.saveRiderLocation();
+
             // Set Rider Status -> ACTIVE
             $.ajax({
                 url: "../assets/php/ajax/rider/setRiderStatus.php",
@@ -135,6 +137,8 @@ function getHomeJS() {
 
         // Active Modes Selection: Aider Driver
         $('#btn-driver').click(function() {
+            watchID = Rider.saveRiderLocation();
+
             // Get Team Name and insert in Navigation
             $.ajax({
                 url: '../assets/php/ajax/rider/getRiderData.php',
