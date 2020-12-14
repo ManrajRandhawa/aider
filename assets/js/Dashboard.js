@@ -336,7 +336,7 @@ function getAiderDriverDashboardJS() {
                                                         clearTimeout(timeOut);
                                                     });
 
-                                                    window.location.href = 'home.php';
+                                                    window.location.href = 'home.php?showorder=yes';
 
                                                 }, 1500);
 
@@ -380,6 +380,8 @@ function getAiderDriverDashboardJS() {
     }
 }
 
+let homeOngoingOrderBackButtonPressed = false;
+
 function getHomeDashboardJS() {
     if(window.localStorage.getItem("User_Email") === null) {
         window.location.href = "../members/index.php";
@@ -417,374 +419,396 @@ function getHomeDashboardJS() {
         });
 
         // START: Get Ongoing Order and Set Data
-        $.ajax({
-            url: '../assets/php/ajax/user/getOngoingOrder.php',
-            method: 'POST',
-            cache: false,
-            data: {User_Email: user_email},
-            success: function(data) {
-                if(data !== "ERROR") {
 
-                    let ongoingResults = JSON.parse(data);
-                    console.log(ongoingResults);
+        function getOngoingData() {
+            $.ajax({
+                url: '../assets/php/ajax/user/getOngoingOrder.php',
+                method: 'POST',
+                cache: false,
+                data: {User_Email: user_email},
+                success: function(data) {
+                    if(data !== "ERROR") {
 
-                    let ongoingResultsCount = parseInt(ongoingResults[0]);
+                        let ongoingResults = JSON.parse(data);
+                        console.log(ongoingResults);
 
-                    let carouselIndicators = "";
-                    let carouselInner = "";
-                    let oType = "";
-                    let oStatus = "";
-                    for(let i = 0; i < ongoingResultsCount; i++) {
+                        let ongoingResultsCount = parseInt(ongoingResults[0]);
 
-                        let result = ongoingResults[1][0][i];
-                        oStatus = result[5];
+                        let carouselIndicators = "";
+                        let carouselInner = "";
+                        let oType = "";
+                        let oStatus = "";
+                        for(let i = 0; i < ongoingResultsCount; i++) {
+
+                            let result = ongoingResults[1][0][i];
+                            oStatus = result[5];
 
 
-                        $.ajax({
-                            url: '../assets/php/ajax/rider/getOrderDetails.php',
-                            method: 'POST',
-                            cache: false,
-                            data: {Order_Type: result[2], Order_ID: result[1]},
-                            success: function (dataOrder) {
-                                let orderDetailsData = JSON.parse(dataOrder);
+                            $.ajax({
+                                url: '../assets/php/ajax/rider/getOrderDetails.php',
+                                method: 'POST',
+                                cache: false,
+                                data: {Order_Type: result[2], Order_ID: result[1]},
+                                success: function (dataOrder) {
+                                    let orderDetailsData = JSON.parse(dataOrder);
 
-                                console.log(orderDetailsData);
+                                    console.log(orderDetailsData);
 
-                                let pickUp = orderDetailsData[1];
-                                let dropOff = orderDetailsData[2];
+                                    let pickUp = orderDetailsData[1];
+                                    let dropOff = orderDetailsData[2];
 
-                                let pickUpStriped = pickUp.split(",");
-                                pickUpStriped = pickUpStriped[0] + ", " + pickUpStriped[1];
+                                    let pickUpStriped = pickUp.split(",");
+                                    pickUpStriped = pickUpStriped[0] + ", " + pickUpStriped[1];
 
-                                let dropOffStriped = dropOff.split(",");
-                                dropOffStriped = dropOffStriped[0] + ", " + dropOffStriped[1];
+                                    let dropOffStriped = dropOff.split(",");
+                                    dropOffStriped = dropOffStriped[0] + ", " + dropOffStriped[1];
 
-                                let riderID = 0;
+                                    let riderID = 0;
 
-                                $.ajax({
-                                    url: '../assets/php/ajax/user/getOneRiderFromTeam.php',
-                                    method: 'POST',
-                                    cache: false,
-                                    data: {Team_ID: parseInt(orderDetailsData[7])},
-                                    success: function (dataRiderFromTeam) {
-                                        if(result[2] === "DRIVER") {
-                                            riderID = dataRiderFromTeam;
-                                        } else if(result[2] === "PARCEL") {
-                                            riderID = orderDetailsData[12];
-                                        } else if(result[2] === "FOOD") {
-                                            riderID = orderDetailsData[13];
-                                        }
+                                    $.ajax({
+                                        url: '../assets/php/ajax/user/getOneRiderFromTeam.php',
+                                        method: 'POST',
+                                        cache: false,
+                                        data: {Team_ID: parseInt(orderDetailsData[7])},
+                                        success: function (dataRiderFromTeam) {
+                                            if(result[2] === "DRIVER") {
+                                                riderID = dataRiderFromTeam;
+                                            } else if(result[2] === "PARCEL") {
+                                                riderID = orderDetailsData[12];
+                                            } else if(result[2] === "FOOD") {
+                                                riderID = orderDetailsData[13];
+                                            }
 
-                                        console.log(riderID);
+                                            console.log(riderID);
 
-                                        $.ajax({
-                                            url: '../assets/php/ajax/user/getRiderLocation.php',
-                                            method: 'POST',
-                                            cache: false,
-                                            data: {Rider_ID: parseInt(riderID)},
-                                            success: function (dataRiderLoc) {
-                                                if(dataRiderLoc !== "ERROR") {
-                                                    let riderLoc = dataRiderLoc.split(",");
-                                                    let lat = riderLoc[0];
-                                                    let lng = riderLoc[1];
+                                            $.ajax({
+                                                url: '../assets/php/ajax/user/getRiderLocation.php',
+                                                method: 'POST',
+                                                cache: false,
+                                                data: {Rider_ID: parseInt(riderID)},
+                                                success: function (dataRiderLoc) {
+                                                    if(dataRiderLoc !== "ERROR") {
+                                                        let riderLoc = dataRiderLoc.split(",");
+                                                        let lat = riderLoc[0];
+                                                        let lng = riderLoc[1];
 
-                                                    $.ajax({
-                                                        url: '../assets/php/ajax/user/getOrderDetailByID.php',
-                                                        method: 'POST',
-                                                        cache: false,
-                                                        data: {Order_Type: result[2], Order_ID: parseInt(result[1]), Data: "Status"},
-                                                        success: function (dataRiderStatus) {
-                                                            let addTwo = "";
-                                                            let progressBar = "";
-                                                            let description = "";
-                                                            let addStriped = "";
-                                                            let time = 0;
+                                                        $.ajax({
+                                                            url: '../assets/php/ajax/user/getOrderDetailByID.php',
+                                                            method: 'POST',
+                                                            cache: false,
+                                                            data: {Order_Type: result[2], Order_ID: parseInt(result[1]), Data: "Status"},
+                                                            success: function (dataRiderStatus) {
+                                                                let addTwo = "";
+                                                                let progressBar = "";
+                                                                let description = "";
+                                                                let addStriped = "";
+                                                                let time = 0;
 
-                                                            if(dataRiderStatus === "HEADING_TO_PICKUP") {
-                                                                addTwo = pickUp;
+                                                                if(dataRiderStatus === "HEADING_TO_PICKUP") {
+                                                                    addTwo = pickUp;
 
-                                                                addStriped = addTwo.split(",");
-                                                                addStriped = addStriped[0] + ", " + addStriped[1];
+                                                                    addStriped = addTwo.split(",");
+                                                                    addStriped = addStriped[0] + ", " + addStriped[1];
 
-                                                                if(result[2] === "DRIVER") {
-                                                                    description = "Your driver is heading to the pick-up location.";
-                                                                } else if(result[2] === "PARCEL") {
-                                                                    description = "Your rider is heading to the pick-up location.";
-                                                                } else if(result[2] === "FOOD") {
-                                                                    description = "Preparing your food. Your rider will pick it up once it's ready.";
+                                                                    if(result[2] === "DRIVER") {
+                                                                        description = "Your driver is heading to the pick-up location.";
+                                                                    } else if(result[2] === "PARCEL") {
+                                                                        description = "Your rider is heading to the pick-up location.";
+                                                                    } else if(result[2] === "FOOD") {
+                                                                        description = "Preparing your food. Your rider will pick it up once it's ready.";
+                                                                    }
+
+                                                                    progressBar = "<div class=\"col-3 pad-1\">\n" +
+                                                                        "                                                    <div class=\"progress\">\n" +
+                                                                        "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 100%;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"0\"></div>\n" +
+                                                                        "                                                    </div>\n" +
+                                                                        "                                                </div>\n" +
+                                                                        "                                                <div class=\"col-3 pad-1\">\n" +
+                                                                        "                                                    <div class=\"progress\">\n" +
+                                                                        "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 50%;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"75\"></div>\n" +
+                                                                        "                                                    </div>\n" +
+                                                                        "                                                </div>\n" +
+                                                                        "                                                <div class=\"col-3 pad-1\">\n" +
+                                                                        "                                                    <div class=\"progress\">\n" +
+                                                                        "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 0;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"100\"></div>\n" +
+                                                                        "                                                    </div>\n" +
+                                                                        "                                                </div>\n" +
+                                                                        "                                                <div class=\"col-3 pad-1\">\n" +
+                                                                        "                                                    <div class=\"progress\">\n" +
+                                                                        "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 0;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"100\"></div>\n" +
+                                                                        "                                                    </div>\n" +
+                                                                        "                                                </div>";
+
+                                                                } else if(dataRiderStatus === "HEADING_TO_DESTINATION") {
+                                                                    addTwo = dropOff;
+
+                                                                    addStriped = addTwo.split(",");
+                                                                    addStriped = addStriped[0] + ", " + addStriped[1];
+
+                                                                    if(result[2] === "DRIVER") {
+                                                                        description = "Your driver is heading to the destination.";
+                                                                    } else if(result[2] === "PARCEL") {
+                                                                        description = "Your rider is heading to the destination.";
+                                                                    } else if(result[2] === "FOOD") {
+                                                                        description = "Your rider has picked up the food.";
+                                                                    }
+
+                                                                    progressBar = "<div class=\"col-3 pad-1\">\n" +
+                                                                        "                                                    <div class=\"progress\">\n" +
+                                                                        "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 100%;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"0\"></div>\n" +
+                                                                        "                                                    </div>\n" +
+                                                                        "                                                </div>\n" +
+                                                                        "                                                <div class=\"col-3 pad-1\">\n" +
+                                                                        "                                                    <div class=\"progress\">\n" +
+                                                                        "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 100%;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"75\"></div>\n" +
+                                                                        "                                                    </div>\n" +
+                                                                        "                                                </div>\n" +
+                                                                        "                                                <div class=\"col-3 pad-1\">\n" +
+                                                                        "                                                    <div class=\"progress\">\n" +
+                                                                        "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 50%;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"100\"></div>\n" +
+                                                                        "                                                    </div>\n" +
+                                                                        "                                                </div>\n" +
+                                                                        "                                                <div class=\"col-3 pad-1\">\n" +
+                                                                        "                                                    <div class=\"progress\">\n" +
+                                                                        "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 0;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"100\"></div>\n" +
+                                                                        "                                                    </div>\n" +
+                                                                        "                                                </div>";
+                                                                } else if(dataRiderStatus === "COMPLETED") {
+                                                                    addTwo = dropOff;
+
+                                                                    addStriped = addTwo.split(",");
+                                                                    addStriped = addStriped[0] + ", " + addStriped[1];
+
+                                                                    if(result[2] === "DRIVER") {
+                                                                        description = "This ride has been completed.";
+                                                                    } else if(result[2] === "PARCEL") {
+                                                                        description = "This delivery has been completed.";
+                                                                    } else if(result[2] === "FOOD") {
+                                                                        description = "Your rider has picked up the food.";
+                                                                    }
+
+                                                                    progressBar = "<div class=\"col-3 pad-1\">\n" +
+                                                                        "                                                    <div class=\"progress\">\n" +
+                                                                        "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 100%;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"0\"></div>\n" +
+                                                                        "                                                    </div>\n" +
+                                                                        "                                                </div>\n" +
+                                                                        "                                                <div class=\"col-3 pad-1\">\n" +
+                                                                        "                                                    <div class=\"progress\">\n" +
+                                                                        "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 100%;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"75\"></div>\n" +
+                                                                        "                                                    </div>\n" +
+                                                                        "                                                </div>\n" +
+                                                                        "                                                <div class=\"col-3 pad-1\">\n" +
+                                                                        "                                                    <div class=\"progress\">\n" +
+                                                                        "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 100%;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"100\"></div>\n" +
+                                                                        "                                                    </div>\n" +
+                                                                        "                                                </div>\n" +
+                                                                        "                                                <div class=\"col-3 pad-1\">\n" +
+                                                                        "                                                    <div class=\"progress\">\n" +
+                                                                        "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 100%;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"100\"></div>\n" +
+                                                                        "                                                    </div>\n" +
+                                                                        "                                                </div>";
                                                                 }
 
-                                                                progressBar = "<div class=\"col-3 pad-1\">\n" +
-                                                                    "                                                    <div class=\"progress\">\n" +
-                                                                    "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 100%;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"0\"></div>\n" +
-                                                                    "                                                    </div>\n" +
-                                                                    "                                                </div>\n" +
-                                                                    "                                                <div class=\"col-3 pad-1\">\n" +
-                                                                    "                                                    <div class=\"progress\">\n" +
-                                                                    "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 50%;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"75\"></div>\n" +
-                                                                    "                                                    </div>\n" +
-                                                                    "                                                </div>\n" +
-                                                                    "                                                <div class=\"col-3 pad-1\">\n" +
-                                                                    "                                                    <div class=\"progress\">\n" +
-                                                                    "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 0;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"100\"></div>\n" +
-                                                                    "                                                    </div>\n" +
-                                                                    "                                                </div>\n" +
-                                                                    "                                                <div class=\"col-3 pad-1\">\n" +
-                                                                    "                                                    <div class=\"progress\">\n" +
-                                                                    "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 0;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"100\"></div>\n" +
-                                                                    "                                                    </div>\n" +
-                                                                    "                                                </div>";
+                                                                console.log(dataRiderStatus);
 
-                                                            } else if(dataRiderStatus === "HEADING_TO_DESTINATION") {
-                                                                addTwo = dropOff;
+                                                                $.ajax({
+                                                                    url: '../assets/php/ajax/user/getRiderDataArray.php',
+                                                                    method: 'POST',
+                                                                    cache: false,
+                                                                    data: {Rider_ID: parseInt(riderID)},
+                                                                    success: function (dataRiderArray) {
+                                                                        dataRiderArray = JSON.parse(dataRiderArray);
 
-                                                                addStriped = addTwo.split(",");
-                                                                addStriped = addStriped[0] + ", " + addStriped[1];
+                                                                        $.ajax({
+                                                                            url: '../assets/php/ajax/user/getTime.php',
+                                                                            method: 'POST',
+                                                                            cache: false,
+                                                                            data: {riderLat: lat, riderLng: lng, addressTwo: addTwo},
+                                                                            success: function (dataTime) {
+                                                                                if(!(i === 0)) {
+                                                                                    carouselIndicators += "<li data-target=\"#carouselOrders\" data-slide-to='" + i + "'></li>";
+                                                                                    carouselInner += "<div class=\"carousel-item\">";
+                                                                                } else {
+                                                                                    carouselIndicators += "<li data-target=\"#carouselOrders\" data-slide-to=\"0\" class=\"active\"></li>";
+                                                                                    carouselInner += "<div class=\"carousel-item active\">";
+                                                                                }
 
-                                                                if(result[2] === "DRIVER") {
-                                                                    description = "Your driver is heading to the destination.";
-                                                                } else if(result[2] === "PARCEL") {
-                                                                    description = "Your rider is heading to the destination.";
-                                                                } else if(result[2] === "FOOD") {
-                                                                    description = "Your rider has picked up the food.";
-                                                                }
+                                                                                time = dataTime;
 
-                                                                progressBar = "<div class=\"col-3 pad-1\">\n" +
-                                                                    "                                                    <div class=\"progress\">\n" +
-                                                                    "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 100%;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"0\"></div>\n" +
-                                                                    "                                                    </div>\n" +
-                                                                    "                                                </div>\n" +
-                                                                    "                                                <div class=\"col-3 pad-1\">\n" +
-                                                                    "                                                    <div class=\"progress\">\n" +
-                                                                    "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 100%;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"75\"></div>\n" +
-                                                                    "                                                    </div>\n" +
-                                                                    "                                                </div>\n" +
-                                                                    "                                                <div class=\"col-3 pad-1\">\n" +
-                                                                    "                                                    <div class=\"progress\">\n" +
-                                                                    "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 50%;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"100\"></div>\n" +
-                                                                    "                                                    </div>\n" +
-                                                                    "                                                </div>\n" +
-                                                                    "                                                <div class=\"col-3 pad-1\">\n" +
-                                                                    "                                                    <div class=\"progress\">\n" +
-                                                                    "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 0;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"100\"></div>\n" +
-                                                                    "                                                    </div>\n" +
-                                                                    "                                                </div>";
-                                                            } else if(dataRiderStatus === "COMPLETED") {
-                                                                addTwo = dropOff;
+                                                                                let timingData = "";
+                                                                                let ratingData = "";
 
-                                                                addStriped = addTwo.split(",");
-                                                                addStriped = addStriped[0] + ", " + addStriped[1];
+                                                                                if(dataRiderStatus === "COMPLETED") {
+                                                                                    timingData = "<i class=\"far fa-check-circle fa-3x text-center text-primary mb-3\"></i>";
 
-                                                                if(result[2] === "DRIVER") {
-                                                                    description = "This ride has been completed.";
-                                                                } else if(result[2] === "PARCEL") {
-                                                                    description = "This delivery has been completed.";
-                                                                } else if(result[2] === "FOOD") {
-                                                                    description = "Your rider has picked up the food.";
-                                                                }
+                                                                                    ratingData = "                            <hr class='mt-3'/>\n" +
+                                                                                        "                            <div class='row m-2'>\n" +
+                                                                                        "                                <div class='col-12 mt-2 mb-3'>\n" +
+                                                                                        "<div class=\"rating\">\n" +
+                                                                                        "                <input type=\"radio\" name=\"rating\" value=\"5\" id='5-" + result[1] + "'>\n" +
+                                                                                        "                <label for='5-" + result[1] + "'>☆</label>\n" +
+                                                                                        "                <input type=\"radio\" name=\"rating\" value=\"4\" id='4-" + result[1] + "'>\n" +
+                                                                                        "                <label for='4-" + result[1] + "'>☆</label>\n" +
+                                                                                        "                <input type=\"radio\" name=\"rating\" value=\"3\" id='3-" + result[1] + "'>\n" +
+                                                                                        "                <label for='3-" + result[1] + "'>☆</label>\n" +
+                                                                                        "                <input type=\"radio\" name=\"rating\" value=\"2\" id='2-" + result[1] + "'>\n" +
+                                                                                        "                <label for='2-" + result[1] + "'>☆</label>\n" +
+                                                                                        "                <input type=\"radio\" name=\"rating\" value=\"1\" id='1-" + result[1] + "'>\n" +
+                                                                                        "                <label for='1-" + result[1] + "'>☆</label>\n" +
+                                                                                        "            </div>" +
+                                                                                        "<button class='btn btn-outline-primary' id='" + result[2] + "-" + result[1] + "' onclick='rateRide(this.id);'>Rate</button>" +
+                                                                                        "                                </div>\n" +
+                                                                                        "                            </div>\n";
+                                                                                } else {
+                                                                                    timingData = "<h6 class=\"text-black-50 mt-3 mb-3\">Estimate time of arrival</h6>\n<h2 class=\"text-dark font-weight-bold\" id=\"eta\">" + dataTime + "</h2>\n";
+                                                                                    ratingData = "";
+                                                                                }
 
-                                                                progressBar = "<div class=\"col-3 pad-1\">\n" +
-                                                                    "                                                    <div class=\"progress\">\n" +
-                                                                    "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 100%;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"0\"></div>\n" +
-                                                                    "                                                    </div>\n" +
-                                                                    "                                                </div>\n" +
-                                                                    "                                                <div class=\"col-3 pad-1\">\n" +
-                                                                    "                                                    <div class=\"progress\">\n" +
-                                                                    "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 100%;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"75\"></div>\n" +
-                                                                    "                                                    </div>\n" +
-                                                                    "                                                </div>\n" +
-                                                                    "                                                <div class=\"col-3 pad-1\">\n" +
-                                                                    "                                                    <div class=\"progress\">\n" +
-                                                                    "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 100%;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"100\"></div>\n" +
-                                                                    "                                                    </div>\n" +
-                                                                    "                                                </div>\n" +
-                                                                    "                                                <div class=\"col-3 pad-1\">\n" +
-                                                                    "                                                    <div class=\"progress\">\n" +
-                                                                    "                                                        <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 100%;\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"100\"></div>\n" +
-                                                                    "                                                    </div>\n" +
-                                                                    "                                                </div>";
-                                                            }
+                                                                                let currentRating = parseFloat(parseFloat(dataRiderArray[4]) / parseFloat(dataRiderArray[5])).toFixed(1);
 
-                                                            console.log(dataRiderStatus);
+                                                                                if(currentRating === "NaN") {
+                                                                                    currentRating = 0.0;
+                                                                                }
 
-                                                            $.ajax({
-                                                                url: '../assets/php/ajax/user/getRiderDataArray.php',
-                                                                method: 'POST',
-                                                                cache: false,
-                                                                data: {Rider_ID: parseInt(riderID)},
-                                                                success: function (dataRiderArray) {
-                                                                    dataRiderArray = JSON.parse(dataRiderArray);
-
-                                                                    $.ajax({
-                                                                        url: '../assets/php/ajax/user/getTime.php',
-                                                                        method: 'POST',
-                                                                        cache: false,
-                                                                        data: {riderLat: lat, riderLng: lng, addressTwo: addTwo},
-                                                                        success: function (dataTime) {
-                                                                            if(!(i === 0)) {
-                                                                                carouselIndicators += "<li data-target=\"#carouselOrders\" data-slide-to='" + i + "'></li>";
-                                                                                carouselInner += "<div class=\"carousel-item\">";
-                                                                            } else {
-                                                                                carouselIndicators += "<li data-target=\"#carouselOrders\" data-slide-to=\"0\" class=\"active\"></li>";
-                                                                                carouselInner += "<div class=\"carousel-item active\">";
-                                                                            }
-
-                                                                            time = dataTime;
-
-                                                                            let timingData = "";
-                                                                            let ratingData = "";
-
-                                                                            if(dataRiderStatus === "COMPLETED") {
-                                                                                timingData = "<i class=\"far fa-check-circle fa-3x text-center text-primary\"></i>";
-
-                                                                                ratingData = "                            <hr class='mt-3'/>\n" +
+                                                                                carouselInner += "\n" +
+                                                                                    timingData +
+                                                                                    "\n" +
+                                                                                    "<img src='../assets/images/car.png' style='width: 80vw;' />" +
+                                                                                    "\n" +
+                                                                                    "                                    <div class=\"mt-3\"></div>\n" +
+                                                                                    "\n" +
+                                                                                    "                                    <div class=\"row text-center\">\n" +
+                                                                                    "                                        <div class=\"col-5 text-primary text-center\" id=\"add-pickup\">" + pickUpStriped + "</div>\n" +
+                                                                                    "                                        <div class=\"col-2 p-0\">\n" +
+                                                                                    "                                            <i class=\"fas fa-angle-right fa-lg text-primary\"></i>\n" +
+                                                                                    "                                        </div>\n" +
+                                                                                    "                                        <div class=\"col-5 text-primary text-center\" id=\"add-dropoff\">" + dropOffStriped + "</div>\n" +
+                                                                                    "                                    </div>\n" +
+                                                                                    "\n" +
+                                                                                    "                                    <div class=\"mt-3\"></div>\n" +
+                                                                                    "\n" +
+                                                                                    "                                    <div class=\"row\">\n" +
+                                                                                    "                                        <div class=\"col-1\"></div>\n" +
+                                                                                    "                                        <div class=\"col-10\">\n" +
+                                                                                    "                                            <div class=\"row\">\n" +
+                                                                                    progressBar +
+                                                                                    "                                            </div>\n" +
+                                                                                    "\n" +
+                                                                                    "                                            <h6 class=\"mt-3 text-muted\">" + description + "</h6>\n" +
+                                                                                    "                                        </div>\n" +
+                                                                                    "                                        <div class=\"col-1\"></div>\n" +
+                                                                                    "                                    </div>\n" +
+                                                                                    ratingData +
+                                                                                    "                           <hr class='mt-3'/>\n" +
                                                                                     "                            <div class='row m-2'>\n" +
                                                                                     "                                <div class='col-12 mt-2 mb-3'>\n" +
-                                                                                    "<div class=\"rating\">\n" +
-                                                                                    "                <input type=\"radio\" name=\"rating\" value=\"5\" id='5-" + result[1] + "'>\n" +
-                                                                                    "                <label for='5-" + result[1] + "'>☆</label>\n" +
-                                                                                    "                <input type=\"radio\" name=\"rating\" value=\"4\" id='4-" + result[1] + "'>\n" +
-                                                                                    "                <label for='4-" + result[1] + "'>☆</label>\n" +
-                                                                                    "                <input type=\"radio\" name=\"rating\" value=\"3\" id='3-" + result[1] + "'>\n" +
-                                                                                    "                <label for='3-" + result[1] + "'>☆</label>\n" +
-                                                                                    "                <input type=\"radio\" name=\"rating\" value=\"2\" id='2-" + result[1] + "'>\n" +
-                                                                                    "                <label for='2-" + result[1] + "'>☆</label>\n" +
-                                                                                    "                <input type=\"radio\" name=\"rating\" value=\"1\" id='1-" + result[1] + "'>\n" +
-                                                                                    "                <label for='1-" + result[1] + "'>☆</label>\n" +
-                                                                                    "            </div>" +
-                                                                                    "<button class='btn btn-outline-primary' id='" + result[2] + "-" + result[1] + "' onclick='rateRide(this.id);'>Rate</button>" +
+                                                                                    "                                    <i class=\"far fa-id-card fa-2x text-primary\"></i>\n" +
                                                                                     "                                </div>\n" +
-                                                                                    "                                <div class='col-12 text-center'>\n" +
-                                                                                    "                            </div>\n";
-                                                                            } else {
-                                                                                timingData = "<h6 class=\"text-black-50 mt-4\">Estimate time of arrival</h6>\n<h2 class=\"text-dark font-weight-bold\" id=\"eta\">" + dataTime + "</h2>\n";
-                                                                                ratingData = "";
+                                                                                    "                                <div class='col-6 text-left'>\n" +
+                                                                                    "                                    <a class='text-muted'>Name</a><br/>\n" +
+                                                                                    "                                    <a class='text-muted'>Phone Number</a><br/>\n" +
+                                                                                    "                                    <a class='text-muted'>Rating</a>\n" +
+                                                                                    "                                </div>\n" +
+                                                                                    "                                <div class='col-6 text-right'>\n" +
+                                                                                    "                                    <a class='text-dark'>" + dataRiderArray[0] + "</a><br/>\n" +
+                                                                                    "                                    <a class='text-decoration-none' href='tel:" + dataRiderArray[1] + "'>" + dataRiderArray[1] + "</a><br/>\n" +
+                                                                                    "                                    <a class='text-dark'>" + currentRating + "<i class=\"far fa-star text-primary ml-1\"></i></a>\n" +
+                                                                                    "                                </div>\n" +
+                                                                                    "                            </div>\n" +
+                                                                                    "                            <hr class='mt-3'/>\n" +
+                                                                                    "                            <div class='row m-2'>\n" +
+                                                                                    "                                <div class='col-12 mt-2 mb-3'>\n" +
+                                                                                    "                                    <i class=\"fas fa-car fa-2x text-primary\"></i>\n" +
+                                                                                    "                                </div>\n" +
+                                                                                    "                                <div class='col-6 text-left'>\n" +
+                                                                                    "                                    <a class='text-muted'>Vehicle Model</a><br/>\n" +
+                                                                                    "                                    <a class='text-muted'>Number Plate</a>\n" +
+                                                                                    "                                </div>\n" +
+                                                                                    "                                <div class='col-6 text-right'>\n" +
+                                                                                    "                                    <a class='text-dark'>" + dataRiderArray[2] + "</a><br/>\n" +
+                                                                                    "                                    <a class='text-dark'>" + dataRiderArray[3] + "</a>\n" +
+                                                                                    "                                </div>\n" +
+                                                                                    "                            </div>\n" +
+                                                                                    "                            <hr class='mt-3'/>\n" +
+                                                                                    "                            <div class='row m-2'>\n" +
+                                                                                    "                                <div class='col-12 mt-2 mb-3'>\n" +
+                                                                                    "                                    <h5 class='text-primary'>Customer Service</h5>\n" +
+                                                                                    "                                </div>\n" +
+                                                                                    "                                <div class='col-6 text-left'>\n" +
+                                                                                    "                                    <a class='text-muted'>Steven</a><br/>\n" +
+                                                                                    "                                    <a class='text-muted'>Tony</a><br/>\n" +
+                                                                                    "                                    <a class='text-muted'>Ahyan</a>\n" +
+                                                                                    "                                </div>\n" +
+                                                                                    "                                <div class='col-6 text-right'>\n" +
+                                                                                    "                                    <a href='tel:0102070866' class='text-primary'>010 207 0866</a><br/>\n" +
+                                                                                    "                                    <a href='tel:0187612888' class='text-primary'>018 761 2888</a><br/>\n" +
+                                                                                    "                                    <a href='tel:0176551171' class='text-primary'>017 655 1171</a>\n" +
+                                                                                    "                                </div>\n" +
+                                                                                    "                            </div>\n" +
+                                                                                    "                            <br/>\n" +
+                                                                                    "                            <br/>" +
+                                                                                    "\n" +
+                                                                                    "                                    <br/>\n" +
+                                                                                    "                                </div></div>";
+
+                                                                            }, complete: function(dataTime) {
+                                                                                $('#loc-add').html(addStriped);
+                                                                                $('#prog-bar').html(progressBar);
+                                                                                $('#desc').html(description);
+
+                                                                                if(dataRiderStatus !== 'COMPLETED') {
+                                                                                    $('#time-order').html(time);
+                                                                                } else {
+                                                                                    $('#time-order').html("");
+                                                                                }
+
+                                                                                if($('#ongoing-order-small-container').hasClass('d-none')) {
+                                                                                    $('#ongoing-order-small-container').fadeIn('fast').removeClass('d-none');
+                                                                                }
+
+                                                                                $('#ca-ind').html(carouselIndicators);
+                                                                                $('#ca-inn').html(carouselInner);
+
+                                                                                if(window.location.href.includes('?showorder=yes')) {
+                                                                                    if(!homeOngoingOrderBackButtonPressed) {
+                                                                                        if(!($('#main-content-home').hasClass('d-none'))) {
+                                                                                            $('#main-content-home').fadeOut('fast', function() {
+                                                                                                $('#main-content-home').addClass('d-none');
+                                                                                                $('#main-order-container-home').fadeIn('fast', function() {
+                                                                                                    $('#main-order-container-home').removeClass('d-none');
+                                                                                                });
+                                                                                            });
+                                                                                        }
+                                                                                    }
+                                                                                }
                                                                             }
+                                                                        });
 
-                                                                            let currentRating = parseFloat(parseFloat(dataRiderArray[4]) / parseFloat(dataRiderArray[5])).toFixed(1);
+                                                                    }
+                                                                });
 
-                                                                            if(currentRating === "NaN") {
-                                                                                currentRating = 0.0;
-                                                                            }
-
-                                                                            carouselInner += "\n" +
-                                                                                timingData +
-                                                                                "\n" +
-                                                                                "                                    <img src=\"../assets/images/ongoing-1.png\" style=\"width: 90%\" />\n" +
-                                                                                "\n" +
-                                                                                "                                    <div class=\"mt-3\"></div>\n" +
-                                                                                "\n" +
-                                                                                "                                    <div class=\"row text-center\">\n" +
-                                                                                "                                        <div class=\"col-5 text-primary text-center\" id=\"add-pickup\">" + pickUpStriped + "</div>\n" +
-                                                                                "                                        <div class=\"col-2 p-0\">\n" +
-                                                                                "                                            <i class=\"fas fa-angle-right fa-lg text-primary\"></i>\n" +
-                                                                                "                                        </div>\n" +
-                                                                                "                                        <div class=\"col-5 text-primary text-center\" id=\"add-dropoff\">" + dropOffStriped + "</div>\n" +
-                                                                                "                                    </div>\n" +
-                                                                                "\n" +
-                                                                                "                                    <div class=\"mt-3\"></div>\n" +
-                                                                                "\n" +
-                                                                                "                                    <div class=\"row\">\n" +
-                                                                                "                                        <div class=\"col-1\"></div>\n" +
-                                                                                "                                        <div class=\"col-10\">\n" +
-                                                                                "                                            <div class=\"row\">\n" +
-                                                                                progressBar +
-                                                                                "                                            </div>\n" +
-                                                                                "\n" +
-                                                                                "                                            <h6 class=\"mt-3 text-muted\">" + description + "</h6>\n" +
-                                                                                "                                        </div>\n" +
-                                                                                "                                        <div class=\"col-1\"></div>\n" +
-                                                                                "                                    </div>\n" +
-                                                                                "                           <hr class='mt-3'/>\n" +
-                                                                                "                            <div class='row m-2'>\n" +
-                                                                                "                                <div class='col-12 mt-2 mb-3'>\n" +
-                                                                                "                                    <i class=\"far fa-id-card fa-2x text-primary\"></i>\n" +
-                                                                                "                                </div>\n" +
-                                                                                "                                <div class='col-6 text-left'>\n" +
-                                                                                "                                    <a class='text-muted'>Name</a><br/>\n" +
-                                                                                "                                    <a class='text-muted'>Phone Number</a><br/>\n" +
-                                                                                "                                    <a class='text-muted'>Rating</a>\n" +
-                                                                                "                                </div>\n" +
-                                                                                "                                <div class='col-6 text-right'>\n" +
-                                                                                "                                    <a class='text-dark'>" + dataRiderArray[0] + "</a><br/>\n" +
-                                                                                "                                    <a class='text-decoration-none' href='tel:" + dataRiderArray[1] + "'>" + dataRiderArray[1] + "</a><br/>\n" +
-                                                                                "                                    <a class='text-dark'>" + currentRating + "<i class=\"far fa-star text-primary ml-1\"></i></a>\n" +
-                                                                                "                                </div>\n" +
-                                                                                "                            </div>\n" +
-                                                                                "                            <hr class='mt-3'/>\n" +
-                                                                                "                            <div class='row m-2'>\n" +
-                                                                                "                                <div class='col-12 mt-2 mb-3'>\n" +
-                                                                                "                                    <i class=\"fas fa-car fa-2x text-primary\"></i>\n" +
-                                                                                "                                </div>\n" +
-                                                                                "                                <div class='col-6 text-left'>\n" +
-                                                                                "                                    <a class='text-muted'>Vehicle Model</a><br/>\n" +
-                                                                                "                                    <a class='text-muted'>Number Plate</a>\n" +
-                                                                                "                                </div>\n" +
-                                                                                "                                <div class='col-6 text-right'>\n" +
-                                                                                "                                    <a class='text-dark'>" + dataRiderArray[2] + "</a><br/>\n" +
-                                                                                "                                    <a class='text-dark'>" + dataRiderArray[3] + "</a>\n" +
-                                                                                "                                </div>\n" +
-                                                                                "                            </div>\n" +
-                                                                                "                            <hr class='mt-3'/>\n" +
-                                                                                "                            <div class='row m-2'>\n" +
-                                                                                "                                <div class='col-12 mt-2 mb-3'>\n" +
-                                                                                "                                    <h5 class='text-primary'>Customer Service</h5>\n" +
-                                                                                "                                </div>\n" +
-                                                                                "                                <div class='col-6 text-left'>\n" +
-                                                                                "                                    <a class='text-muted'>Steven</a><br/>\n" +
-                                                                                "                                    <a class='text-muted'>Tony</a><br/>\n" +
-                                                                                "                                    <a class='text-muted'>Ahyan</a>\n" +
-                                                                                "                                </div>\n" +
-                                                                                "                                <div class='col-6 text-right'>\n" +
-                                                                                "                                    <a href='tel:0102070866' class='text-primary'>010 207 0866</a><br/>\n" +
-                                                                                "                                    <a href='tel:0187612888' class='text-primary'>018 761 2888</a><br/>\n" +
-                                                                                "                                    <a href='tel:0176551171' class='text-primary'>017 655 1171</a>\n" +
-                                                                                "                                </div>\n" +
-                                                                                "                            </div>\n" +
-                                                                                ratingData +
-                                                                                "                            <br/>\n" +
-                                                                                "                            <br/>" +
-                                                                                "\n" +
-                                                                                "                                    <br/>\n" +
-                                                                                "                                </div></div>";
-
-                                                                        }, complete: function(dataTime) {
-                                                                            $('#loc-add').html(addStriped);
-                                                                            $('#prog-bar').html(progressBar);
-                                                                            $('#desc').html(description);
-
-                                                                            if(dataRiderStatus !== 'COMPLETED') {
-                                                                                $('#time-order').html(time);
-                                                                            } else {
-                                                                                $('#time-order').html("");
-                                                                            }
-
-                                                                            if($('#ongoing-order-small-container').hasClass('d-none')) {
-                                                                                $('#ongoing-order-small-container').fadeIn('fast').removeClass('d-none');
-                                                                            }
-
-                                                                            $('#ca-ind').html(carouselIndicators);
-                                                                            $('#ca-inn').html(carouselInner);
-                                                                        }
-                                                                    });
-
-                                                                }
-                                                            });
-
-                                                        }
-                                                    });
+                                                            }
+                                                        });
+                                                    }
                                                 }
-                                            }
-                                        });
+                                            });
 
-                                    }
-                                });
-                            }
-                        });
+                                        }
+                                    });
+                                }
+                            });
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
+
+        getOngoingData();
+
+        setInterval(function() {
+            getOngoingData();
+        }, 5000);
+
         // END: Get Ongoing Order and Set Data
 
         // START: Open Ongoing Order
@@ -802,6 +826,8 @@ function getHomeDashboardJS() {
 
         // START: Close Ongoing Order
         $('#close-ongoing-order').click(function() {
+            homeOngoingOrderBackButtonPressed = true;
+
             if(!($('#main-order-container-home').hasClass('d-none'))) {
                 $('#main-order-container-home').fadeOut('fast', function() {
                     $('#main-order-container-home').addClass('d-none');

@@ -375,23 +375,68 @@ function getAddMoneyDashboard() {
     }
 }
 
-function getSettingsDashboard() {
+function getDeleteDriverRiderDashboard() {
     if(window.localStorage.getItem("User_Email") === null) {
         window.location.href = "../admins/index.php";
     } else {
         let user_email = window.localStorage.getItem("User_Email");
 
-        // START: Display Pricing Settings
+        // Display Drivers/Riders
         $.ajax({
-            url: "../assets/php/ajax/admin/getSettingsInformation.php",
+            url: "../assets/php/ajax/admin/getDRDeleteList.php",
             method: "POST",
             cache: false,
-            data: {Settings_Info: "Base_Fare"},
+            data: {User_Search: "Null"},
             success: function(data){
-                $('#base-fare-price').val(data);
+                $('#dr-container').html(data);
             }
         });
-        // END: Display Pricing Settings
+
+        $('#user-search').on('input', function() {
+            if($('#user-search').val().length < 3) {
+                // Display Cancellable Rides
+                $.ajax({
+                    url: "../assets/php/ajax/admin/getDRDeleteList.php",
+                    method: "POST",
+                    cache: false,
+                    data: {User_Search: "Null"},
+                    success: function(data){
+                        $('#dr-container').html(data);
+                    }
+                });
+            } else {
+                $('#dr-container').html("<div class=\"col-12 text-center mt-5\">\n" +
+                    "                <i class=\"fas fa-search fa-4x\" style=\"color: #DCDCDC;\"></i>\n" +
+                    "                <h6 class=\"font-weight-bold mt-4\">Searching for Drivers/Riders...</h6>\n" +
+                    "                <h6 class=\"text-black-50\">This may take a moment.</h6>\n" +
+                    "            </div>");
+
+                setTimeout(function(){
+                    // Display Cancellable Rides
+                    $.ajax({
+                        url: "../assets/php/ajax/admin/getDRDeleteList.php",
+                        method: "POST",
+                        cache: false,
+                        data: {User_Search: $('#user-search').val()},
+                        success: function(data){
+                            $('#dr-container').html(data);
+                        }
+                    });
+                }, 1000);
+            }
+
+        });
+
+
+
+    }
+}
+
+function getSettingsDashboard() {
+    if(window.localStorage.getItem("User_Email") === null) {
+        window.location.href = "../admins/index.php";
+    } else {
+        let user_email = window.localStorage.getItem("User_Email");
 
         // START: Display Rider Details
         $.ajax({
@@ -406,6 +451,16 @@ function getSettingsDashboard() {
         // END: Display Rider Details
 
         // START: Display Aider Driver Module Settings
+        $.ajax({
+            url: "../assets/php/ajax/admin/getSettingsInformation.php",
+            method: "POST",
+            cache: false,
+            data: {Settings_Info: "Base_Fare_Driver"},
+            success: function(data){
+                $('#base-fare-driver').val(data);
+            }
+        });
+
         $.ajax({
             url: "../assets/php/ajax/admin/getSettingsInformation.php",
             method: "POST",
@@ -442,6 +497,16 @@ function getSettingsDashboard() {
             url: "../assets/php/ajax/admin/getSettingsInformation.php",
             method: "POST",
             cache: false,
+            data: {Settings_Info: "Base_Fare_Parcel"},
+            success: function(data){
+                $('#base-fare-parcel').val(data);
+            }
+        });
+
+        $.ajax({
+            url: "../assets/php/ajax/admin/getSettingsInformation.php",
+            method: "POST",
+            cache: false,
             data: {Settings_Info: "Price_Per_KM_Parcel"},
             success: function(data){
                 $('#per-km-price-parcel').val(data);
@@ -470,52 +535,6 @@ function getSettingsDashboard() {
             }
         });
         // END: Display Aider Food Module Settings
-
-        // START: [Settings] Pricing - Save Button
-        $('#save-pricing').click(function() {
-
-            let error = false;
-
-            // STEP 1: Update Base Fare
-            $.ajax({
-                url: "../assets/php/ajax/admin/updateSettingsInformation.php",
-                method: "POST",
-                cache: false,
-                data: {Settings_Info: "Base_Fare", Settings_Value: $('#base-fare-price').val(), isNumber: true},
-                success: function(data){
-                    if(data === "YES") {
-                        error = true;
-                    }
-                }
-            });
-
-            // STEP 2: Display Toast Message
-            let pricingToastTitle, pricingToastMessage;
-            if(error) {
-                pricingToastTitle = "An error occurred!";
-                pricingToastMessage = "There was an issue while trying to update the pricing settings.";
-            } else {
-                pricingToastTitle = "Settings Updated!";
-                pricingToastMessage = "The pricing settings has been updated.";
-            }
-
-            // Display Toast Message
-            $.ajax({
-                url: "../assets/php/ajax/ui/sendToastMessage.php",
-                method: "POST",
-                cache: false,
-                data: {Title: pricingToastTitle, Message: pricingToastMessage},
-                success: function(dataToast){
-                    $('.toast-container').html(dataToast);
-                    $('.toast').toast('show');
-
-                    setTimeout(function() {
-                        $('.toast-container').html("");
-                    }, 5000);
-                }
-            });
-        });
-        // END: [Settings] Pricing - Save Button
 
         // START: [Settings] Rider - Save Button
         $('#save-rider').click(function() {
@@ -567,7 +586,20 @@ function getSettingsDashboard() {
         $('#save-aider-driver').click(function() {
             let error = false;
 
-            // STEP 1: Update Price per KM
+            // STEP 1: Update Base Fare for Driver
+            $.ajax({
+                url: "../assets/php/ajax/admin/updateSettingsInformation.php",
+                method: "POST",
+                cache: false,
+                data: {Settings_Info: "Base_Fare_Driver", Settings_Value: $('#base-fare-driver').val(), isNumber: true},
+                success: function(data){
+                    if(data === "YES") {
+                        error = true;
+                    }
+                }
+            });
+
+            // STEP 2: Update Price per KM
             $.ajax({
                 url: "../assets/php/ajax/admin/updateSettingsInformation.php",
                 method: "POST",
@@ -580,7 +612,7 @@ function getSettingsDashboard() {
                 }
             });
 
-            // STEP 2: Update Primary Percentage
+            // STEP 3: Update Primary Percentage
             $.ajax({
                 url: "../assets/php/ajax/admin/updateSettingsInformation.php",
                 method: "POST",
@@ -593,7 +625,7 @@ function getSettingsDashboard() {
                 }
             });
 
-            // STEP 3: Update Secondary Percentage
+            // STEP 4: Update Secondary Percentage
             $.ajax({
                 url: "../assets/php/ajax/admin/updateSettingsInformation.php",
                 method: "POST",
@@ -606,7 +638,7 @@ function getSettingsDashboard() {
                 }
             });
 
-            // STEP 4: Display Toast Message
+            // STEP 5: Display Toast Message
             let pricingToastTitle, pricingToastMessage;
             if(error) {
                 pricingToastTitle = "An error occurred!";
@@ -638,7 +670,20 @@ function getSettingsDashboard() {
         $('#save-aider-parcel').click(function() {
             let error = false;
 
-            // STEP 1: Update Price per KM
+            // STEP 1: Update Base Fare for Parcel
+            $.ajax({
+                url: "../assets/php/ajax/admin/updateSettingsInformation.php",
+                method: "POST",
+                cache: false,
+                data: {Settings_Info: "Base_Fare_Parcel", Settings_Value: $('#base-fare-parcel').val(), isNumber: true},
+                success: function(data){
+                    if(data === "YES") {
+                        error = true;
+                    }
+                }
+            });
+
+            // STEP 2: Update Price per KM
             $.ajax({
                 url: "../assets/php/ajax/admin/updateSettingsInformation.php",
                 method: "POST",
@@ -651,7 +696,7 @@ function getSettingsDashboard() {
                 }
             });
 
-            // STEP 2: Update Primary Percentage
+            // STEP 3: Update Primary Percentage
             $.ajax({
                 url: "../assets/php/ajax/admin/updateSettingsInformation.php",
                 method: "POST",
@@ -664,7 +709,7 @@ function getSettingsDashboard() {
                 }
             });
 
-            // STEP 3: Display Toast Message
+            // STEP 4: Display Toast Message
             let pricingToastTitle, pricingToastMessage;
             if(error) {
                 pricingToastTitle = "An error occurred!";
@@ -1224,6 +1269,62 @@ function addMoney() {
     addMoneyId = userDetails[1];
 
     $('#addMoney').modal();
+}
+
+function deleteDR() {
+    let userInfo = $('.btn-cancel').attr('id');
+
+    let userDetails = userInfo.split("-");
+
+    // Approve Rider & Display Toast Message
+    $.ajax({
+        url: "../assets/php/ajax/admin/deleteDR.php",
+        method: "POST",
+        cache: false,
+        data: {ID: userDetails[1]},
+        success: function(dataMsg) {
+            // Display Toast Message
+            let msg = "";
+            if(dataMsg === "ERROR") {
+                msg = "There was an issue deleting and revoking this driver/rider.";
+            } else {
+                msg = "This driver/rider has been deleted and revoked.";
+            }
+            $.ajax({
+                url: "../assets/php/ajax/ui/sendToastMessage.php",
+                method: "POST",
+                cache: false,
+                data: {Title: "Driver/Rider Deletion", Message: msg},
+                success: function(dataToast){
+                    $('.toast-container').html(dataToast);
+                    $('.toast').toast('show');
+
+                    setTimeout(function() {
+                        $('.toast-container').html("");
+                    }, 5000);
+                }
+            });
+
+            $('#rides-container').html("<div class=\"col-12 text-center mt-5\">\n" +
+                "                <i class=\"fas fa-search fa-4x\" style=\"color: #DCDCDC;\"></i>\n" +
+                "                <h6 class=\"font-weight-bold mt-4\">Searching for Drivers/Riders...</h6>\n" +
+                "                <h6 class=\"text-black-50\">This may take a moment.</h6>\n" +
+                "            </div>");
+
+            setTimeout(function(){
+                // Display Cancellable Rides
+                $.ajax({
+                    url: "../assets/php/ajax/admin/getDRDeleteList.php",
+                    method: "POST",
+                    cache: false,
+                    data: {User_Search: $('#user-search').val()},
+                    success: function(data){
+                        $('#dr-container').html(data);
+                    }
+                });
+            }, 1000);
+        }
+    });
 }
 
 function updateMoney() {

@@ -10,7 +10,7 @@
 
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, shrink-to-fit=no, user-scalable=no">
+        <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, maximum-scale=1.0, shrink-to-fit=no, user-scalable=no">
 
         <title><?php echo SITE_NAME; ?> | Home</title>
 
@@ -87,6 +87,30 @@
             .rating:hover>input:checked~label:before {
                 opacity: 0.4
             }
+
+            .btn-circle.btn-xl {
+                width: 70px;
+                height: 70px;
+                padding: 10px 16px;
+                border-radius: 35px;
+                font-size: 24px;
+                line-height: 1.33;
+            }
+
+            .btn-circle {
+                width: 50px;
+                height: 50px;
+                padding: 6px 0px;
+                border-radius: 30px;
+                text-align: center;
+                font-size: 12px;
+                line-height: 1.42857;
+            }
+
+            .carousel-control-next-icon, .carousel-control-prev-icon {
+                width: 0;
+                height: 0;
+            }
         </style>
     </head>
 
@@ -120,7 +144,8 @@
             <hr/>
 
             <div class="container">
-                <div class="row">
+                <div class="row m-1">
+                    <!--
                     <div class="col-12 mt-3">
                         <a class="text-decoration-none" href="parcel.php">
                             <div class="card">
@@ -131,26 +156,77 @@
                             </div>
                         </a>
                     </div>
+                    -->
 
-                    <div class="col-12 mt-2 d-none">
-                        <a class="text-decoration-none" href="food.php">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title"><i class="fas fa-utensils mr-1"></i> Food</h5>
-                                    <p class="card-text">Feeling hungry? Grab a bite!</p>
-                                </div>
-                            </div>
+                    <div class="col-3 mt-3">
+                        <a class="text-decoration-none" href="parcel.php">
+                            <button type="button" class="btn btn-primary btn-circle">
+                                <i class="fas fa-box fa-2x"></i>
+                            </button>
+                            <h6 class="text-dark font-weight-bold mt-2">Parcel</h6>
                         </a>
                     </div>
 
-                    <div class="col-12 mt-2 mb-3">
+                    <div class="col-3 mt-3">
                         <a class="text-decoration-none" href="driver.php">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h4 class="card-title"><i class="fas fa-car mr-1"></i> Driver</h4>
-                                    <p class="card-text">Can't drive home? We'll help you out!</p>
-                                </div>
-                            </div>
+                            <button type="button" class="btn btn-primary btn-circle">
+                                <i class="fas fa-car fa-2x"></i>
+                            </button>
+                            <h6 class="text-dark font-weight-bold mt-2">Driver</h6>
+                        </a>
+                    </div>
+
+                    <div class="col-3 mt-3">
+                        <a class="text-decoration-none">
+                            <button type="button" class="btn btn-secondary btn-circle">
+                                <i class="fas fa-question fa-2x"></i>
+                            </button>
+                            <h6 class="text-dark font-weight-bold mt-2"></h6>
+                        </a>
+                    </div>
+
+                    <div class="col-3 mt-3">
+                        <a class="text-decoration-none">
+                            <button type="button" class="btn btn-secondary btn-circle">
+                                <i class="fas fa-question fa-2x"></i>
+                            </button>
+                            <h6 class="text-dark font-weight-bold mt-2"></h6>
+                        </a>
+                    </div>
+
+                    <div class="col-3 mt-3">
+                        <a class="text-decoration-none">
+                            <button type="button" class="btn btn-secondary btn-circle">
+                                <i class="fas fa-question fa-2x"></i>
+                            </button>
+                            <h6 class="text-dark font-weight-bold mt-2"></h6>
+                        </a>
+                    </div>
+
+                    <div class="col-3 mt-3">
+                        <a class="text-decoration-none">
+                            <button type="button" class="btn btn-secondary btn-circle">
+                                <i class="fas fa-question fa-2x"></i>
+                            </button>
+                            <h6 class="text-dark font-weight-bold mt-2"></h6>
+                        </a>
+                    </div>
+
+                    <div class="col-3 mt-3">
+                        <a class="text-decoration-none">
+                            <button type="button" class="btn btn-secondary btn-circle">
+                                <i class="fas fa-question fa-2x"></i>
+                            </button>
+                            <h6 class="text-dark font-weight-bold mt-2"></h6>
+                        </a>
+                    </div>
+
+                    <div class="col-3 mt-3">
+                        <a class="text-decoration-none">
+                            <button type="button" class="btn btn-secondary btn-circle">
+                                <i class="fas fa-question fa-2x"></i>
+                            </button>
+                            <h6 class="text-dark font-weight-bold mt-2"></h6>
                         </a>
                     </div>
                 </div>
@@ -259,12 +335,10 @@
         ?>
         <script src="../assets/js/Dashboard.js"></script>
         <script>
-
             $(document).ready(function() {
                 getDashboardJS();
                 getHomeDashboardJS();
             });
-
         </script>
     </body>
 

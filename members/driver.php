@@ -11,7 +11,7 @@
 
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, shrink-to-fit=no, user-scalable=no">
+        <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, maximum-scale=1.0, shrink-to-fit=no, user-scalable=no">
 
         <title><?php echo SITE_NAME; ?> | Driver</title>
 
@@ -217,8 +217,29 @@
                     center: {lat: 3.139, lng: 101.547},
                     zoom: 10,
                     disableDefaultUI: true
-
                 });
+
+                const iconBase =
+                    "https://aider.my/aider/assets/images/";
+                const icons = {
+                    info: {
+                        icon: iconBase + "car.png",
+                    },
+                };
+                const features = [
+                    <?php
+                        echo $Aider->getUserModal()->getRiderModal()->getActiveRidersForMap()['data'];
+                    ?>
+                ];
+
+                // Create markers.
+                for (let i = 0; i < features.length; i++) {
+                    const marker = new google.maps.Marker({
+                        position: features[i].position,
+                        icon: icons[features[i].type].icon,
+                        map: map,
+                    });
+                }
 
                 pickUp = document.getElementById('pickUpSearch');
                 autocompletePickUp = new google.maps.places.Autocomplete(pickUp);
@@ -644,7 +665,7 @@
                     url: "../assets/php/ajax/admin/getSettingsInformation.php",
                     method: "POST",
                     cache: false,
-                    data: {Settings_Info: "Base_Fare"},
+                    data: {Settings_Info: "Base_Fare_Driver"},
                     success: function(data){
                         basefare = parseFloat(data);
                     }

@@ -798,6 +798,36 @@ class RiderModal {
         return $response;
     }
 
+    function getActiveRidersForMap() {
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        $sql = "SELECT * FROM aider_user_rider WHERE Status = 'ACTIVE'";
+
+        $statement = $connection->query($sql);
+
+        $response['data'] = "";
+
+        if($statement->num_rows > 0) {
+            while($row = $statement->fetch_assoc()) {
+
+                if(!(empty($row['Loc_LAT']) || empty($row['Loc_LNG']))) {
+                    $response['data'] .= "{
+                        position: new google.maps.LatLng(" . $row['Loc_LAT'] . ", " . $row['Loc_LNG'] . "),
+                        type: 'info',
+                    },";
+                }
+            }
+        } else {
+            $response['data'] = "";
+        }
+
+        $statement->close();
+        $connection->close();
+
+        return $response;
+    }
+
     private function checkDuplicateEmails($email) {
         $DatabaseHandler = new DatabaseHandler();
         $connection = $DatabaseHandler->getMySQLiConnection();

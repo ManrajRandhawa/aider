@@ -23,7 +23,8 @@ class PromoModal {
                     $imgHolder = "<img class=\"card-img\" src='../assets/images/promos/" . $row['Promo_Image_Name']. "' />";
                 }
 
-                $promoHTML .= "<div class=\"col-12\">
+                if(is_null($row['Promo_URL']) || empty($row['Promo_URL'])) {
+                    $promoHTML .= "<div class=\"col-12\">
                             <div class=\"card mt-3 shadow-lg\">
                                 " . $imgHolder . "
                                 <div class=\"card-body\">
@@ -33,6 +34,20 @@ class PromoModal {
                                 </div>
                             </div>
                         </div>";
+                } else {
+                    $promoHTML .= "<div class=\"col-12\">
+                            <a class='text-decoration-none' onclick=\"window.open('" . $row['Promo_URL'] . "', '_system');\">
+                                <div class=\"card mt-3 shadow-lg\">
+                                    " . $imgHolder . "
+                                    <div class=\"card-body\">
+                                        <h5 class=\"card-title text-center p-0 m-0 text-dark\">" . $row['Promo_Title'] . "</h5>
+                                        <hr/>
+                                        <p class=\"card-text text-center mt-2 text-dark\">" . $row['Promo_Description'] . "</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>";
+                }
             }
 
             return $promoHTML;
@@ -53,15 +68,15 @@ class PromoModal {
         }
     }
 
-    function addPromo($promoTitle, $promoDesc, $promoImageName) {
+    function addPromo($promoTitle, $promoUrl, $promoDesc, $promoImageName) {
         $DatabaseHandler = new DatabaseHandler();
         $connection = $DatabaseHandler->getMySQLiConnection();
 
-        $sql = "INSERT INTO aider_promo(Promo_Title, Promo_Description, Promo_Image_Name) VALUES (?,?,?)";
+        $sql = "INSERT INTO aider_promo(Promo_Title, Promo_URL, Promo_Description, Promo_Image_Name) VALUES (?,?,?,?)";
 
         $statement = $connection->prepare($sql);
 
-        $statement->bind_param("sss",$promoTitle, $promoDesc, $promoImageName);
+        $statement->bind_param("ssss",$promoTitle, $promoUrl, $promoDesc, $promoImageName);
 
         if($statement->execute()) {
             $response['error'] = false;

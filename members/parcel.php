@@ -197,6 +197,28 @@
 
                 });
 
+                const iconBase =
+                    "https://aider.my/aider/assets/images/";
+                const icons = {
+                    info: {
+                        icon: iconBase + "car.png",
+                    },
+                };
+                const features = [
+                    <?php
+                    echo $Aider->getUserModal()->getRiderModal()->getActiveRidersForMap()['data'];
+                    ?>
+                ];
+
+                // Create markers.
+                for (let i = 0; i < features.length; i++) {
+                    const marker = new google.maps.Marker({
+                        position: features[i].position,
+                        icon: icons[features[i].type].icon,
+                        map: map,
+                    });
+                }
+
                 pickUp = document.getElementById('pickUpSearch');
                 autocompletePickUp = new google.maps.places.Autocomplete(pickUp);
                 autocompletePickUp.setComponentRestrictions({'country': ['my']});
@@ -523,7 +545,7 @@
                     url: "../assets/php/ajax/admin/getSettingsInformation.php",
                     method: "POST",
                     cache: false,
-                    data: {Settings_Info: "Base_Fare"},
+                    data: {Settings_Info: "Base_Fare_Parcel"},
                     success: function(data){
                         basefare = parseFloat(data);
                     }

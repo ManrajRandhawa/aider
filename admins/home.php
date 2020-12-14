@@ -153,6 +153,17 @@
                         </div>
                     </a>
                 </div>
+
+                <div class="col-12 mt-3">
+                    <a class="text-decoration-none" href="delete-dr.php">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-user-minus mr-1"></i> Delete Drivers/Riders</h5>
+                                <p class="card-text">Delete Drivers/Riders and revoke their access.</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
             </div>
 
             <br/>

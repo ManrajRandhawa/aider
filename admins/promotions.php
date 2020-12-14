@@ -43,6 +43,10 @@
                                 <input type='text' class='form-control' name='promo_title' id='promo_title' required>
                             </div>
                             <div class='form-group'>
+                                <label for='promo_url' class='col-form-label'>Promotion URL <span class="text-muted">(leave blank if not required)</span>:</label>
+                                <input type='text' class='form-control' name='promo_url' id='promo_url' placeholder="https://aider.my">
+                            </div>
+                            <div class='form-group'>
                                 <label for='promo_desc' class='col-form-label'>Promotion Description:</label>
                                 <input type='text' class='form-control' name='promo_desc' id='promo_desc' required>
                             </div>
@@ -98,9 +102,8 @@
         <div class="toast-container">
             <?php
                 if(isset($_POST["add-promo-btn"])) {
-
                     if($_FILES['fileToUpload']['name'] == "") {
-                        $addPromoResponse = $Aider->getUserModal()->getPromoModal()->addPromo($_POST['promo_title'], $_POST['promo_desc'], "");
+                        $addPromoResponse = $Aider->getUserModal()->getPromoModal()->addPromo($_POST['promo_title'], $_POST['promo_url'], $_POST['promo_desc'], "");
                         if($addPromoResponse['error']) {
                             echo $Aider->getAlerts()->sendToastDashboard('Oops, something happened!', $addPromoResponse['message']);
                         } else {
@@ -123,7 +126,7 @@
                             }
 
                             // Check file size
-                            if ($_FILES["fileToUpload"]["size"] > 500000) {
+                            if ($_FILES["fileToUpload"]["size"] > 5000000) {
                                 echo $Aider->getAlerts()->sendToastDashboard('Oops, something happened!',  "Your file is too large.");
                                 $uploadOk = 0;
                             }
@@ -141,7 +144,7 @@
                                 // if everything is ok, try to upload file
                             } else {
                                 if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-                                    $addPromoResponse = $Aider->getUserModal()->getPromoModal()->addPromo($_POST['promo_title'], $_POST['promo_desc'], htmlspecialchars(basename($_FILES["fileToUpload"]["name"])));
+                                    $addPromoResponse = $Aider->getUserModal()->getPromoModal()->addPromo($_POST['promo_title'], $_POST['promo_url'], $_POST['promo_desc'], htmlspecialchars(basename($_FILES["fileToUpload"]["name"])));
                                     if($addPromoResponse['error']) {
                                         echo $Aider->getAlerts()->sendToastDashboard('Oops, something happened!', $addPromoResponse['message']);
                                     } else {

@@ -341,12 +341,52 @@ class AdminModal {
     }
 
     function printFinanceStatement($startDate, $endDate) {
+        $Aider = new Aider();
+
+        $numParcel = 0;
+
         $DatabaseHandler = new DatabaseHandler();
         $connection = $DatabaseHandler->getMySQLiConnection();
 
-        $sqlResults = "SELECT * FROM aider_transaction_driver";
+        $sqlResults = "SELECT * FROM aider_transaction_sorting WHERE Transaction_Status = 'COMPLETED' OR Transaction_Status = 'COMPLETED_RATED' ORDER BY Transaction_Type ASC";
 
         $statement = $connection->query($sqlResults);
+
+        $newArrayHeader = [];
+
+        $newArrayHeader['Date'] = "";
+        $newArrayHeader['Client'] = "";
+        $newArrayHeader['From'] = "";
+        $newArrayHeader['To'] = "";
+        $newArrayHeader['Total'] = "";
+        $newArrayHeader['Driver'] = "";
+        $newArrayHeader['Aider'] = "";
+        $newArrayHeader['Team_Name'] = "";
+        $newArrayHeader['Rider_Name'] = "";
+
+        $DriverCut = $Aider->getUserModal()->getAdminModal()->getSettingsInformation('Aider_Driver_Primary_Cut');
+        $AiderCut = $Aider->getUserModal()->getAdminModal()->getSettingsInformation('Aider_Driver_Secondary_Cut');
+        $ParcelCut = $Aider->getUserModal()->getAdminModal()->getSettingsInformation('Aider_Parcel_Cut');
+
+        $newArray['Date'] = "DRIVER";
+        $newArray['Client'] = "";
+        $newArray['From'] = "";
+        $newArray['To'] = "";
+        $newArray['Total'] = "";
+
+        if($DriverCut['error'] || $AiderCut['error']) {
+            $newArray['Driver'] = "-%";
+            $newArray['Aider'] = "-%";
+        } else {
+            $newArray['Driver'] = intval($DriverCut['data'] + $AiderCut['data']) . "%";
+            $newArray['Aider'] = intval(100 - ($DriverCut['data'] + $AiderCut['data'])) . "%";
+        }
+
+        $newArray['Team_Name'] = "";
+        $newArray['Rider_Name'] = "";
+
+        echo implode("\t", array_keys($newArrayHeader)) . "\r\n";
+        echo implode("\t", array_values($newArray)) . "\r\n";
 
         $filename = "Aider-Statement.xls"; // File Name
         // Download file
@@ -356,16 +396,89 @@ class AdminModal {
         // Write data to file
         $flag = false;
         while ($row = $statement->fetch_assoc()) {
+            $newArray = [];
+
+            if($row['Transaction_Type'] === 'DRIVER') {
+                $DriverOrderDetails = $Aider->getUserModal()->getOrderModal()->getOrderDetails('DRIVER', intval($row['Transaction_ID']))['data'];
+                $newArray['Date'] = $DriverOrderDetails[4];
+
+                $CustomerName = $Aider->getUserModal()->getCustomerModal()->getCustomerInformationByID(intval($DriverOrderDetails[0]), 'Name');
+                if($CustomerName['error']) {
+                    $newArray['Client'] = "Unknown";
+                } else {
+                    $newArray['Client'] = $CustomerName['data'];
+                }
+
+                $newArray['From'] = $DriverOrderDetails[1];
+                $newArray['To'] = $DriverOrderDetails[2];
+                $newArray['Total'] = "RM" . $DriverOrderDetails[3];
+                $newArray['Driver'] = "RM" . floatval($DriverOrderDetails[3] * $DriverCut['data'] / 100);
+                $newArray['Aider'] = "RM" . floatval($DriverOrderDetails[3] * $AiderCut['data'] / 100);
+
+                $TeamName = $Aider->getUserModal()->getRiderModal()->getTeamInformationByID(intval($DriverOrderDetails[7]), 'Team_Name');
+                if($TeamName['error']) {
+                    $newArray['Team_Name'] = "Unknown";
+                } else {
+                    $newArray['Team_Name'] = $TeamName['data'];
+                }
+
+                $newArray['Rider_Name'] = "-";
+            } else {
+
+                if($numParcel === 0) {
+                    $newArray['Date'] = "PARCEL";
+                    $newArray['Client'] = "";
+                    $newArray['From'] = "";
+                    $newArray['To'] = "";
+                    $newArray['Total'] = "";
+
+                    if($ParcelCut['error']) {
+                        $newArray['Driver'] = "-%";
+                        $newArray['Aider'] = "-%";
+                    } else {
+                        $newArray['Driver'] = intval($ParcelCut['data'] + $AiderCut['data']) . "%";
+                        $newArray['Aider'] = intval(100 - ($ParcelCut['data'] + $AiderCut['data'])) . "%";
+                    }
+
+                    $newArray['Driver'] = $DriverCut['data'] . "%";
+                    $newArray['Aider'] = $AiderCut['data'] . "%";
+                    $newArray['Team_Name'] = "";
+                    $newArray['Rider_Name'] = "";
+
+                    echo implode("\t", array_values($newArray)) . "\r\n";
+                }
+
+                $DriverOrderDetails = $Aider->getUserModal()->getOrderModal()->getOrderDetails('PARCEL', intval($row['Transaction_ID']))['data'];
+                $newArray['Date'] = $DriverOrderDetails[9];
+
+                $CustomerName = $Aider->getUserModal()->getCustomerModal()->getCustomerInformationByID(intval($DriverOrderDetails[0]), 'Name');
+                if($CustomerName['error']) {
+                    $newArray['Client'] = "Unknown";
+                } else {
+                    $newArray['Client'] = $CustomerName['data'];
+                }
+
+                $newArray['From'] = $DriverOrderDetails[1];
+                $newArray['To'] = $DriverOrderDetails[2];
+                $newArray['Total'] = "RM" . $DriverOrderDetails[8];
+                $newArray['Driver'] = "RM" . floatval($DriverOrderDetails[8] * $ParcelCut['data'] / 100);
+                $newArray['Aider'] = "RM" . floatval($DriverOrderDetails[8] * $AiderCut['data'] / 100);
+                $newArray['Team_Name'] = "-";
+
+                $RiderName = $Aider->getUserModal()->getRiderModal()->getRiderInformationByID(intval($DriverOrderDetails[12]), 'Name');
+                if($RiderName['error']) {
+                    $newArray['Rider_Name'] = "Unknown";
+                } else {
+                    $newArray['Rider_Name'] = $RiderName['data'];
+                }
+
+                $numParcel++;
+            }
 
             $dateUnformatted = explode(' ', $row['Transaction_Datetime']);
 
             if(((strtotime($dateUnformatted[0]) > strtotime($startDate)) && (strtotime($dateUnformatted[0]) < strtotime($endDate))) || (strtotime($dateUnformatted[0]) == strtotime($startDate) || strtotime($dateUnformatted[0]) == $endDate)) {
-                if (!$flag) {
-                    // display field/column names as first row
-                    echo implode("\t", array_keys($row)) . "\r\n";
-                    $flag = true;
-                }
-                echo implode("\t", array_values($row)) . "\r\n";
+                echo implode("\t", array_values($newArray)) . "\r\n";
             }
         }
         die();
@@ -574,6 +687,91 @@ class AdminModal {
                             <h6 class=\"text-black-50\">Refine your search (Customer Names/Emails) for better results.</h6>
                         </div>";
             }
+
+        return $response;
+    }
+
+    function getDriversRidersListForDeletion($searchArgs) {
+        $Aider = new Aider();
+
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        // Customer Name/Email Search
+        $sqlSearchDR = "SELECT * FROM aider_user_rider WHERE (Name LIKE '%" . $searchArgs . "%') OR (Email_Address LIKE '%" . $searchArgs . "%') LIMIT 1";
+        $statementSearchDR = $connection->query($sqlSearchDR);
+
+        if($statementSearchDR->num_rows > 0) {
+            $response['error'] = false;
+
+            while($rowDR = $statementSearchDR->fetch_assoc()) {
+                $num = 0;
+
+                $response['data'] = "<table class='table table-responsive mt-3'><thead class=\"text-center\">
+                            <tr>
+                                <th scope=\"col\">ID</th>
+                                <th scope=\"col\">Name</th>
+                                <th scope=\"col\">Email</th>
+                                <th scope=\"col\">Phone Number</th>
+                                <th scope=\"col\">Type</th>
+                                <th scope=\"col\">Wallet Balance</th>
+                                <th scope=\"col\">Total Earnings</th>
+                                <th scope=\"col\">Rating</th>
+                                <th scope=\"col\">Option</th>
+                            </tr>
+                            </thead>
+
+                            <tbody class=\"text-center\">";
+
+                $response['data'] .= "<tr>
+                                    <td scope=\"row\">" . $num . "</td>
+                                    <td>" . $rowDR['Name'] . "</td>
+                                    <td>" . $rowDR['Email_Address'] . "</td>
+                                    <td>" . $rowDR['Phone_Number'] . "</td>
+                                    <td>" . $rowDR['Rider_Type'] . "</td>
+                                    <td>" . $rowDR['Wallet_Balance'] . "</td>
+                                    <td>" . $rowDR['Total_Earnings'] . "</td>
+                                    <td>" . intval($rowDR['Rating']) / intval($rowDR['Rating_Counter']) . "☆</td>
+                                    <td>
+                                        <div class=\"dropdown\">
+                                            <button class=\"btn btn-sm btn-primary dropdown-toggle\" type=\"button\" id=\"dropdownMenuButton\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">
+                                            Option
+                                            </button>
+                                            <div class=\"dropdown-menu\" aria-labelledby=\"dropdownMenuButton\">
+                                                <a class=\"dropdown-item btn-cancel\" id='DR" . "-" . $rowDR['ID'] . "' onclick='deleteDR();'>Delete & Revoke Access</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>";
+
+            }
+        } else {
+            $response['error'] = true;
+            $response['data'] = "<div class=\"col-12 text-center mt-5\">
+                            <i class=\"fas fa-scroll fa-4x\" style=\"color: #DCDCDC;\"></i>
+                            <h6 class=\"font-weight-bold mt-4\">Nothing here yet!</h6>
+                            <h6 class=\"text-black-50\">Refine your search (Driver & Rider Names/Emails) for better results.</h6>
+                        </div>";
+        }
+
+        return $response;
+    }
+
+    function deleteDriverRider($id) {
+        $Aider = new Aider();
+
+        $DatabaseHandler = new DatabaseHandler();
+        $connection = $DatabaseHandler->getMySQLiConnection();
+
+        // Customer Name/Email Search
+        $sqlDelDR = "DELETE FROM aider_user_rider WHERE ID = " . intval($id);
+        $statementDelDR = $connection->query($sqlDelDR);
+
+        if($statementDelDR) {
+            $response['error'] = false;
+        } else {
+            $response['error'] = true;
+        }
 
         return $response;
     }

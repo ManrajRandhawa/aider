@@ -48,19 +48,6 @@
             <div class="row">
                 <div class="col-12 mt-3">
                     <div class="border border-dark rounded pt-3 pr-3 pl-3 pb-5">
-                        <h5 class="font-weight-bold mb-3">Pricing</h5>
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="base-fare">Base Fare (RM)</span>
-                            </div>
-                            <input type="number" id="base-fare-price" class="form-control" aria-describedby="base-fare" />
-                        </div>
-                        <button class="btn btn-dark float-right" id="save-pricing">Save</button>
-                    </div>
-                </div>
-
-                <div class="col-12 mt-3">
-                    <div class="border border-dark rounded pt-3 pr-3 pl-3 pb-5">
                         <h5 class="font-weight-bold mb-3">Rider</h5>
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
@@ -83,6 +70,13 @@
                 <div class="col-12 mt-3">
                     <div class="border border-dark rounded pt-3 pr-3 pl-3 pb-5">
                         <h5 class="font-weight-bold mb-3">Aider Driver</h5>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="base-fare-driver-text">Base Fare (RM)</span>
+                            </div>
+                            <input type="number" id="base-fare-driver" class="form-control" aria-describedby="base-fare-driver-text" />
+                        </div>
+
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="per-km-driver">Price per KM (RM)</span>
@@ -110,6 +104,14 @@
                 <div class="col-12 mt-3">
                     <div class="border border-dark rounded pt-3 pr-3 pl-3 pb-5">
                         <h5 class="font-weight-bold mb-3">Aider Parcel</h5>
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="base-fare-parcel-text">Base Fare (RM)</span>
+                            </div>
+                            <input type="number" id="base-fare-parcel" class="form-control" aria-describedby="base-fare-parcel-text" />
+                        </div>
+
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="per-km-parcel">Price per KM (RM)</span>
