@@ -64,6 +64,41 @@
             </div>
         </div>
 
+        <!-- Push Modal -->
+        <div class='modal fade' id="push-modal" tabindex='-1' role='dialog' aria-labelledby='pushModalLabel' aria-hidden='true'>
+            <div class='modal-dialog modal-lg'>
+                <div class='modal-content'>
+                    <div class='modal-header'>
+                        <h5 class='modal-title' id='pushModalLabel'>Push Message</h5>
+                    </div>
+                    <div class='modal-body'>
+                        <div class='form-group'>
+                            <label for='push_title' class='col-form-label'>Title:</label>
+                            <input type='text' class='form-control' name='push_title' id='push_title'>
+                        </div>
+                        <div class='form-group'>
+                            <label for='push_body' class='col-form-label'>Body:</label>
+                            <textarea rows="5" class='form-control' name='push_body' id='push_body'></textarea>
+                        </div>
+                        <div class='form-group'>
+                            <label for='push_url' class='col-form-label'>URL:</label>
+                            <input type='text' class='form-control' name='push_url' id='push_url'>
+                        </div>
+                    </div>
+                    <div class='modal-footer'>
+                        <button type='submit' class='btn btn-primary' id='push_btn'>Send</button>
+                    </div>
+                </div>
+
+                <!-- START: Toast Messages Area -->
+                <div class="toast-container-modal" style="z-index: 9999;">
+
+                </div>
+                <!-- END: Toast Messages Area -->
+            </div>
+        </div>
+
+
         <!-- Main Content -->
         <div class="container">
             <div class="row">
@@ -133,6 +168,17 @@
                 </div>
 
                 <div class="col-12 mt-3">
+                    <a class="text-decoration-none" href="#" data-toggle="modal" data-target="#push-modal">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fab fa-telegram-plane mr-1"></i> Push Message</h5>
+                                <p class="card-text">Send promo message to customers.</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-12 mt-3">
                     <a class="text-decoration-none" href="rides.php">
                         <div class="card">
                             <div class="card-body">
@@ -149,17 +195,6 @@
                             <div class="card-body">
                                 <h5 class="card-title"><i class="fas fa-money-check-alt mr-1"></i> Update Wallet</h5>
                                 <p class="card-text">Update the wallet amount for users.</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="col-12 mt-3">
-                    <a class="text-decoration-none" href="delete-dr.php">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title"><i class="fas fa-user-minus mr-1"></i> Delete Drivers/Riders</h5>
-                                <p class="card-text">Delete Drivers/Riders and revoke their access.</p>
                             </div>
                         </div>
                     </a>

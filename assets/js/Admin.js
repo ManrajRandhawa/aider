@@ -42,7 +42,35 @@ function getAdminHomeDashboard() {
                 console.log(startInputDate);
 
             }
-        })
+        });
+
+        $('#push_btn').on('click', function() {
+            $.ajax({
+                url: '../assets/php/ajax/admin/pushMessage.php',
+                method: 'POST',
+                cache: false,
+                data: {title: $('#push_title').val(), body: $('#push_body').val(), url: $('#push_url').val()},
+                success: function(data) {
+                    $('#push-modal').modal('toggle');
+
+                    // Display Toast Message
+                    $.ajax({
+                        url: "../assets/php/ajax/ui/sendToastMessage.php",
+                        method: "POST",
+                        cache: false,
+                        data: {Title: "Push Message", Message: "Message has been sent to the Push Service."},
+                        success: function(dataToast){
+                            $('.toast-container').html(dataToast);
+                            $('.toast').toast('show');
+
+                            setTimeout(function() {
+                                $('.toast-container').html("");
+                            }, 5000);
+                        }
+                    });
+                }
+            });
+        });
     }
 }
 
@@ -363,63 +391,6 @@ function getAddMoneyDashboard() {
                         data: {User_Search: $('#user-search').val()},
                         success: function(data){
                             $('#wallet-container').html(data);
-                        }
-                    });
-                }, 1000);
-            }
-
-        });
-
-
-
-    }
-}
-
-function getDeleteDriverRiderDashboard() {
-    if(window.localStorage.getItem("User_Email") === null) {
-        window.location.href = "../admins/index.php";
-    } else {
-        let user_email = window.localStorage.getItem("User_Email");
-
-        // Display Drivers/Riders
-        $.ajax({
-            url: "../assets/php/ajax/admin/getDRDeleteList.php",
-            method: "POST",
-            cache: false,
-            data: {User_Search: "Null"},
-            success: function(data){
-                $('#dr-container').html(data);
-            }
-        });
-
-        $('#user-search').on('input', function() {
-            if($('#user-search').val().length < 3) {
-                // Display Cancellable Rides
-                $.ajax({
-                    url: "../assets/php/ajax/admin/getDRDeleteList.php",
-                    method: "POST",
-                    cache: false,
-                    data: {User_Search: "Null"},
-                    success: function(data){
-                        $('#dr-container').html(data);
-                    }
-                });
-            } else {
-                $('#dr-container').html("<div class=\"col-12 text-center mt-5\">\n" +
-                    "                <i class=\"fas fa-search fa-4x\" style=\"color: #DCDCDC;\"></i>\n" +
-                    "                <h6 class=\"font-weight-bold mt-4\">Searching for Drivers/Riders...</h6>\n" +
-                    "                <h6 class=\"text-black-50\">This may take a moment.</h6>\n" +
-                    "            </div>");
-
-                setTimeout(function(){
-                    // Display Cancellable Rides
-                    $.ajax({
-                        url: "../assets/php/ajax/admin/getDRDeleteList.php",
-                        method: "POST",
-                        cache: false,
-                        data: {User_Search: $('#user-search').val()},
-                        success: function(data){
-                            $('#dr-container').html(data);
                         }
                     });
                 }, 1000);
@@ -1269,62 +1240,6 @@ function addMoney() {
     addMoneyId = userDetails[1];
 
     $('#addMoney').modal();
-}
-
-function deleteDR() {
-    let userInfo = $('.btn-cancel').attr('id');
-
-    let userDetails = userInfo.split("-");
-
-    // Approve Rider & Display Toast Message
-    $.ajax({
-        url: "../assets/php/ajax/admin/deleteDR.php",
-        method: "POST",
-        cache: false,
-        data: {ID: userDetails[1]},
-        success: function(dataMsg) {
-            // Display Toast Message
-            let msg = "";
-            if(dataMsg === "ERROR") {
-                msg = "There was an issue deleting and revoking this driver/rider.";
-            } else {
-                msg = "This driver/rider has been deleted and revoked.";
-            }
-            $.ajax({
-                url: "../assets/php/ajax/ui/sendToastMessage.php",
-                method: "POST",
-                cache: false,
-                data: {Title: "Driver/Rider Deletion", Message: msg},
-                success: function(dataToast){
-                    $('.toast-container').html(dataToast);
-                    $('.toast').toast('show');
-
-                    setTimeout(function() {
-                        $('.toast-container').html("");
-                    }, 5000);
-                }
-            });
-
-            $('#rides-container').html("<div class=\"col-12 text-center mt-5\">\n" +
-                "                <i class=\"fas fa-search fa-4x\" style=\"color: #DCDCDC;\"></i>\n" +
-                "                <h6 class=\"font-weight-bold mt-4\">Searching for Drivers/Riders...</h6>\n" +
-                "                <h6 class=\"text-black-50\">This may take a moment.</h6>\n" +
-                "            </div>");
-
-            setTimeout(function(){
-                // Display Cancellable Rides
-                $.ajax({
-                    url: "../assets/php/ajax/admin/getDRDeleteList.php",
-                    method: "POST",
-                    cache: false,
-                    data: {User_Search: $('#user-search').val()},
-                    success: function(data){
-                        $('#dr-container').html(data);
-                    }
-                });
-            }, 1000);
-        }
-    });
 }
 
 function updateMoney() {

@@ -224,11 +224,11 @@ class RiderLayout {
 
         let url = "geo:0,0";
         if (this.iOS()) {
-            url = "http://maps.apple.com/";
+            url = "https://maps.apple.com/";
         }
 
         let fullUrl = encodeURI(url + "?q=" + pickUpLoc);
-
+        
         $('#riding-1-content-loc-btn').html("<a href='" + fullUrl + "'>\n" +
             "                                        <i class=\"mt-2 mr-3 fas fa-location-arrow fa-lg text-success\"></i>\n" +
             "                                    </a>");
@@ -1515,7 +1515,7 @@ class Rider {
                     }
                 }
             });
-        });
+        }, function(){}, {maximumAge: 500, enableHighAccuracy: true});
     }
 
     static removeRiderLocation(watchID) {
