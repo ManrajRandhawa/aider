@@ -147,37 +147,110 @@ class CustomerModal {
         $DatabaseHandler = new DatabaseHandler();
         $connection = $DatabaseHandler->getMySQLiConnection();
 
-        $sql = "SELECT * FROM aider_transaction_parcel WHERE Customer_ID=" . $cust_id;
-        $statement = $connection->query($sql);
+        $sqlAll = "SELECT * FROM aider_transaction_sorting WHERE Customer_ID = " . intval($cust_id) . " ORDER BY ID DESC LIMIT 3";
+        $statementAll = $connection->query($sqlAll);
 
-        if($statement->num_rows > 0) {
-            $response['data'] = "
-            <table class=\"table table-responsive mt-4\">
-                        <thead>
-                            <tr>
-                                <th scope=\"col\">#</th>
-                                <th scope=\"col\">Type</th>
-                                <th scope=\"col\">Pickup</th>
-                                <th scope=\"col\">Destination</th>
-                                <th scope=\"col\">Price</th>
-                            </tr>
-                        </thead>
-                        <tbody>";
-            $response['error'] = false;
-            while($row = $statement->fetch_assoc()) {
-                $pickUpLoc = explode(",", $row['Pickup_Location']);
-                $dropOffLoc = explode(",", $row['Dropoff_Location']);
+        $response['data'] = "";
+        $response['error'] = false;
 
-                $response['data'] .= "<tr>
-                                <th scope=\"row\">" . $row['ID'] . "</th>
-                                <th>Parcel</th>
-                                <th>" . $pickUpLoc[0] . "</th>
-                                <th>" . $dropOffLoc[0] . "</th>
-                                <th>" . $row['Price'] . "</th>
-                            </tr>";
+        if($statementAll->num_rows > 0) {
+            while($rowAll = $statementAll->fetch_assoc()) {
+                if($rowAll['Transaction_Type'] === "PARCEL") {
+                    $sqlParcel = "SELECT * FROM aider_transaction_parcel WHERE ID=" . intval($rowAll['Transaction_ID']);
+                    $statementParcel = $connection->query($sqlParcel);
+
+                    if($statementParcel->num_rows > 0) {
+                        $response['error'] = false;
+
+                        while($rowParcel = $statementParcel->fetch_assoc()) {
+                            $response['data'] .= "<div class=\"col-12 mt-2\">
+                            <div class=\"card\">
+                                <div class=\"card-body\">
+                                    <div class=\"row mb-3\">
+                                        <div class=\"col-7\">
+                                            <h4 class=\"card-title text-success font-weight-bold mt-1\">Parcel</h4>
+                                        </div>
+                                        <div class=\"col-5\">
+                                            <h6 class=\"text-right\">RM <span class=\"h3 text-success font-weight-bold\">" . $rowParcel['Price'] . "</span></h6>
+                                        </div>
+                                    </div>
+
+                                    <div class=\"row\">
+                                        <div class=\"col-12\">
+                                            <h6 class=\"text-center\">" . $rowParcel['Pickup_Location'] . "</h6>
+                                        </div>
+                                        <div class=\"col-12 text-center\">
+                                            <i class=\"fas fa-angle-double-down fa-lg text-success mt-1 mb-2\"></i>
+                                        </div>
+                                        <div class=\"col-12\">
+                                            <h6 class=\"text-center\">" . $rowParcel['Dropoff_Location'] . "</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>";
+                        }
+                    } else {
+                        $response['error'] = false;
+                        $response['data'] = "<div class=\"col-12 text-center mt-5\">
+                        <i class=\"fas fa-scroll fa-4x\" style=\"color: #DCDCDC;\"></i>
+                        <h6 class=\"font-weight-bold mt-4\">Nothing here yet!</h6>
+                        <h6 class=\"text-black-50\">You recent transactions will appear here.</h6>
+                    </div>";
+                    }
+
+                    $statementParcel->close();
+                } elseif($rowAll['Transaction_Type'] === "DRIVER") {
+                    $sqlDriver = "SELECT * FROM aider_transaction_driver WHERE ID=" . intval($rowAll['Transaction_ID']);
+                    $statementDriver = $connection->query($sqlDriver);
+
+                    if($statementDriver->num_rows > 0) {
+                        $response['error'] = false;
+
+                        while($rowDriver = $statementDriver->fetch_assoc()) {
+                            $response['data'] .= "<div class=\"col-12 mt-2\">
+                            <div class=\"card\">
+                                <div class=\"card-body\">
+                                    <div class=\"row mb-3\">
+                                        <div class=\"col-7\">
+                                            <h4 class=\"card-title text-success font-weight-bold mt-1\">Driver</h4>
+                                        </div>
+                                        <div class=\"col-5\">
+                                            <h6 class=\"text-right\">RM <span class=\"h3 text-success font-weight-bold\">" . $rowDriver['Price'] . "</span></h6>
+                                        </div>
+                                    </div>
+
+                                    <div class=\"row\">
+                                        <div class=\"col-12\">
+                                            <h6 class=\"text-center\">" . $rowDriver['Pickup_Location'] . "</h6>
+                                        </div>
+                                        <div class=\"col-12 text-center\">
+                                            <i class=\"fas fa-angle-double-down fa-lg text-success mt-1 mb-2\"></i>
+                                        </div>
+                                        <div class=\"col-12\">
+                                            <h6 class=\"text-center\">" . $rowDriver['Dropoff_Location'] . "</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>";
+                        }
+                    } else {
+                        $response['error'] = false;
+                        $response['data'] = "<div class=\"col-12 text-center mt-5\">
+                        <i class=\"fas fa-scroll fa-4x\" style=\"color: #DCDCDC;\"></i>
+                        <h6 class=\"font-weight-bold mt-4\">Nothing here yet!</h6>
+                        <h6 class=\"text-black-50\">You recent transactions will appear here.</h6>
+                    </div>";
+                    }
+
+                    $statementDriver->close();
+                } else {
+                    $response['error'] = false;
+                }
             }
-            $response['data'] .= "</tbody>
-                    </table>";
+
+            $response['data'] .= "<br/><br/>";
         } else {
             $response['error'] = false;
             $response['data'] = "<div class=\"col-12 text-center mt-5\">
@@ -187,7 +260,6 @@ class CustomerModal {
                     </div>";
         }
 
-        $statement->close();
         $connection->close();
 
         return $response;

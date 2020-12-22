@@ -612,7 +612,7 @@ class OrderModal {
                         }
                     }
 
-                    $sql = "SELECT * FROM aider_transaction_sorting WHERE `Transaction_Status`='COMPLETED' AND `Transaction_Type`='DRIVER' AND RT_ID = " . intval($TeamResponse['data']) . " ORDER BY ID DESC LIMIT 3";
+                    $sql = "SELECT * FROM aider_transaction_sorting WHERE `Transaction_Status`='COMPLETED' OR `Transaction_Status`='COMPLETED_RATED' AND `Transaction_Type`='DRIVER' AND RT_ID = " . intval($TeamResponse['data']) . " ORDER BY ID DESC LIMIT 3";
                     $statement = $connection->query($sql);
 
                     $response['data'] = "";
@@ -709,7 +709,7 @@ class OrderModal {
             }
 
         } elseif($tripType === "OTHERS") {
-            $sql = "SELECT * FROM aider_transaction_sorting WHERE `Transaction_Status`='COMPLETED' AND `Transaction_Type`!='DRIVER' AND RT_ID = " . intval($riderID) . " ORDER BY ID DESC LIMIT 3";
+            $sql = "SELECT * FROM aider_transaction_sorting WHERE `Transaction_Status`='COMPLETED' OR `Transaction_Status`='COMPLETED_RATED' AND `Transaction_Type`!='DRIVER' AND RT_ID = " . intval($riderID) . " ORDER BY ID DESC LIMIT 3";
 
             $statement = $connection->query($sql);
 

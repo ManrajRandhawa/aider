@@ -673,7 +673,7 @@ function getHomeDashboardJS() {
                                                                                 carouselInner += "\n" +
                                                                                     timingData +
                                                                                     "\n" +
-                                                                                    "<img src='../assets/images/car.png' style='width: 80vw;' />" +
+                                                                                    "<div class='row'><div class='col-12'><img src='../assets/images/car-full.png' style='width: 80vw;' /></div></div>" +
                                                                                     "\n" +
                                                                                     "                                    <div class=\"mt-3\"></div>\n" +
                                                                                     "\n" +

@@ -330,7 +330,7 @@
             <div class="container" id="payment-container-bottom-v1">
                 <div class="row">
                     <div class="col-12">
-                        <h5 class="font-weight-bold mt-4">Recent transactions</h5>
+                        <h5 class="font-weight-bold mt-4 mb-3">Recent transactions</h5>
 
                         <!-- Transaction Container -->
                         <div id="transaction-container">

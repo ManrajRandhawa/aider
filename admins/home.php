@@ -18,6 +18,21 @@
         <?php
             echo $Aider->getUI()->getBootstrapHead();
         ?>
+
+        <style>
+            .text-line {
+                width: 100%;
+                text-align: center;
+                border-bottom: 1px solid #6c757d;
+                line-height: 0.1em;
+                margin: 10px 0 20px;
+            }
+
+            .text-line span {
+                background: #f8f9fa;
+                padding:0 10px;
+            }
+        </style>
     </head>
 
     <body class="bg-light">
@@ -112,7 +127,42 @@
 
         <div class="container">
             <div class="row">
+
                 <div class="col-12 mt-3">
+                    <h5 class="text-muted text-center text-line"><span>Customer Support</span></h5>
+                </div>
+
+                <div class="col-12 mt-1">
+                    <a class="text-decoration-none" href="rides.php">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="far fa-times-circle mr-1"></i> Cancel Rides</h5>
+                                <p class="card-text">Cancel ongoing rides.</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-12 mt-3">
+                    <a class="text-decoration-none" href="wallet.php">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-money-check-alt mr-1"></i> Update Wallet</h5>
+                                <p class="card-text">Update the wallet amount for users.</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-12 mt-3">
+                    <hr/>
+                </div>
+
+                <div class="col-12 mt-3">
+                    <h5 class="text-muted text-center text-line"><span>Partner Support</span></h5>
+                </div>
+
+                <div class="col-12 mt-1">
                     <a class="text-decoration-none" href="teams.php">
                         <div class="card">
                             <div class="card-body">
@@ -135,6 +185,14 @@
                 </div>
 
                 <div class="col-12 mt-3">
+                    <hr/>
+                </div>
+
+                <div class="col-12 mt-1">
+                    <h5 class="text-muted text-center text-line"><span>Statistics</span></h5>
+                </div>
+
+                <div class="col-12 mt-1">
                     <a class="text-decoration-none" href="reports.php">
                         <div class="card">
                             <div class="card-body">
@@ -157,6 +215,14 @@
                 </div>
 
                 <div class="col-12 mt-3">
+                    <hr/>
+                </div>
+
+                <div class="col-12 mt-3">
+                    <h5 class="text-muted text-center text-line"><span>Promoting</span></h5>
+                </div>
+
+                <div class="col-12 mt-1">
                     <a class="text-decoration-none" href="promotions.php">
                         <div class="card">
                             <div class="card-body">
@@ -179,25 +245,7 @@
                 </div>
 
                 <div class="col-12 mt-3">
-                    <a class="text-decoration-none" href="rides.php">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title"><i class="far fa-times-circle mr-1"></i> Cancel Rides</h5>
-                                <p class="card-text">Cancel ongoing rides.</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="col-12 mt-3">
-                    <a class="text-decoration-none" href="wallet.php">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title"><i class="fas fa-money-check-alt mr-1"></i> Update Wallet</h5>
-                                <p class="card-text">Update the wallet amount for users.</p>
-                            </div>
-                        </div>
-                    </a>
+                    <hr/>
                 </div>
             </div>
 
