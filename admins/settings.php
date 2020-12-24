@@ -156,7 +156,7 @@
         <br/>
 
         <?php
-            $Aider->getUI()->getDashboard()->getAdminBottomNavigation(3);
+            $Aider->getUI()->getDashboard()->getAdminBottomNavigation(4);
         ?>
 
         <!-- START: Toast Messages Area -->

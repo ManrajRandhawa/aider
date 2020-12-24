@@ -67,29 +67,39 @@ class Dashboard {
         $active[1] = "text-black-50";
         $active[2] = "text-black-50";
         $active[3] = "text-black-50";
+        $active[4] = "text-black-50";
         $active[$id] = "";
 
         echo "<div class='bg-white w-100 fixed-bottom rounded border-top' style='border-color: rgba(0, 0, 0, 0.5);'>
         <div class=\"container bg-white pt-1\">
             <div class=\"row\">
-                <div class=\"col-4 text-center\">
+                <div class=\"col-3 text-center\">
                     <a class='text-decoration-none " . $active[1] . "' href=\"home.php\">
                         <i class=\"fas fa-home\"></i>
                         <h6 style=\"font-size: 9pt;\">Home</h6>
                     </a>
 
                 </div>
+                
+                <div class=\"col-3 text-center\">
+                    <a class='text-decoration-none " . $active[2] . "' href=\"food.php\">
+                        <i class=\"fas fa-utensils\"></i>
+                        <h6 style=\"font-size: 9pt;\">Food</h6>
+                    </a>
 
-                <div class=\"col-4 text-center\">
-                    <a class='text-decoration-none " . $active[2] . "' href=\"waitinglist.php\">
+                </div>
+                
+
+                <div class=\"col-3 text-center\">
+                    <a class='text-decoration-none " . $active[3] . "' href=\"waitinglist.php\">
                         <i class=\"fas fa-clipboard-list\"></i>
                         <h6 style=\"font-size: 9pt;\">Waiting List</h6>
                     </a>
 
                 </div>
 
-                <div class=\"col-4 text-center\">
-                    <a class='text-decoration-none " . $active[3] . "' href=\"settings.php\">
+                <div class=\"col-3 text-center\">
+                    <a class='text-decoration-none " . $active[4] . "' href=\"settings.php\">
                         <i class=\"fas fa-cog\"></i>
                         <h6 style=\"font-size: 9pt;\">Settings</h6>
                     </a>

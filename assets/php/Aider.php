@@ -12,7 +12,6 @@ include_once $_SERVER['DOCUMENT_ROOT'] . ROOT_DIR . '/settings/Messages.php';
 // Modals
 include_once $_SERVER['DOCUMENT_ROOT'] . ROOT_DIR . '/assets/php/modals/AdminModal.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . ROOT_DIR . '/assets/php/modals/CustomerModal.php';
-include_once $_SERVER['DOCUMENT_ROOT'] . ROOT_DIR . '/assets/php/modals/MerchantModal.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . ROOT_DIR . '/assets/php/modals/RiderModal.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . ROOT_DIR . '/assets/php/modals/ParcelModal.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . ROOT_DIR . '/assets/php/modals/OrderModal.php';
@@ -20,6 +19,7 @@ include_once $_SERVER['DOCUMENT_ROOT'] . ROOT_DIR . '/assets/php/modals/UserModa
 include_once $_SERVER['DOCUMENT_ROOT'] . ROOT_DIR . '/assets/php/modals/AiderDriver.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . ROOT_DIR . '/assets/php/modals/BillModal.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . ROOT_DIR . '/assets/php/modals/PromoModal.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . ROOT_DIR . '/assets/php/modals/FoodModal.php';
 
 // UI
 include_once $_SERVER['DOCUMENT_ROOT'] . ROOT_DIR . '/assets/php/ui/Alerts.php';

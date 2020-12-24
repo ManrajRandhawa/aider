@@ -83,7 +83,7 @@
         </div>
 
         <?php
-            $Aider->getUI()->getDashboard()->getAdminBottomNavigation(2);
+            $Aider->getUI()->getDashboard()->getAdminBottomNavigation(3);
         ?>
 
         <!-- START: Toast Messages Area -->

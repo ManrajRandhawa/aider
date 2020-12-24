@@ -11,10 +11,6 @@ class UserModal {
         return new CustomerModal();
     }
 
-    function getMerchantModal() {
-        return new MerchantModal();
-    }
-
     function getRiderModal() {
         return new RiderModal();
     }
@@ -37,6 +33,10 @@ class UserModal {
 
     function getPromoModal() {
         return new PromoModal();
+    }
+
+    function getFoodModal() {
+        return new FoodModal();
     }
 
 }

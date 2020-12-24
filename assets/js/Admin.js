@@ -173,6 +173,549 @@ function getWaitingListDashboard() {
     }
 }
 
+let selectedRestaurant = -1, selectedItem = -1;
+function getFoodDashboard() {
+    if(window.localStorage.getItem("User_Email") === null) {
+        window.location.href = "../admins/index.php";
+    } else {
+        let user_email = window.localStorage.getItem("User_Email");
+
+        // Display Restaurant List
+        $.ajax({
+            url: "../assets/php/ajax/admin/getRestaurantList.php",
+            method: "POST",
+            cache: false,
+            success: function(data){
+                $('#restaurant-container').html(data);
+            }
+        });
+
+        // Add Restaurant Button
+        $('#add-restaurant-btn').unbind().on('click', function() {
+            // Add Restaurant & Display Toast Message
+
+            let formData = new FormData($('#add-restaurant-form')[0]);
+            formData.append('r_cat_val', $('#r_cat').val());
+
+            $.ajax({
+                url: "../assets/php/ajax/admin/addRestaurant.php",
+                method: "POST",
+                cache: false,
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(data) {
+                    $('#addRestaurant').modal('toggle');
+
+                    let dataMsg = "";
+
+                    if(data === "OK") {
+                        dataMsg = "The restaurant has been added successfully";
+                    } else {
+                        dataMsg = "There was an issue while adding the restaurant: " + data;
+                    }
+
+                    // Display Toast Message
+                    $.ajax({
+                        url: "../assets/php/ajax/ui/sendToastMessage.php",
+                        method: "POST",
+                        cache: false,
+                        data: {Title: "Manage Restaurants", Message: dataMsg},
+                        success: function(dataToast){
+                            $('.toast-container').html(dataToast);
+                            $('.toast').toast('show');
+
+                            setTimeout(function() {
+                                $('.toast-container').html("");
+                            }, 5000);
+                        }
+                    });
+
+                    // Display Restaurant List
+                    $.ajax({
+                        url: "../assets/php/ajax/admin/getRestaurantList.php",
+                        method: "POST",
+                        cache: false,
+                        success: function(data){
+                            $('#restaurant-container').html(data);
+                        }
+                    });
+                }
+            });
+        });
+        // Add Restaurant Button
+
+        // Add Menu Item
+        $('#add-menu-item-btn').unbind().on('click', function() {
+
+            let formData = new FormData($('#add-menu-item-form')[0]);
+            formData.append('m_id', selectedRestaurant);
+            formData.append('m_cat_edited', $('#m_cat').val());
+
+            // Add Menu Item & Display Toast Message
+            $.ajax({
+                url: "../assets/php/ajax/admin/addMenuItem.php",
+                method: "POST",
+                cache: false,
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(data) {
+                    $('#addMenuItem').modal('toggle');
+
+                    let dataMsg = "";
+
+                    if(data === "OK") {
+                        dataMsg = "The item has been added successfully.";
+                    } else {
+                        dataMsg = "There was an issue while adding the item: " + data;
+                    }
+
+                    // Display Toast Message
+                    $.ajax({
+                        url: "../assets/php/ajax/ui/sendToastMessage.php",
+                        method: "POST",
+                        cache: false,
+                        data: {Title: "Manage Menu", Message: dataMsg},
+                        success: function(dataToast){
+                            $('.toast-container').html(dataToast);
+                            $('.toast').toast('show');
+
+                            setTimeout(function() {
+                                $('.toast-container').html("");
+                            }, 5000);
+                        }
+                    });
+
+                    // Display Menu List
+                    $.ajax({
+                        url: "../assets/php/ajax/admin/getMenuList.php",
+                        method: "POST",
+                        cache: false,
+                        data: {ID: selectedRestaurant},
+                        success: function(data){
+                            $('#menu-container').html(data);
+                        }
+                    });
+                }
+            });
+        });
+        // Add Menu Item
+
+        // Update Restaurant
+        $('#edit-restaurant-btn').unbind().on('click', function() {
+
+            let formData = new FormData($('#edit-restaurant-form')[0]);
+            formData.append('r_id_edit', selectedRestaurant);
+            formData.append('r_cat_edited', $('#r_cat_edit').val());
+
+            // Add Restaurant & Display Toast Message
+            $.ajax({
+                url: "../assets/php/ajax/admin/updateRestaurant.php",
+                method: "POST",
+                cache: false,
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(data) {
+                    $('#editRestaurant').modal('toggle');
+
+                    let dataMsg = "";
+
+                    dataMsg = "The restaurant has been updated successfully.";
+
+                    // Display Toast Message
+                    $.ajax({
+                        url: "../assets/php/ajax/ui/sendToastMessage.php",
+                        method: "POST",
+                        cache: false,
+                        data: {Title: "Manage Menu", Message: dataMsg},
+                        success: function(dataToast){
+                            $('.toast-container').html(dataToast);
+                            $('.toast').toast('show');
+
+                            setTimeout(function() {
+                                $('.toast-container').html("");
+                            }, 5000);
+                        }
+                    });
+
+                    // Display Menu List
+                    $.ajax({
+                        url: "../assets/php/ajax/admin/getRestaurantList.php",
+                        method: "POST",
+                        cache: false,
+                        success: function(data){
+                            $('#restaurant-container').html(data);
+                        }
+                    });
+                }
+            });
+        });
+        // Update Restaurant
+
+        // Update Menu Item
+        $('#edit-menu-item-btn').unbind().on('click', function() {
+
+            let formData = new FormData($('#edit-menu-item-form')[0]);
+            formData.append('m_id_edit', selectedItem);
+            formData.append('m_cat_edited', $('#m_cat_edit').val());
+
+            // Add Restaurant & Display Toast Message
+            $.ajax({
+                url: "../assets/php/ajax/admin/updateMenuItem.php",
+                method: "POST",
+                cache: false,
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(data) {
+                    console.log(data);
+                    $('#editMenuItem').modal('toggle');
+
+                    let dataMsg = "";
+
+                    dataMsg = "The menu has been updated successfully.";
+
+                    // Display Toast Message
+                    $.ajax({
+                        url: "../assets/php/ajax/ui/sendToastMessage.php",
+                        method: "POST",
+                        cache: false,
+                        data: {Title: "Manage Menu", Message: dataMsg},
+                        success: function(dataToast){
+                            $('.toast-container').html(dataToast);
+                            $('.toast').toast('show');
+
+                            setTimeout(function() {
+                                $('.toast-container').html("");
+                            }, 5000);
+                        }
+                    });
+
+                    // Display Menu List
+                    $.ajax({
+                        url: "../assets/php/ajax/admin/getMenuList.php",
+                        method: "POST",
+                        cache: false,
+                        data: {ID: selectedRestaurant},
+                        success: function(data){
+                            $('#menu-container').html(data);
+                        }
+                    });
+                }
+            });
+        });
+        // Update Menu Item
+
+        // Search Restaurants
+        $('#restaurant-search').on('input', function() {
+            if($('#restaurant-search').val().length < 3) {
+                $.ajax({
+                    url: "../assets/php/ajax/admin/getRestaurantList.php",
+                    method: "POST",
+                    cache: false,
+                    success: function(data){
+                        $('#restaurant-container').html(data);
+                    }
+                });
+            } else {
+                $('#restaurant-container').html("<div class=\"col-12 text-center mt-5\">\n" +
+                    "                <i class=\"fas fa-search fa-4x\" style=\"color: #DCDCDC;\"></i>\n" +
+                    "                <h6 class=\"font-weight-bold mt-4\">Searching for Restaurants...</h6>\n" +
+                    "                <h6 class=\"text-black-50\">This may take a moment.</h6>\n" +
+                    "            </div>");
+
+                setTimeout(function(){
+                    $.ajax({
+                        url: "../assets/php/ajax/admin/getRestaurantListSearch.php",
+                        method: "POST",
+                        cache: false,
+                        data: {Search_Args: $('#restaurant-search').val()},
+                        success: function(data){
+                            $('#restaurant-container').html(data);
+                        }
+                    });
+                }, 1000);
+            }
+        });
+        // Search Restaurants
+
+        // Search Menu Item
+        $('#menu-search').on('input', function() {
+            console.log(1);
+            if($('#menu-search').val().length < 3) {
+                $.ajax({
+                    url: "../assets/php/ajax/admin/getMenuList.php",
+                    method: "POST",
+                    cache: false,
+                    data: {ID: selectedRestaurant},
+                    success: function(data){
+                        $('#menu-container').html(data);
+                    }
+                });
+            } else {
+                $('#menu-container').html("<div class=\"col-12 text-center mt-5\">\n" +
+                    "                <i class=\"fas fa-search fa-4x\" style=\"color: #DCDCDC;\"></i>\n" +
+                    "                <h6 class=\"font-weight-bold mt-4\">Searching for Menu Items...</h6>\n" +
+                    "                <h6 class=\"text-black-50\">This may take a moment.</h6>\n" +
+                    "            </div>");
+
+                setTimeout(function(){
+                    $.ajax({
+                        url: "../assets/php/ajax/admin/getMenuListSearch.php",
+                        method: "POST",
+                        cache: false,
+                        data: {ID: selectedRestaurant, Search_Args: $('#menu-search').val()},
+                        success: function(data){
+                            $('#menu-container').html(data);
+                        }
+                    });
+                }, 1000);
+            }
+        });
+        // Search Menu Item
+
+    }
+}
+
+let selectedCategory = -1;
+function getCategoryDashboard() {
+    if(window.localStorage.getItem("User_Email") === null) {
+        window.location.href = "../admins/index.php";
+    } else {
+        let user_email = window.localStorage.getItem("User_Email");
+
+        // Display Promotions
+        $.ajax({
+            url: "../assets/php/ajax/admin/getCategoryList.php",
+            method: "POST",
+            cache: false,
+            data: {Type: "R"},
+            success: function(data){
+                $('#r-category-container').html(data);
+            }
+        });
+
+        $('#add-cat-btn').on('click', function() {
+            $.ajax({
+                url: "../assets/php/ajax/admin/addCategory.php",
+                method: "POST",
+                cache: false,
+                data: {Type: "R", Name: $('#cat_name').val()},
+                success: function(data){
+                    $('#category').modal('toggle');
+
+                    if(data === "OK") {
+                        let dataMsg = "";
+
+                        if(data === "OK") {
+                            dataMsg = "The category has been added successfully";
+                        } else {
+                            dataMsg = "There was an issue while adding the category: " + data;
+                        }
+
+                        // Display Toast Message
+                        $.ajax({
+                            url: "../assets/php/ajax/ui/sendToastMessage.php",
+                            method: "POST",
+                            cache: false,
+                            data: {Title: "Manage Categories", Message: dataMsg},
+                            success: function(dataToast){
+                                $('.toast-container').html(dataToast);
+                                $('.toast').toast('show');
+
+                                setTimeout(function() {
+                                    $('.toast-container').html("");
+                                }, 5000);
+                            }
+                        });
+
+                        // Display Promotions
+                        $.ajax({
+                            url: "../assets/php/ajax/admin/getCategoryList.php",
+                            method: "POST",
+                            cache: false,
+                            data: {Type: "R"},
+                            success: function(data){
+                                $('#r-category-container').html(data);
+                            }
+                        });
+                    }
+                }
+            });
+        });
+
+        $('#delete-cat-btn').on('click', function() {
+            $.ajax({
+                url: "../assets/php/ajax/admin/deleteCategory.php",
+                method: "POST",
+                cache: false,
+                data: {Type: "R", ID: selectedCategory},
+                success: function(data){
+                    $('#categoryDel').modal('toggle');
+
+                    if(data === "OK") {
+                        let dataMsg = "";
+
+                        if(data === "OK") {
+                            dataMsg = "The category has been deleted.";
+                        } else {
+                            dataMsg = "There was an issue while deleting the category: " + data;
+                        }
+
+                        // Display Toast Message
+                        $.ajax({
+                            url: "../assets/php/ajax/ui/sendToastMessage.php",
+                            method: "POST",
+                            cache: false,
+                            data: {Title: "Manage Categories", Message: dataMsg},
+                            success: function(dataToast){
+                                $('.toast-container').html(dataToast);
+                                $('.toast').toast('show');
+
+                                setTimeout(function() {
+                                    $('.toast-container').html("");
+                                }, 5000);
+                            }
+                        });
+
+                        // Display Promotions
+                        $.ajax({
+                            url: "../assets/php/ajax/admin/getCategoryList.php",
+                            method: "POST",
+                            cache: false,
+                            data: {Type: "R"},
+                            success: function(data){
+                                $('#r-category-container').html(data);
+                            }
+                        });
+                    }
+                }
+            });
+        });
+
+    }
+}
+
+function getMCategoryDashboard() {
+    if(window.localStorage.getItem("User_Email") === null) {
+        window.location.href = "../admins/index.php";
+    } else {
+        let user_email = window.localStorage.getItem("User_Email");
+
+        // Display Promotions
+        $.ajax({
+            url: "../assets/php/ajax/admin/getCategoryList.php",
+            method: "POST",
+            cache: false,
+            data: {Type: "M"},
+            success: function(data){
+                $('#r-category-container').html(data);
+            }
+        });
+
+        $('#add-cat-btn').on('click', function() {
+            $.ajax({
+                url: "../assets/php/ajax/admin/addCategory.php",
+                method: "POST",
+                cache: false,
+                data: {Type: "M", Name: $('#cat_name').val()},
+                success: function(data){
+                    $('#category').modal('toggle');
+
+                    if(data === "OK") {
+                        let dataMsg = "";
+
+                        if(data === "OK") {
+                            dataMsg = "The category has been added successfully";
+                        } else {
+                            dataMsg = "There was an issue while adding the category: " + data;
+                        }
+
+                        // Display Toast Message
+                        $.ajax({
+                            url: "../assets/php/ajax/ui/sendToastMessage.php",
+                            method: "POST",
+                            cache: false,
+                            data: {Title: "Manage Categories", Message: dataMsg},
+                            success: function(dataToast){
+                                $('.toast-container').html(dataToast);
+                                $('.toast').toast('show');
+
+                                setTimeout(function() {
+                                    $('.toast-container').html("");
+                                }, 5000);
+                            }
+                        });
+
+                        // Display Promotions
+                        $.ajax({
+                            url: "../assets/php/ajax/admin/getCategoryList.php",
+                            method: "POST",
+                            cache: false,
+                            data: {Type: "M"},
+                            success: function(data){
+                                $('#r-category-container').html(data);
+                            }
+                        });
+                    }
+                }
+            });
+        });
+
+        $('#delete-cat-btn').on('click', function() {
+            $.ajax({
+                url: "../assets/php/ajax/admin/deleteCategory.php",
+                method: "POST",
+                cache: false,
+                data: {Type: "M", ID: selectedCategory},
+                success: function(data){
+                    $('#categoryDel').modal('toggle');
+
+                    if(data === "OK") {
+                        let dataMsg = "";
+
+                        if(data === "OK") {
+                            dataMsg = "The category has been deleted.";
+                        } else {
+                            dataMsg = "There was an issue while deleting the category: " + data;
+                        }
+
+                        // Display Toast Message
+                        $.ajax({
+                            url: "../assets/php/ajax/ui/sendToastMessage.php",
+                            method: "POST",
+                            cache: false,
+                            data: {Title: "Manage Categories", Message: dataMsg},
+                            success: function(dataToast){
+                                $('.toast-container').html(dataToast);
+                                $('.toast').toast('show');
+
+                                setTimeout(function() {
+                                    $('.toast-container').html("");
+                                }, 5000);
+                            }
+                        });
+
+                        // Display Promotions
+                        $.ajax({
+                            url: "../assets/php/ajax/admin/getCategoryList.php",
+                            method: "POST",
+                            cache: false,
+                            data: {Type: "M"},
+                            success: function(data){
+                                $('#r-category-container').html(data);
+                            }
+                        });
+                    }
+                }
+            });
+        });
+
+    }
+}
+
 function getTeamsDashboard() {
     if(window.localStorage.getItem("User_Email") === null) {
         window.location.href = "../admins/index.php";
@@ -1292,6 +1835,204 @@ function updateMoney() {
                     }
                 });
             }, 1000);
+        }
+    });
+}
+
+function openRestaurant(id) {
+    $.ajax({
+        url: "../assets/php/ajax/admin/getRestaurantDetails.php",
+        method: "POST",
+        cache: false,
+        data: {Rest_ID: id},
+        success: function(data){
+            if(!data.includes("ERROR")) {
+                selectedRestaurant = parseInt(id);
+
+                data = JSON.parse(data);
+
+                $('#menu_view_restaurant_name').html(data[1]);
+                $('#modal-restaurant-name').html(data[1]);
+
+                // Display Menu List
+                $.ajax({
+                    url: "../assets/php/ajax/admin/getMenuList.php",
+                    method: "POST",
+                    cache: false,
+                    data: {ID: selectedRestaurant},
+                    success: function(data){
+                        $('#menu-container').html(data);
+                    }
+                });
+
+                if(!($('#restaurants-view').hasClass('d-none'))) {
+                    $('#restaurants-view').addClass('d-none');
+                }
+
+                if($('#menu-view').hasClass('d-none')) {
+                    $('#menu-view').removeClass('d-none');
+                }
+
+                if($('#food-back-btn').hasClass('d-none')) {
+                    $('#food-back-btn').removeClass('d-none');
+                }
+            }
+        }
+    });
+}
+
+function editRestaurant(id) {
+    $.ajax({
+        url: "../assets/php/ajax/admin/getRestaurantDetails.php",
+        method: "POST",
+        cache: false,
+        data: {Rest_ID: id},
+        success: function(data){
+            if(!data.includes("ERROR")) {
+                selectedRestaurant = parseInt(id);
+
+                data = JSON.parse(data);
+
+                $('#restaurant_name_edit').html(data[1]);
+                $('#r_name_edit').val(data[1]);
+                $('#r_email_edit').val(data[2]);
+                $('#r_hp_edit').val(data[3]);
+                $('#r_tele_username_edit').val(data[4]);
+                $('#r_loc_edit').val(data[5]);
+
+                $('#editRestaurant').modal('toggle');
+
+            }
+        }
+    });
+}
+
+function deleteRestaurant(id) {
+    $.ajax({
+        url: "../assets/php/ajax/admin/deleteRestaurant.php",
+        method: "POST",
+        cache: false,
+        data: {Rest_ID: id},
+        success: function(data) {
+            let dataMsg = "";
+
+            if(data === "OK") {
+                dataMsg = "The restaurant has been deleted.";
+            } else {
+                dataMsg = "There was an issue while deleting the restaurant: " + data;
+            }
+
+            // Display Toast Message
+            $.ajax({
+                url: "../assets/php/ajax/ui/sendToastMessage.php",
+                method: "POST",
+                cache: false,
+                data: {Title: "Manage Menu", Message: dataMsg},
+                success: function(dataToast){
+                    $('.toast-container').html(dataToast);
+                    $('.toast').toast('show');
+
+                    setTimeout(function() {
+                        $('.toast-container').html("");
+                    }, 5000);
+                }
+            });
+
+            // Display Menu List
+            $.ajax({
+                url: "../assets/php/ajax/admin/getRestaurantList.php",
+                method: "POST",
+                cache: false,
+                success: function(data){
+                    $('#restaurant-container').html(data);
+                }
+            });
+        }
+    });
+}
+
+function editItemMenu(id) {
+    $.ajax({
+        url: "../assets/php/ajax/admin/getMenuItemDetails.php",
+        method: "POST",
+        cache: false,
+        data: {MenuItem_ID: id},
+        success: function(data){
+            console.log(data);
+            if(!data.includes("ERROR")) {
+                selectedItem = id;
+
+                data = JSON.parse(data);
+
+                $('#edit-restaurant-name').html(data[2]);
+                $('#m_name_edit').val(data[2]);
+                $('#m_desc_edit').val(data[3]);
+                $('#m_price_edit').val(data[4]);
+
+                $('#editMenuItem').modal('toggle');
+            }
+        }
+    });
+}
+
+function deleteItemMenu(id) {
+    $.ajax({
+        url: "../assets/php/ajax/admin/deleteMenuItem.php",
+        method: "POST",
+        cache: false,
+        data: {Rest_ID: id},
+        success: function(data) {
+            let dataMsg = "";
+
+            if(data === "OK") {
+                dataMsg = "The item has been deleted.";
+            } else {
+                dataMsg = "There was an issue while deleting the item: " + data;
+            }
+
+            // Display Toast Message
+            $.ajax({
+                url: "../assets/php/ajax/ui/sendToastMessage.php",
+                method: "POST",
+                cache: false,
+                data: {Title: "Manage Menu", Message: dataMsg},
+                success: function(dataToast){
+                    $('.toast-container').html(dataToast);
+                    $('.toast').toast('show');
+
+                    setTimeout(function() {
+                        $('.toast-container').html("");
+                    }, 5000);
+                }
+            });
+
+            // Display Menu List
+            $.ajax({
+                url: "../assets/php/ajax/admin/getMenuList.php",
+                method: "POST",
+                cache: false,
+                data: {ID: selectedRestaurant},
+                success: function(data){
+                    $('#menu-container').html(data);
+                }
+            });
+        }
+    });
+}
+
+function deleteCategory(type, id) {
+    $.ajax({
+        url: "../assets/php/ajax/admin/getCategoryData.php",
+        method: "POST",
+        cache: false,
+        data: {Type: type, ID: id, Data: "Category_Name"},
+        success: function(data){
+            if(!data.includes("ERROR")) {
+                selectedCategory = id;
+
+                $('#cat_name_modal').html(data);
+                $('#categoryDel').modal('toggle');
+            }
         }
     });
 }
