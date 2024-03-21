@@ -25,7 +25,3 @@ To use Aider, simply download the mobile app from the Google Play Store or Apple
 ## Contributing
 
 We welcome contributions from the community to improve Aider's features and functionality. If you'd like to contribute, please fork the repository, make your changes, and submit a pull request.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE). Feel free to use, modify, and distribute the code for your own purposes.
